@@ -1,0 +1,334 @@
+/*
+  SP Surf Coach Design System
+  Source: provided UI kit (typography + colors + controls)
+*/
+
+:root {
+  /* Brand / primary */
+  --color-primary-400: #18d4d5;
+  --color-primary-500: #009ea9;
+  --color-primary-700: #42707d;
+  --color-primary-900: #075262;
+
+  /* Text */
+  --color-text-default: #161616;
+  --color-text-inverse: #ffffff;
+
+  /* Surfaces */
+  --color-background-default: #f2f4f5;
+  --color-surface-default: #ffffff;
+  --color-surface-dark: #161616;
+
+  /* Label / muted accent */
+  --color-label-muted: #b0c5c4;
+
+  /* Status / others */
+  --color-error-500: #ff6141;
+  --color-error-100: #fbd6cc;
+  --color-warning-500: #ffd95c;
+  --color-warning-100: #ffecae;
+  --color-success-500: #9fee70;
+  --color-success-100: #cff7b7;
+
+  /* Typography family */
+  --font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Heading/H1/Medium */
+  --type-h1-size: 40px;
+  --type-h1-line: 1;
+  --type-h1-letter: -0.04em;
+  --type-h1-weight: 500;
+
+  /* Heading/H2/Medium */
+  --type-h2-size: 32px;
+  --type-h2-line: 1;
+  --type-h2-letter: 0;
+  --type-h2-weight: 500;
+
+  /* Heading/H3/Medium */
+  --type-h3-size: 24px;
+  --type-h3-line: 1;
+  --type-h3-letter: 0;
+  --type-h3-weight: 500;
+
+  /* Body/M (from UI kit) */
+  --type-body-m-size: 32px;
+  --type-body-m-line: 40px;
+  --type-body-m-letter: -0.02em;
+  --type-body-m-weight: 500;
+
+  /* Body/Small */
+  --type-body-s-size: 16px;
+  --type-body-s-line: 1;
+  --type-body-s-letter: 0;
+  --type-body-s-weight: 500;
+
+  /* Label/Default */
+  --type-label-size: 21px;
+  --type-label-line: 1;
+  --type-label-letter: 0.13em;
+  --type-label-weight: 400;
+
+  /* Controls */
+  --radius-pill: 999px;
+  --radius-card: 16px;
+  --radius-input: 10px;
+  --radius-hero: 60px;
+  --radius-card-lg: 30px;
+  --radius-card-xl: 40px;
+  --control-height: 40px;
+  --icon-size-md: 24px;
+}
+
+.ds-h1 {
+  font-family: var(--font-family-base);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  letter-spacing: var(--type-h1-letter);
+  font-weight: var(--type-h1-weight);
+}
+
+.ds-h2 {
+  font-family: var(--font-family-base);
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line);
+  letter-spacing: var(--type-h2-letter);
+  font-weight: var(--type-h2-weight);
+}
+
+.ds-h2-sm {
+  font-family: var(--font-family-base);
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.ds-h2-lg {
+  font-family: var(--font-family-base);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.ds-h3 {
+  font-family: var(--font-family-base);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-line);
+  letter-spacing: var(--type-h3-letter);
+  font-weight: var(--type-h3-weight);
+}
+
+.ds-section-title {
+  font-family: var(--font-family-base);
+  font-size: 41px;
+  line-height: 63px;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.ds-display-title {
+  font-family: var(--font-family-base);
+  font-size: 44px;
+  line-height: 50px;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.ds-body-m {
+  font-family: var(--font-family-base);
+  font-size: var(--type-body-m-size);
+  line-height: var(--type-body-m-line);
+  letter-spacing: var(--type-body-m-letter);
+  font-weight: var(--type-body-m-weight);
+}
+
+.ds-body-s {
+  font-family: var(--font-family-base);
+  font-size: var(--type-body-s-size);
+  line-height: var(--type-body-s-line);
+  letter-spacing: var(--type-body-s-letter);
+  font-weight: var(--type-body-s-weight);
+}
+
+.ds-label {
+  font-family: var(--font-family-base);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  letter-spacing: var(--type-label-letter);
+  font-weight: var(--type-label-weight);
+  text-transform: uppercase;
+}
+
+.ds-btn {
+  min-height: var(--control-height);
+  border-radius: var(--radius-pill);
+  padding: 8px 24px;
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.ds-btn-lg {
+  min-height: 67px;
+  padding: 18px 32px;
+  font-size: 18px;
+}
+
+.ds-btn-primary {
+  background: var(--color-surface-dark);
+  color: var(--color-text-inverse);
+  border: 1px solid var(--color-surface-dark);
+}
+
+.ds-btn-primary:hover {
+  background: #303030;
+  border-color: #303030;
+}
+
+.ds-btn-secondary {
+  background: var(--color-surface-default);
+  color: var(--color-text-default);
+  border: 1px solid var(--color-text-default);
+}
+
+.ds-btn-secondary:hover {
+  background: #f7f7f7;
+}
+
+.ds-link {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ds-nav-light {
+  background: var(--color-surface-default);
+  color: var(--color-text-default);
+}
+
+.ds-nav-dark {
+  background: var(--color-surface-dark);
+  color: var(--color-text-inverse);
+}
+
+.ds-icon-md {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}
+
+.ds-card {
+  border-radius: var(--radius-card);
+  background: var(--color-surface-default);
+  border: 1px solid #dce2e4;
+}
+
+.ds-input {
+  width: 100%;
+  min-height: var(--control-height);
+  border-radius: var(--radius-input);
+  border: 1px solid #c6cfd2;
+  background: var(--color-surface-default);
+  color: var(--color-text-default);
+  padding: 10px 12px;
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.ds-input::placeholder {
+  color: #7e858a;
+}
+
+.ds-chip {
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.ds-brand-title {
+  font-family: var(--font-family-base);
+  font-size: var(--type-h1-size);
+  line-height: 1;
+  letter-spacing: var(--type-h1-letter);
+  font-weight: 700;
+}
+
+.ds-nav-link {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+  .ds-h1 {
+    font-size: 36px;
+  }
+
+  .ds-h2 {
+    font-size: 30px;
+  }
+
+  .ds-section-title {
+    font-size: 36px;
+    line-height: 50px;
+  }
+
+  .ds-display-title {
+    font-size: 38px;
+    line-height: 46px;
+  }
+
+  .ds-h2-sm {
+    font-size: 26px;
+  }
+
+  .ds-h2-lg {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ds-h1 {
+    font-size: 32px;
+  }
+
+  .ds-h2 {
+    font-size: 28px;
+  }
+
+  .ds-section-title {
+    font-size: 30px;
+    line-height: 42px;
+  }
+
+  .ds-display-title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .ds-h2-sm {
+    font-size: 24px;
+  }
+
+  .ds-h2-lg {
+    font-size: 26px;
+  }
+
+  .ds-label {
+    font-size: 16px;
+  }
+}

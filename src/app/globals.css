@@ -1,26 +1,78 @@
 @import "tailwindcss";
+@import "../styles/design-system.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-background-default);
+  --foreground: var(--color-text-default);
+  --muted: #e8eced;
+  --muted-foreground: #5f6368;
+  --card: var(--color-surface-default);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --font-sans: var(--font-family-base);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-base);
+}
+
+a {
+  color: inherit;
+}
+
+.container-site {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1320px;
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+
+.section-space {
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+}
+
+.hero-gradient {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7)),
+    radial-gradient(circle at 10% 20%, #8aa9b8 0%, #1f2937 55%, #0a0a0a 100%);
+}
+
+.hero-overlay-gradient {
+  background: linear-gradient(
+    180deg,
+    rgba(2, 23, 27, 0.4) 0%,
+    rgba(3, 37, 45, 0.145) 22%,
+    rgba(6, 56, 68, 0) 62%,
+    rgba(0, 18, 23, 0.5) 92%
+  );
+}
+
+.photo-block {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55)),
+    linear-gradient(140deg, #94a3b8, #0f172a);
+}
+
+.deco-ellipse {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: hard-light;
+  pointer-events: none;
+  filter: blur(120px);
 }
