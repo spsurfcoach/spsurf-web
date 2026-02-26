@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "porto-dev",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "C:/nvm4w/nodejs/npm.cmd", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

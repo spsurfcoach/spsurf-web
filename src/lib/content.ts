@@ -44,9 +44,9 @@ export const navItems: NavItem[] = [
 ];
 
 export const homePackages: PackageItem[] = [
-  { name: "Paquete 1", price: "S/ 540", classes: "4 clases", validity: "Vigencia: 1 mes" },
-  { name: "Paquete 2", price: "S/ 960", classes: "8 clases", validity: "Vigencia: 1 mes" },
-  { name: "Paquete 3", price: "S/ 1200", classes: "12 clases", validity: "Vigencia: 1 mes" },
+  { name: "Starter",  price: "s/560",  classes: "4 clases",  validity: "Vigencia: 1 mes" },
+  { name: "Standard", price: "s/960",  classes: "8 clases",  validity: "Vigencia: 1 mes" },
+  { name: "Premium",  price: "s/1400", classes: "10 clases", validity: "Vigencia: 1 mes" },
 ];
 
 export const surfTrips: SurfTripItem[] = [
@@ -94,6 +94,49 @@ export const services: ServiceItem[] = [
     title: "Preparacion mental",
     body: "Mejora foco, confianza y toma de decisiones con herramientas mentales aplicadas al surf.",
   },
+];
+
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
+export type TestimonialItem = {
+  quote: string;
+  author: string;
+};
+
+export const faqs: FaqItem[] = [
+  {
+    question: "¿Como se en que nivel estoy?",
+    answer: "Antes de tu primera clase, nuestros coaches te hacen una evaluación inicial en el agua para conocer tu nivel real. Así diseñamos el plan que mejor se adapta a ti.",
+  },
+  {
+    question: "¿Debo llevar mi propia tabla o me pueden prestar una?",
+    answer: "Puedes traer tu propia tabla o usar una de las nuestras. Contamos con material para todos los niveles. Solo avísanos con anticipación para tenerla lista.",
+  },
+  {
+    question: "¿Cuántas personas hay por clase grupal?",
+    answer: "Mantenemos un ratio reducido de máximo 4 alumnos por coach para garantizar atención real y progreso efectivo en cada sesión.",
+  },
+];
+
+export const testimonials: TestimonialItem[] = [
+  {
+    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
+    author: "Jane Doe",
+  },
+  {
+    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
+    author: "Jane Doe",
+  },
+];
+
+export const surfClassSubServices = [
+  "Videoanalisis",
+  "Clases de Surfskate",
+  "Talleres de Yoga Restaurativo",
+  "Talleres de respiración & meditación",
 ];
 
 export const methodologyPillars = [
