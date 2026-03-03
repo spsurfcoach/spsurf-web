@@ -12,9 +12,23 @@ export type PackageItem = {
 
 export type SurfTripItem = {
   name: string;
+  country: string;
   level: string;
   date: string;
   description: string;
+  groupSize: string;
+  hospedaje: string;
+  duracion: string;
+  aeropuerto: string;
+  image: string;
+};
+
+export type CalendarItem = {
+  destination: string;
+  dates: string;
+  level: string;
+  available: number;
+  capacity: number;
 };
 
 export type ProductItem = {
@@ -51,23 +65,59 @@ export const homePackages: PackageItem[] = [
 
 export const surfTrips: SurfTripItem[] = [
   {
-    name: "Chicama",
-    level: "Avanzado",
-    date: "18 al 25 de Noviembre",
-    description: "Olas largas y entrenamiento técnico en videoanálisis.",
+    name: "Surf City",
+    country: "El Salvador",
+    level: "Intermedio",
+    date: "11 - 18 de Mayo 2026",
+    description:
+      "Entrena dentro del agua con sesiones diseñadas según tu nivel y objetivos. En las clases individuales, trabajamos en tu técnica, lectura de olas y confianza con atención personalizada. En las clases grupales, compartes energía, aprendes observando y mejoras junto a otros surfistas que también buscan progresar.",
+    groupSize: "12 personas",
+    hospedaje: "Hotel Pacífico",
+    duracion: "7 días",
+    aeropuerto: "San Salvador (SAL)",
+    image: "/photos/home1.jpg",
   },
   {
-    name: "El Salvador",
+    name: "Chicama",
+    country: "Perú",
     level: "Intermedio",
-    date: "10 al 18 de Diciembre",
-    description: "Coaching diario para mejorar lectura de ola y maniobras.",
+    date: "1 - 7 de Junio 2026",
+    description:
+      "Entrena dentro del agua con sesiones diseñadas según tu nivel y objetivos. En las clases individuales, trabajamos en tu técnica, lectura de olas y confianza con atención personalizada. En las clases grupales, compartes energía, aprendes observando y mejoras junto a otros surfistas que también buscan progresar.",
+    groupSize: "12 - 20 personas",
+    hospedaje: "Buena Vista Lobitos",
+    duracion: "10 días",
+    aeropuerto: "Talara (TYL)",
+    image: "/photos/home2.jpg",
   },
   {
     name: "Lobitos",
-    level: "Avanzado",
-    date: "5 al 16 de Enero",
-    description: "Plan mixto de surf, físico y enfoque mental para progresar.",
+    country: "Perú",
+    level: "Intermedio",
+    date: "15 - 20 de Enero 2026",
+    description:
+      "Entrena dentro del agua con sesiones diseñadas según tu nivel y objetivos. En las clases individuales, trabajamos en tu técnica, lectura de olas y confianza con atención personalizada. En las clases grupales, compartes energía, aprendes observando y mejoras junto a otros surfistas que también buscan progresar.",
+    groupSize: "12 personas",
+    hospedaje: "Buena Vista Lobitos",
+    duracion: "10 días",
+    aeropuerto: "Talara (TYL)",
+    image: "/photos/hero.jpg",
   },
+];
+
+export const surftripsCalendar: CalendarItem[][] = [
+  // Left column
+  [
+    { destination: "Lobitos",       dates: "15 - 20 de Enero 2026",    level: "Intermedio", available: 2,  capacity: 14 },
+    { destination: "El Salvador",   dates: "11 - 18 de Mayo 2026",     level: "Intermedio", available: 8,  capacity: 15 },
+    { destination: "Chicama",       dates: "1 - 7 de Junio 2026",      level: "Intermedio", available: 8,  capacity: 16 },
+  ],
+  // Right column
+  [
+    { destination: "Chicama",       dates: "1 - 9 de Agosto 2026",     level: "Intermedio", available: 10, capacity: 14 },
+    { destination: "Florianópolis", dates: "11 - 18 de Octubre 2026",  level: "Intermedio", available: 7,  capacity: 12 },
+    { destination: "Pacasmayo",     dates: "1 - 7 de Noviembre 2026",  level: "Intermedio", available: 12, capacity: 15 },
+  ],
 ];
 
 export const products: ProductItem[] = [
@@ -104,6 +154,7 @@ export type FaqItem = {
 export type TestimonialItem = {
   quote: string;
   author: string;
+  tripName?: string;
 };
 
 export const faqs: FaqItem[] = [
@@ -125,10 +176,12 @@ export const testimonials: TestimonialItem[] = [
   {
     quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
     author: "Jane Doe",
+    tripName: "Surftrip Chicama 2024",
   },
   {
     quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
     author: "Jane Doe",
+    tripName: "Surftrip Chicama 2024",
   },
 ];
 
