@@ -30,8 +30,10 @@ body {
   font-family: var(--font-family-base);
 }
 
-a {
-  color: inherit;
+@layer base {
+  a {
+    color: inherit;
+  }
 }
 
 .container-site {
