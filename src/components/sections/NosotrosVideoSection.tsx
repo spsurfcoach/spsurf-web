@@ -1,18 +1,16 @@
-import Image from "next/image";
+import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
 export function NosotrosVideoSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-16">
       <div className="container-site">
-        <div className="relative h-[300px] overflow-hidden rounded-[40px] sm:h-[420px] lg:h-[652px]">
-          <Image
-            src="/photos/home2.jpg"
-            alt="SP Surf Coach video"
-            fill
-            className="object-cover"
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/30" />
+        <ResponsiveMediaFrame
+          src="/photos/home2.jpg"
+          alt="SP Surf Coach video"
+          ratioClassName="aspect-[16/10] sm:aspect-[16/9] lg:aspect-[1512/652]"
+          className="site-media-frame-lg"
+          overlayClassName="bg-black/30"
+        >
 
           {/* Play button */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -27,7 +25,7 @@ export function NosotrosVideoSection() {
               </svg>
             </div>
           </div>
-        </div>
+        </ResponsiveMediaFrame>
       </div>
     </section>
   );

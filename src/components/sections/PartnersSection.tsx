@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function PartnersSection() {
   return (
     <section className="relative overflow-hidden px-4 py-10 text-center sm:px-6 md:px-10 lg:px-16">
@@ -8,11 +10,11 @@ export function PartnersSection() {
         <p className="ds-label text-[var(--color-label-muted)]">PARTNERS</p>
         <h2 className="ds-display-title mt-3">Nuestros partners</h2>
         <div className="mx-auto mt-8 grid max-w-[900px] gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
-          <div className="flex h-[135px] items-center justify-center rounded-xl border border-zinc-300 bg-white ds-h3 text-[var(--color-primary-500)]">
-            SURF PLACE
+          <div className="relative flex h-[135px] items-center justify-center overflow-hidden rounded-xl border border-zinc-300 bg-white p-5">
+            <Image src="/photos/surfplace.png" alt="Surf Place" fill className="object-contain p-5" />
           </div>
-          <div className="flex h-[159px] items-center justify-center rounded-xl border border-zinc-300 bg-white ds-h3">
-            CHANNEL ISLANDS
+          <div className="relative flex h-[159px] items-center justify-center overflow-hidden rounded-xl border border-zinc-300 bg-white p-5">
+            <Image src="/photos/channel_islands.png" alt="Channel Islands" fill className="object-contain p-5" />
           </div>
         </div>
       </div>

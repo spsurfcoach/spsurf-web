@@ -1,33 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/lib/content";
 
 const NAV_ORDER = ["/surftrips", "/servicios", "/shop", "/blog", "/nosotros"];
+const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
 
 export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
 
-  const isHome = pathname === "/";
+  const isHeroRoute = HERO_ROUTES.includes(pathname);
+  const isOverlay = isHeroRoute && isAtTop && !mobileOpen;
 
-  const links = navItems
-    .filter((item) => item.href !== "/")
-    .sort((a, b) => NAV_ORDER.indexOf(a.href) - NAV_ORDER.indexOf(b.href));
+  const links = useMemo(
+    () =>
+      navItems
+        .filter((item) => item.href !== "/")
+        .sort((a, b) => NAV_ORDER.indexOf(a.href) - NAV_ORDER.indexOf(b.href)),
+    [],
+  );
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsAtTop(window.scrollY < 16);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   return (
     <header
-      className={`z-40 ${
-        isHome
-          ? "absolute inset-x-0 top-4 md:top-8"
-          : "sticky top-0 bg-[var(--color-surface-dark)] border-b border-white/10"
+      className={`inset-x-0 top-0 z-50 border-b ${
+        isHeroRoute ? "fixed" : "sticky"
+      } ${
+        isOverlay
+          ? "border-transparent bg-transparent"
+          : "border-white/10 bg-[var(--color-surface-dark)]/95 backdrop-blur-sm"
       }`}
     >
       {/* Main bar */}
-      <div className="mx-auto flex h-14 w-full max-w-[1309px] items-center justify-between px-4 sm:px-6 md:px-10 lg:px-16">
+      <div className="container-site flex h-[var(--header-height)] w-full items-center justify-between">
 
         {/* Logo */}
         <Link href="/" className="shrink-0">
@@ -42,7 +69,7 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-8 xl:gap-[50px]">
+        <nav className="hidden items-center gap-8 xl:gap-12 lg:flex">
           {links.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -50,7 +77,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={`ds-nav-link transition-colors duration-150 ${
-                  isHome
+                  isOverlay
                     ? "text-white hover:text-white/80"
                     : isActive
                       ? "text-white"
@@ -109,8 +136,8 @@ export function Header() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="bg-[var(--color-surface-dark)] border-t border-white/10 lg:hidden">
-          <nav className="mx-auto flex flex-col max-w-[1309px] px-4 sm:px-6 md:px-10 py-2">
+        <div className="border-t border-white/10 bg-[var(--color-surface-dark)] lg:hidden">
+          <nav className="container-site flex max-h-[calc(100dvh-var(--header-height))] flex-col overflow-y-auto py-2">
             {links.map((item) => {
               const isActive = pathname === item.href;
               return (

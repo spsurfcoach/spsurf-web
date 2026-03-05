@@ -7,6 +7,7 @@ import { VisionMisionSection } from "@/components/sections/VisionMisionSection";
 import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
 import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
+import { surftripsSpFamilyPhotos } from "@/lib/content";
 
 export default function NosotrosPage() {
   return (
@@ -17,7 +18,7 @@ export default function NosotrosPage() {
       <NosotrosVideoSection />
       <NosotrosQuoteSection />
       <VisionMisionSection />
-      <SpFamilySection />
+      <SpFamilySection photos={surftripsSpFamilyPhotos} />
       <SurfTalksSection />
       <TestimoniosSection />
     </>

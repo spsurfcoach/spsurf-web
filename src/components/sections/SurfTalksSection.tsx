@@ -1,9 +1,11 @@
+import Image from "next/image";
+
 export function SurfTalksSection() {
   return (
     <section className="px-4 py-14 sm:px-6 md:px-10 md:py-16 lg:px-16">
       {/* Surf Talks banner */}
-      <div className="flex h-[240px] items-center justify-center rounded-[30px] bg-[#ffe100] lg:h-[318px]">
-        <p className="ds-brand-title text-center">SURF TALKS</p>
+      <div className="relative h-[240px] overflow-hidden rounded-[30px] lg:h-[318px]">
+        <Image src="/photos/surftalks.png" alt="Surf Talks" fill className="object-cover" />
       </div>
 
       <p className="ds-label mt-12 text-[var(--color-label-muted)]">NUESTROS SURFTALKS</p>

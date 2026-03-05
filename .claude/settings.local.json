@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.figma.com)",
+      "Bash(npm run build:*)",
+      "Bash(npx next build:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where npm)",
+      "Bash(npm run lint)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 26568)",
+      "Bash(taskkill /F /PID 26568 /T)",
+      "Bash(kill -9 26568)",
+      "Bash(cmd //c \"taskkill /F /PID 26568 /T\")",
+      "Bash(gh auth status)",
+      "Bash(git config --list)",
+      "Bash(git checkout -b feat/servicios-nosotros-pages)",
+      "Bash(git push -u origin feat/servicios-nosotros-pages)",
+      "Bash(npx next lint --dir src/components/site)",
+      "Bash(npx next lint)",
+      "Bash(timeout 30 cmd //c \"C:/nvm4w/nodejs/npx.cmd tsc --noEmit 2>&1\")",
+      "Bash(timeout 15 cmd //c \"curl -s -o /dev/null -w ''%{http_code}'' http://localhost:3000/surftrips\")",
+      "Bash(cmd //c \"gh auth status\")"
+    ]
+  }
+}

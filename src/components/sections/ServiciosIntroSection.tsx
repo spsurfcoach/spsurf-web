@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
 export function ServiciosIntroSection() {
   return (
@@ -20,14 +20,12 @@ export function ServiciosIntroSection() {
         </div>
 
         {/* Full-width photo */}
-        <div className="relative mt-14 h-[280px] w-full overflow-hidden rounded-[40px] sm:h-[360px] lg:h-[521px]">
-          <Image
-            src="/photos/home2.jpg"
-            alt="Surfistas en el agua"
-            fill
-            className="object-cover"
-          />
-        </div>
+        <ResponsiveMediaFrame
+          src="/photos/home2.jpg"
+          alt="Surfistas en el agua"
+          ratioClassName="aspect-[16/10] sm:aspect-[16/9] lg:aspect-[1512/521]"
+          className="mt-14 w-full site-media-frame-lg"
+        />
       </div>
     </section>
   );

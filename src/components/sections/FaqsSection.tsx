@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { faqs } from "@/lib/content";
+import { faqs, type FaqItem } from "@/lib/content";
 
-export function FaqsSection() {
+type FaqsSectionProps = {
+  items?: FaqItem[];
+};
+
+export function FaqsSection({ items = faqs }: FaqsSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
@@ -13,9 +17,9 @@ export function FaqsSection() {
           <h2 className="ds-h2 text-black">FAQS</h2>
 
           <div className="mt-10 space-y-0">
-            {faqs.map((faq, i) => {
+            {items.map((faq, i) => {
               const isOpen = openIndex === i;
-              const isLast = i === faqs.length - 1;
+              const isLast = i === items.length - 1;
               return (
                 <div key={faq.question}>
                   <button

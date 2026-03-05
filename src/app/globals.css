@@ -39,14 +39,14 @@ body {
 .container-site {
   margin: 0 auto;
   width: 100%;
-  max-width: 1320px;
-  padding-left: 1.75rem;
-  padding-right: 1.75rem;
+  max-width: 1512px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .section-space {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+  padding-top: var(--section-space-y);
+  padding-bottom: var(--section-space-y);
 }
 
 .hero-gradient {
@@ -77,4 +77,39 @@ body {
   mix-blend-mode: hard-light;
   pointer-events: none;
   filter: blur(120px);
+}
+
+.site-media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+}
+
+.site-media-frame-lg {
+  border-radius: var(--radius-media-lg);
+}
+
+.site-header-offset {
+  padding-top: var(--header-height);
+}
+
+@media (min-width: 640px) {
+  .container-site {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-site {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-site {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
 }

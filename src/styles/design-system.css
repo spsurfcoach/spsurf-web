@@ -78,6 +78,12 @@
   --radius-card-xl: 40px;
   --control-height: 40px;
   --icon-size-md: 24px;
+  --header-height: 64px;
+  --section-space-y: 4rem;
+  --section-space-y-lg: 5rem;
+  --radius-media: 30px;
+  --radius-media-lg: 40px;
+  --radius-hero-mobile: 30px;
 }
 
 .ds-h1 {
@@ -273,6 +279,24 @@
   text-transform: uppercase;
 }
 
+.ds-surface-dark {
+  background: var(--color-surface-dark);
+  color: var(--color-text-inverse);
+}
+
+.ds-section-space {
+  padding-top: var(--section-space-y);
+  padding-bottom: var(--section-space-y);
+}
+
+.ds-media-radius {
+  border-radius: var(--radius-media);
+}
+
+.ds-media-radius-lg {
+  border-radius: var(--radius-media-lg);
+}
+
 @media (max-width: 1024px) {
   .ds-h1 {
     font-size: 36px;
@@ -298,6 +322,10 @@
 
   .ds-h2-lg {
     font-size: 30px;
+  }
+
+  :root {
+    --section-space-y: 3.5rem;
   }
 }
 
@@ -330,5 +358,10 @@
 
   .ds-label {
     font-size: 16px;
+  }
+
+  :root {
+    --header-height: 56px;
+    --section-space-y: 3rem;
   }
 }

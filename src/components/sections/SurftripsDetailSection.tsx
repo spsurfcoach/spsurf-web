@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { surfTrips } from "@/lib/content";
 
+const TRIP_DESCRIPTION =
+  "Entrena dentro y fuera del agua con sesiones personalizadas para cada nivel y objetivo, trabajamos tu técnica, lectura de olas y confianza dentro del agua. Comparte energía con el grupo, aprende observado diferentes experiencias y mejora junto a otros surfistas que también buscan el progreso.";
+
 function PlayIcon() {
   return (
     <div className="flex size-[100px] items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
@@ -72,7 +75,7 @@ export function SurftripsDetailSection() {
             <p
               className={`mt-4 ds-body-s leading-[33px] ${isDark ? "text-white/80" : "text-black"}`}
             >
-              {trip.description}
+              {TRIP_DESCRIPTION}
             </p>
 
             {/* Group size */}

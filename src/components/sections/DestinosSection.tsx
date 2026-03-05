@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { CarouselShell } from "@/components/sections/CarouselShell";
+import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
 export function DestinosSection() {
   const destinos = [
@@ -17,16 +19,21 @@ export function DestinosSection() {
         <p className="ds-label text-[var(--color-label-muted)]">DESTINOS</p>
         <h2 className="ds-section-title mt-4 text-white">Explora nuevos destinos</h2>
 
-        {/* Desktop: flex row with overflow on 3rd card */}
-        <div className="mt-8 flex gap-4 overflow-hidden">
-          {destinos.map((item) => (
-            <article key={item.name} className="w-full shrink-0 sm:w-[calc(50%-8px)] lg:w-[574px]">
-              <div className="relative h-[280px] overflow-hidden rounded-[30px] lg:h-[372px]">
-                <Image src={item.src} alt={item.name} fill className="object-cover" />
-              </div>
-              <h3 className="ds-h2-lg mt-3 text-white">{item.name}</h3>
-            </article>
-          ))}
+        <div className="mt-8">
+          <CarouselShell
+            ariaLabel="Carrusel de destinos"
+            slideClassName="basis-[82%] sm:basis-[52%] lg:basis-[38%]"
+            slides={destinos.map((item) => (
+              <article key={item.name}>
+                <ResponsiveMediaFrame
+                  src={item.src}
+                  alt={item.name}
+                  ratioClassName="aspect-[4/3] lg:aspect-[574/372]"
+                />
+                <h3 className="ds-h2-lg mt-3 text-white">{item.name}</h3>
+              </article>
+            ))}
+          />
         </div>
       </div>
     </section>

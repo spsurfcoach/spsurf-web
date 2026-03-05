@@ -1,16 +1,15 @@
-import Image from "next/image";
+import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
 export function SurftripsVideoSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-12 lg:py-8">
-      <div className="relative mx-auto overflow-hidden rounded-[40px] h-[280px] sm:h-[380px] lg:h-[652px]">
-        <Image
-          src="/photos/home2.jpg"
-          alt="Surftrip video preview"
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/30" />
+      <ResponsiveMediaFrame
+        src="/photos/home2.jpg"
+        alt="Surftrip video preview"
+        ratioClassName="aspect-[16/10] sm:aspect-[16/9] lg:aspect-[1512/652]"
+        className="mx-auto site-media-frame-lg"
+        overlayClassName="bg-black/30"
+      >
         {/* Play button */}
         <div className="absolute inset-0 flex items-center justify-center">
           <button
@@ -30,7 +29,7 @@ export function SurftripsVideoSection() {
             </svg>
           </button>
         </div>
-      </div>
+      </ResponsiveMediaFrame>
     </section>
   );
 }

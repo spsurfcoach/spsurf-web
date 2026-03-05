@@ -48,6 +48,16 @@ export type BlogPostItem = {
   category: string;
 };
 
+export type FooterColumn = {
+  title: string;
+  links: NavItem[];
+};
+
+export type SpFamilyPhotoItem = {
+  src: string;
+  alt: string;
+};
+
 export const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/surftrips", label: "Surftrips" },
@@ -55,6 +65,40 @@ export const navItems: NavItem[] = [
   { href: "/shop", label: "Shop" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/blog", label: "Blog" },
+];
+
+export const footerColumns: FooterColumn[] = [
+  {
+    title: "Servicios",
+    links: [
+      { href: "/servicios", label: "Clases de Surf" },
+      { href: "/servicios", label: "Videoanalisis" },
+      { href: "/servicios", label: "Preparacion fisica" },
+    ],
+  },
+  {
+    title: "Surftrips",
+    links: [
+      { href: "/surftrips", label: "Proximos viajes" },
+      { href: "/surftrips", label: "Calendario" },
+      { href: "/surftrips", label: "Para quien es" },
+    ],
+  },
+  {
+    title: "Comunidad",
+    links: [
+      { href: "/nosotros", label: "Nosotros" },
+      { href: "/blog", label: "Blog" },
+      { href: "/", label: "SP Family" },
+    ],
+  },
+  {
+    title: "Shop",
+    links: [
+      { href: "/shop", label: "Productos" },
+      { href: "/shop", label: "Gift cards" },
+    ],
+  },
 ];
 
 export const homePackages: PackageItem[] = [
@@ -215,6 +259,15 @@ export const blogPosts: BlogPostItem[] = [
     excerpt: "Checklist practico para viajar con todo listo y surfear con tranquilidad.",
     category: "Lifestyle",
   },
+];
+
+export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
+  { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family Surftrips 1" },
+  { src: "/photos/surftrips/gallery_spfamily_2.jpg", alt: "SP Family Surftrips 2" },
+  { src: "/photos/surftrips/gallery_spfamily_3.jpg", alt: "SP Family Surftrips 3" },
+  { src: "/photos/surftrips/gallery_spfamily_4.jpg", alt: "SP Family Surftrips 4" },
+  { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "SP Family Surftrips 5" },
+  { src: "/photos/surftrips/gallery_spfamily_6.jpg", alt: "SP Family Surftrips 6" },
 ];
 
 

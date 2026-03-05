@@ -6,10 +6,10 @@ export function SurftripsForMeSection() {
       </p>
       <div className="mt-6 max-w-[659px] space-y-6">
         <p className="ds-h2 tracking-[-0.04em] text-black leading-[1.53]">
-          Estos surftrips son para ti si quieres mejorar tu surfing mientras vives una experiencia real: bien organizada, con guía constante y con un enfoque claro en tu progreso. No importa si recién estás empezando a correr olas sola o si ya surfeas seguido y quieres llevar tu nivel al siguiente paso.
+          Estos SurfTrips son para ti si buscas mejorar tu surfing viviendo una experiencia única y real, con guía constante, un enfoque claro en tu progreso, conexionarme real con el deporte y recuerdos que duraran toda la vida.
         </p>
         <p className="ds-h2 tracking-[-0.04em] text-black leading-[1.53]">
-          Si te motiva viajar, entrenar, conectar con el mar y compartir con una comunidad que vibra igual… entonces sí: este trip es para ti.
+          Si te motiva viajar, entrenar, compartir en comunidad y conectar con el mar, entonces si: este SurfTrip es para ti
         </p>
       </div>
     </section>
