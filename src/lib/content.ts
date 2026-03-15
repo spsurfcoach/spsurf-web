@@ -62,7 +62,6 @@ export const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/surftrips", label: "Surftrips" },
   { href: "/servicios", label: "Servicios" },
-  { href: "/shop", label: "Shop" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/blog", label: "Blog" },
 ];
@@ -90,13 +89,6 @@ export const footerColumns: FooterColumn[] = [
       { href: "/nosotros", label: "Nosotros" },
       { href: "/blog", label: "Blog" },
       { href: "/", label: "SP Family" },
-    ],
-  },
-  {
-    title: "Shop",
-    links: [
-      { href: "/shop", label: "Productos" },
-      { href: "/shop", label: "Gift cards" },
     ],
   },
 ];

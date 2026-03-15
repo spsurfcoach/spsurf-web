@@ -18,7 +18,7 @@ export function VisionMisionSection() {
             </p>
             <div className="relative mt-10 h-[280px] overflow-hidden rounded-[30px] sm:h-[360px]">
               <Image
-                src="/photos/home2.jpg"
+                src="/photos/nosotros_vision.jpg"
                 alt="Visión SP Surf Coach"
                 fill
                 className="object-cover"
@@ -36,7 +36,7 @@ export function VisionMisionSection() {
             </p>
             <div className="relative mt-10 h-[280px] overflow-hidden rounded-[40px] sm:h-[360px]">
               <Image
-                src="/photos/home1.jpg"
+                src="/photos/nosotros_mision.jpg"
                 alt="Misión SP Surf Coach"
                 fill
                 className="object-cover"

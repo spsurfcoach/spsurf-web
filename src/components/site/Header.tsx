@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/lib/content";
 
-const NAV_ORDER = ["/surftrips", "/servicios", "/shop", "/blog", "/nosotros"];
+const NAV_ORDER = ["/surftrips", "/servicios", "/blog", "/nosotros"];
 const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
 
 export function Header() {
@@ -100,18 +100,6 @@ export function Header() {
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <circle cx="12" cy="7.5" r="3.5" />
               <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
-            </svg>
-          </button>
-
-          {/* Cart */}
-          <button
-            className="p-2.5 text-white/70 hover:text-white transition-colors duration-150"
-            aria-label="Carrito"
-          >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <circle cx="9" cy="20" r="1.5" />
-              <circle cx="18" cy="20" r="1.5" />
-              <path d="M3 4h2l2.5 11h10.5l2-8H7.5" />
             </svg>
           </button>
 

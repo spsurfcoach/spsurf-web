@@ -40,7 +40,7 @@ export function ServiciosDetailSection() {
             <div className="mt-10 flex items-start gap-4">
               <div className="relative size-[60px] shrink-0 overflow-hidden rounded-full">
                 <Image
-                  src="/photos/home1.jpg"
+                  src="/photos/servicios_1.jpg"
                   alt="Ivo Escuza"
                   fill
                   className="object-cover"
@@ -61,7 +61,7 @@ export function ServiciosDetailSection() {
         {/* Full-width photo card below */}
         <div className="relative mt-12 h-[240px] w-full overflow-hidden rounded-[40px] border-2 border-white sm:h-[280px] lg:h-[335px]">
           <Image
-            src="/photos/home1.jpg"
+            src="/photos/servicios_1.jpg"
             alt="Clase de surf"
             fill
             className="object-cover"

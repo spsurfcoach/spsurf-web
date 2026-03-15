@@ -10,7 +10,7 @@ export function HomeHero() {
           <div className="px-4 pb-8 text-white sm:px-6 sm:pb-12 md:px-10 lg:px-16 lg:pb-16">
             <div className="max-w-[58rem]">
               <h1 className="ds-h1 leading-[1.15]">
-                Experiencias de surf para conectar con el mar, mejorar tu surfing y disfrutar cada sesión.
+                Mejora tu surfing, entiende el mar y disfruta cada sesion.
               </h1>
               <div className="mt-5 md:mt-8">
                 <button className="ds-btn ds-btn-lg border border-white bg-white/10 text-white hover:bg-white/20">

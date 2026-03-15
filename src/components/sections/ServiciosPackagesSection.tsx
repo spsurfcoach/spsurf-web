@@ -6,6 +6,12 @@ import { homePackages } from "@/lib/content";
 
 const PACKAGE_TABS = ["Clases de surf", "Surf skate", "Video analisis"];
 
+const packageImageByName: Record<string, string> = {
+  Starter: "/photos/servicios_paquete_starter.jpg",
+  Standard: "/photos/servicios_paquete_standard.jpg",
+  Premium: "/photos/servicios_paquete_premium.jpg",
+};
+
 export function ServiciosPackagesSection() {
   const [activeTab, setActiveTab] = useState(0);
 
@@ -15,7 +21,7 @@ export function ServiciosPackagesSection() {
         {/* Background overlay photo */}
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="/photos/home2.jpg"
+            src="/photos/servicios_hero.jpg"
             alt=""
             fill
             className="object-cover"
@@ -55,7 +61,7 @@ export function ServiciosPackagesSection() {
                 {/* Photo top */}
                 <div className="relative h-[183px] w-full shrink-0">
                   <Image
-                    src="/photos/home1.jpg"
+                    src={packageImageByName[pkg.name] ?? "/photos/servicios_paquete_standard.jpg"}
                     alt={pkg.name}
                     fill
                     className="object-cover"

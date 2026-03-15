@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { surfTrips } from "@/lib/content";
-
-const TRIP_DESCRIPTION =
-  "Entrena dentro y fuera del agua con sesiones personalizadas para cada nivel y objetivo, trabajamos tu técnica, lectura de olas y confianza dentro del agua. Comparte energía con el grupo, aprende observado diferentes experiencias y mejora junto a otros surfistas que también buscan el progreso.";
+import Link from "next/link";
+import { urlForImage, type SurftripListItem } from "@/lib/sanity";
 
 function PlayIcon() {
   return (
@@ -36,17 +34,52 @@ function UsersIcon({ dark }: { dark: boolean }) {
   );
 }
 
-export function SurftripsDetailSection() {
+type SurftripsDetailSectionProps = {
+  trips: SurftripListItem[];
+};
+
+function formatDateRange(startDate: string, endDate: string) {
+  const locale = "es-PE";
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const sameYear = start.getFullYear() === end.getFullYear();
+  const startText = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "long",
+    ...(sameYear ? {} : { year: "numeric" }),
+  }).format(start);
+  const endText = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(end);
+  return `${startText} - ${endText}`;
+}
+
+export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
+  if (!trips.length) {
+    return (
+      <section className="bg-[var(--color-background-default)] px-4 py-12 text-black sm:px-6 md:px-10 lg:px-16">
+        <p className="ds-body-m">
+          Aún no hay surftrips publicados en Sanity. Agrega uno en <code>/studio</code> para mostrarlo aquí.
+        </p>
+      </section>
+    );
+  }
+
   return (
     <div>
-      {surfTrips.map((trip, index) => {
+      {trips.map((trip, index) => {
         const isDark = index % 2 === 1;
+        const imageSrc = trip.cardImage
+          ? urlForImage(trip.cardImage).width(1600).height(1000).fit("crop").url()
+          : "/photos/chicama.jpg";
 
         const photoCol = (
           <div className="relative h-[280px] overflow-hidden rounded-[30px] sm:h-[360px] lg:h-[405px]">
             <Image
-              src={trip.image}
-              alt={trip.name}
+              src={imageSrc}
+              alt={trip.title}
               fill
               className="object-cover"
             />
@@ -68,14 +101,17 @@ export function SurftripsDetailSection() {
             <h2
               className={`mt-1 font-bold text-[40px] leading-tight ${isDark ? "text-white" : "text-black"}`}
             >
-              {trip.name}
+              {trip.title}
             </h2>
+            <p className={`mt-2 ds-body-s ${isDark ? "text-white/70" : "text-black/60"}`}>
+              {formatDateRange(trip.startDate, trip.endDate)}
+            </p>
 
             {/* Description */}
             <p
               className={`mt-4 ds-body-s leading-[33px] ${isDark ? "text-white/80" : "text-black"}`}
             >
-              {TRIP_DESCRIPTION}
+              {trip.shortDescription}
             </p>
 
             {/* Group size */}
@@ -116,23 +152,23 @@ export function SurftripsDetailSection() {
 
             {/* CTA */}
             <div className="mt-8">
-              <a
-                href="#reservar"
+              <Link
+                href={`/surftrips/${trip.slug}`}
                 className={`inline-flex items-center justify-center rounded-[50px] px-8 py-4 text-[18px] font-medium transition ${
                   isDark
                     ? "bg-white text-[#011a1f] hover:bg-white/90"
                     : "bg-black text-white hover:bg-black/85"
                 }`}
               >
-                Reservar ahora
-              </a>
+                Ver surftrip completo
+              </Link>
             </div>
           </div>
         );
 
         return (
           <section
-            key={trip.name}
+            key={trip._id}
             className={isDark ? "py-8 lg:py-10" : "bg-[var(--color-background-default)] py-8 lg:py-10"}
           >
             {isDark ? (

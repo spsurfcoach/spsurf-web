@@ -8,6 +8,7 @@ import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { FaqsSection } from "@/components/sections/FaqsSection";
 import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
 import { surftripsSpFamilyPhotos, type FaqItem } from "@/lib/content";
+import { getSurftrips } from "@/lib/sanity";
 
 const surftripsFaqs: FaqItem[] = [
   {
@@ -27,14 +28,16 @@ const surftripsFaqs: FaqItem[] = [
   },
 ];
 
-export default function SurftripsPage() {
+export default async function SurftripsPage() {
+  const trips = await getSurftrips();
+
   return (
     <>
       <SurftripsHero />
       <SurftripsIntroSection />
       <SurftripsVideoSection />
-      <SurftripsDetailSection />
-      <SurftripsCalendarSection />
+      <SurftripsDetailSection trips={trips} />
+      <SurftripsCalendarSection trips={trips} />
       <SurftripsForMeSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
       <FaqsSection items={surftripsFaqs} />

@@ -8,10 +8,10 @@ export function NosotrosCertSection() {
           {/* Logo / cert image */}
           <div className="relative size-[160px] shrink-0 overflow-hidden rounded-[16px] lg:size-[204px]">
             <Image
-              src="/photos/logosp.png"
+              src="/photos/nosotros_map.png"
               alt="Certificación MAP Técnica"
               fill
-              className="object-contain p-2"
+              className="object-cover"
             />
           </div>
 

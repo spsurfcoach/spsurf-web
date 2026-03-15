@@ -21,7 +21,7 @@ export function ServiciosIntroSection() {
 
         {/* Full-width photo */}
         <ResponsiveMediaFrame
-          src="/photos/home2.jpg"
+          src="/photos/servicios_1.jpg"
           alt="Surfistas en el agua"
           ratioClassName="aspect-[16/10] sm:aspect-[16/9] lg:aspect-[1512/521]"
           className="mt-14 w-full site-media-frame-lg"
