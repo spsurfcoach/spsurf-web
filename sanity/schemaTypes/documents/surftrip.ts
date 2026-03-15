@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
 
 export const surftrip = defineType({
   name: "surftrip",
@@ -81,6 +81,93 @@ export const surftrip = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "heroImage",
+      title: "Hero Image",
+      type: "image",
+      options: { hotspot: true },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "heroKicker",
+      title: "Hero Kicker",
+      type: "string",
+      initialValue: "SURFTRIP",
+    }),
+    defineField({
+      name: "heroSubtitle",
+      title: "Hero Subtitle",
+      type: "text",
+      rows: 3,
+      validation: (rule) => rule.required().max(220),
+    }),
+    defineField({
+      name: "waveTitle",
+      title: "Wave Section Title",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "waveBody",
+      title: "Wave Section Body",
+      type: "text",
+      rows: 6,
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "waveImage",
+      title: "Wave Section Image",
+      type: "image",
+      options: { hotspot: true },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "hotelTitle",
+      title: "Hotel Section Title",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "hotelBody",
+      title: "Hotel Section Body",
+      type: "text",
+      rows: 6,
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "hotelImage",
+      title: "Hotel Section Image",
+      type: "image",
+      options: { hotspot: true },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "itineraryTitle",
+      title: "Itinerary Section Title",
+      type: "string",
+      initialValue: "Como se vive este surftrip",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "itineraryBody",
+      title: "Itinerary Section Body",
+      type: "text",
+      rows: 6,
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "primaryCtaLabel",
+      title: "Primary CTA Label",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "primaryCtaHref",
+      title: "Primary CTA Link",
+      type: "string",
+      validation: (rule) => rule.required(),
+      description: "Use internal paths or anchor links like #reserva",
+    }),
+    defineField({
       name: "available",
       title: "Available Spots",
       type: "number",
@@ -99,19 +186,6 @@ export const surftrip = defineType({
       title: "Featured",
       type: "boolean",
       initialValue: false,
-    }),
-    defineField({
-      name: "contentBlocks",
-      title: "Content Blocks",
-      type: "array",
-      validation: (rule) => rule.required().min(1),
-      of: [
-        defineArrayMember({ type: "heroBlock" }),
-        defineArrayMember({ type: "richTextBlock" }),
-        defineArrayMember({ type: "imageBlock" }),
-        defineArrayMember({ type: "galleryBlock" }),
-        defineArrayMember({ type: "ctaBlock" }),
-      ],
     }),
   ],
   preview: {

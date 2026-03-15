@@ -28,56 +28,18 @@ export type SurftripListItem = {
   cardImage: SanityImage | null;
 };
 
-export type HeroBlock = {
-  _key: string;
-  _type: "heroBlock";
-  kicker?: string;
-  heading: string;
-  subheading?: string;
-  mediaType: "image" | "video";
-  image?: SanityImage;
-  videoUrl?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-};
-
-export type RichTextBlock = {
-  _key: string;
-  _type: "richTextBlock";
-  kicker?: string;
-  heading?: string;
-  body: string;
-};
-
-export type ImageBlock = {
-  _key: string;
-  _type: "imageBlock";
-  heading?: string;
-  image: SanityImage;
-  alt: string;
-  caption?: string;
-};
-
-export type GalleryImage = SanityImage & { alt?: string };
-
-export type GalleryBlock = {
-  _key: string;
-  _type: "galleryBlock";
-  heading?: string;
-  images: GalleryImage[];
-};
-
-export type CtaBlock = {
-  _key: string;
-  _type: "ctaBlock";
-  heading: string;
-  body?: string;
-  buttonLabel: string;
-  buttonHref: string;
-};
-
-export type SurftripBlock = HeroBlock | RichTextBlock | ImageBlock | GalleryBlock | CtaBlock;
-
 export type SurftripDetail = SurftripListItem & {
-  contentBlocks: SurftripBlock[];
+  heroImage: SanityImage | null;
+  heroKicker?: string;
+  heroSubtitle: string;
+  waveTitle: string;
+  waveBody: string;
+  waveImage: SanityImage | null;
+  hotelTitle: string;
+  hotelBody: string;
+  hotelImage: SanityImage | null;
+  itineraryTitle: string;
+  itineraryBody: string;
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
 };

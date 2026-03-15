@@ -38,5 +38,17 @@ export const SURFTRIP_BY_SLUG_QUERY = groq`*[_type == "surftrip" && slug.current
   capacity,
   featured,
   cardImage,
-  contentBlocks
+  heroImage,
+  heroKicker,
+  heroSubtitle,
+  waveTitle,
+  waveBody,
+  waveImage,
+  hotelTitle,
+  hotelBody,
+  hotelImage,
+  itineraryTitle,
+  itineraryBody,
+  primaryCtaLabel,
+  primaryCtaHref
 }`;
