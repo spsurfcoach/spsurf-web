@@ -24,7 +24,7 @@ export function HomeVideoSection() {
           onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
         >
-          <source src="/videos/video_home.mp4" type="video/mp4" />
+          <source src="/videos/0315.mp4" type="video/mp4" />
           Tu navegador no soporta video HTML5.
         </video>
 

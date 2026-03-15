@@ -48,7 +48,7 @@ const docs = [
         subheading:
           "Una semana de entrenamiento, comunidad y olas constantes para elevar tu surfing.",
         mediaType: "video",
-        videoUrl: "/videos/video_home.mp4",
+        videoUrl: "/videos/0315.mp4",
         ctaLabel: "Reservar ahora",
         ctaHref: "#reserva",
       },
