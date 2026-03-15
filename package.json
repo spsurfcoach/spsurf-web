@@ -11,18 +11,26 @@
     "seed:surftrips": "node ./scripts/seed-surftrips.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.4",
     "@sanity/client": "^7.17.0",
     "@sanity/image-url": "^2.0.3",
     "@sanity/vision": "^5.16.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^17.3.1",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^12.10.0",
+    "firebase-admin": "^13.7.0",
     "groq": "^5.16.0",
+    "lucide-react": "^0.577.0",
+    "mercadopago": "^2.12.0",
     "next": "16.1.6",
     "next-sanity": "^13.0.0-cache-components.27",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "sanity": "^5.16.0",
-    "styled-components": "^6.3.11"
+    "styled-components": "^6.3.11",
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

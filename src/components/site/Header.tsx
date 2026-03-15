@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { navItems } from "@/lib/content";
 
 const NAV_ORDER = ["/surftrips", "/servicios", "/blog", "/nosotros"];
@@ -11,6 +12,7 @@ const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
 
 export function Header() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
 
@@ -70,6 +72,26 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 xl:gap-12 lg:flex">
+          {user && (
+            <>
+              <Link
+                href="/clases"
+                className={`ds-nav-link transition-colors duration-150 ${
+                  isOverlay ? "text-white hover:text-white/80" : "text-white/60 hover:text-white"
+                }`}
+              >
+                Clases
+              </Link>
+              <Link
+                href="/admin"
+                className={`ds-nav-link transition-colors duration-150 ${
+                  isOverlay ? "text-white hover:text-white/80" : "text-white/60 hover:text-white"
+                }`}
+              >
+                Admin
+              </Link>
+            </>
+          )}
           {links.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -92,8 +114,8 @@ export function Header() {
 
         {/* Right actions */}
         <div className="flex items-center gap-0.5">
-          {/* Account */}
-          <button
+          <Link
+            href="/clases"
             className="p-2.5 text-white/70 hover:text-white transition-colors duration-150"
             aria-label="Mi cuenta"
           >
@@ -101,7 +123,15 @@ export function Header() {
               <circle cx="12" cy="7.5" r="3.5" />
               <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
             </svg>
-          </button>
+          </Link>
+          {user ? (
+            <button
+              className="hidden lg:inline-flex ds-btn ds-btn-secondary h-9 px-4 text-sm"
+              onClick={() => void logout()}
+            >
+              Salir
+            </button>
+          ) : null}
 
           {/* Hamburger — mobile only */}
           <button
@@ -141,6 +171,28 @@ export function Header() {
                 </Link>
               );
             })}
+            {user && (
+              <>
+                <Link
+                  href="/clases"
+                  className={`ds-nav-link py-4 border-b border-white/5 transition-colors duration-150 ${
+                    pathname === "/clases" ? "text-white" : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Clases
+                </Link>
+                <Link
+                  href="/admin"
+                  className={`ds-nav-link py-4 border-b border-white/5 transition-colors duration-150 ${
+                    pathname === "/admin" ? "text-white" : "text-white/70 hover:text-white"
+                  }`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Admin
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}
