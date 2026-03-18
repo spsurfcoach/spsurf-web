@@ -9,6 +9,7 @@ type SlotItem = {
   capacity: number;
   enrolledCount: number;
   isActive: boolean;
+  location?: string;
 };
 
 type Props = {
@@ -92,12 +93,12 @@ export function ClassSlotList({ items, onBook }: Props) {
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
       <div className="mb-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold uppercase">Calendario</h2>
+          <h2 className="text-xl font-bold">Calendario</h2>
           <div className="flex items-center gap-3">
             <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, -1))}>
               &lt;
             </Button>
-            <p className="min-w-[140px] text-center text-sm font-bold uppercase tracking-widest">{monthTitle(selectedMonth)}</p>
+            <p className="min-w-[140px] text-center text-sm font-semibold capitalize">{monthTitle(selectedMonth)}</p>
             <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, 1))}>
               &gt;
             </Button>
@@ -130,14 +131,14 @@ export function ClassSlotList({ items, onBook }: Props) {
                 type="button"
                 onClick={() => setSelectedDayKey((current) => (current === cell.dateKey ? null : cell.dateKey))}
                 className={`group relative flex h-14 sm:h-16 flex-col items-center justify-center rounded-xl border transition-all ${
-                  isSelected 
-                    ? "border-black bg-black text-white" 
+                  isSelected
+                    ? "border-[var(--color-primary-900)] bg-[var(--color-primary-900)] text-white"
                     : "border-transparent bg-black/[0.03] hover:bg-black/[0.06]"
-                } ${isToday && !isSelected ? "ring-1 ring-inset ring-black/30" : ""}`}
+                } ${isToday && !isSelected ? "ring-1 ring-inset ring-[var(--color-primary-500)]" : ""}`}
               >
                 <span className="text-sm font-bold">{cell.dayNumber}</span>
                 {dayCount > 0 && (
-                  <span className={`mt-1 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-black/40 group-hover:bg-black/60"}`} />
+                  <span className={`mt-1 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-[var(--color-primary-500)] group-hover:opacity-80"}`} />
                 )}
               </button>
             );
@@ -146,7 +147,7 @@ export function ClassSlotList({ items, onBook }: Props) {
       </div>
 
       <div className="mt-8 border-t border-black/10 pt-8">
-        <h2 className="text-2xl font-bold uppercase mb-6">
+        <h2 className="text-xl font-bold mb-6">
           {selectedDayKey
             ? `${new Date(`${selectedDayKey}T00:00:00`).toLocaleDateString("es-PE", { day: "numeric", month: "long" })}`
             : "Clases del mes"}
@@ -154,7 +155,9 @@ export function ClassSlotList({ items, onBook }: Props) {
         
         <div className="space-y-4">
           {filteredSlots.length === 0 ? (
-            <p className="text-black/60">No hay clases programadas para esta fecha.</p>
+            <div className="rounded-xl border border-dashed border-black/20 p-8 text-center">
+              <p className="text-sm text-black/50">No hay clases programadas para esta fecha</p>
+            </div>
           ) : (
             filteredSlots.map((slot) => {
               const available = Math.max(0, Number(slot.capacity) - Number(slot.enrolledCount));
@@ -167,10 +170,17 @@ export function ClassSlotList({ items, onBook }: Props) {
                   <div className="flex items-center gap-5">
                     <div className="flex flex-col items-center justify-center border-r border-black/10 pr-5">
                       <span className="text-xl font-bold">{timeString}</span>
-                      <span className="text-xs font-bold uppercase tracking-wider text-black/50">Hora</span>
+                      <span className="text-xs font-medium text-black/40">Hora</span>
                     </div>
                     <div>
-                      <p className="font-bold text-lg">Clase de Surf</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-lg">Clase de Surf</p>
+                        {slot.location && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-900)]/10 text-[var(--color-primary-900)]">
+                            {slot.location}
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-black/60 mt-0.5">
                         {isFull ? (
                           <span className="text-red-500 font-medium">Cupos agotados</span>
@@ -182,7 +192,7 @@ export function ClassSlotList({ items, onBook }: Props) {
                   </div>
                   <Button
                     variant={isFull ? "outline" : "primary"}
-                    className={isFull ? "opacity-50" : "bg-black text-white hover:bg-black/80 font-bold px-6 h-11"}
+                    className={isFull ? "opacity-50" : "bg-[var(--color-primary-900)] hover:bg-[var(--color-primary-700)] text-white font-bold px-6 h-11"}
                     disabled={isFull || loadingId === slot.id}
                     onClick={async () => {
                       setLoadingId(slot.id);

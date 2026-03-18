@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as {
       startsAt: string;
       capacity: number;
+      location?: string;
       isActive?: boolean;
       coachNotes?: string;
     };
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
     const ref = await adminDb.collection("classSlots").add({
       startsAt: body.startsAt,
       capacity: Number(body.capacity),
+      location: body.location ?? "",
       enrolledCount: 0,
       isActive: body.isActive ?? true,
       coachNotes: body.coachNotes ?? "",

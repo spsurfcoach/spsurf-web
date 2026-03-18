@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "sanity": "sanity",
-    "seed:surftrips": "node ./scripts/seed-surftrips.mjs"
+    "seed:surftrips": "node ./scripts/seed-surftrips.mjs",
+    "seed:classes": "node ./scripts/seed-classes.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
