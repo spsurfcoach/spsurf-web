@@ -1,28 +1,64 @@
-import Image from "next/image";
-import Link from "next/link";
-import { urlForImage } from "@/lib/sanity";
-import type { SurftripDetail } from "@/lib/sanity";
+import {
+  urlForFile,
+  urlForImage,
+  type SanityImage,
+  type SurftripDetail,
+  type SurftripFeatureSection,
+  type SurftripPackageSection,
+} from "@/lib/sanity";
+import { SurftripDetailAdditionalInfoSection } from "@/components/sections/SurftripDetailAdditionalInfoSection";
+import { SurftripDetailDaySection } from "@/components/sections/SurftripDetailDaySection";
+import { SurftripDetailFaqSection } from "@/components/sections/SurftripDetailFaqSection";
+import { SurftripDetailFeatureBlock } from "@/components/sections/SurftripDetailFeatureBlock";
+import { SurftripDetailHero } from "@/components/sections/SurftripDetailHero";
+import { SurftripDetailPackageSection } from "@/components/sections/SurftripDetailPackageSection";
+import { SurftripDetailSummarySection } from "@/components/sections/SurftripDetailSummarySection";
+import { SurftripDetailVideoSection } from "@/components/sections/SurftripDetailVideoSection";
 
 type SurftripBlocksRendererProps = {
   trip: SurftripDetail;
 };
 
-function formatDateRange(startDate: string, endDate: string) {
-  const locale = "es-PE";
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const sameYear = start.getFullYear() === end.getFullYear();
-  const startText = new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    month: "long",
-    ...(sameYear ? {} : { year: "numeric" }),
-  }).format(start);
-  const endText = new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(end);
-  return `${startText} - ${endText}`;
+type FeatureImage = {
+  src: string;
+  alt: string;
+};
+
+function imageUrl(image: SanityImage | null | undefined, fallback: string) {
+  return image ? urlForImage(image).width(1800).height(1200).fit("crop").url() : fallback;
+}
+
+function normalizeFeatureSection(
+  section: SurftripFeatureSection | null | undefined,
+  fallback: {
+    eyebrow?: string;
+    icon?: string;
+    title: string;
+    body: string;
+    image?: SanityImage | null;
+    theme?: "light" | "dark";
+    bullets?: string[];
+  },
+): SurftripFeatureSection {
+  return {
+    eyebrow: section?.eyebrow ?? fallback.eyebrow,
+    icon: section?.icon ?? fallback.icon,
+    title: section?.title || fallback.title,
+    body: section?.body || fallback.body,
+    theme: section?.theme || fallback.theme || "light",
+    image: section?.image ?? fallback.image ?? null,
+    gallery: section?.gallery ?? [],
+    bullets: section?.bullets ?? fallback.bullets ?? [],
+  };
+}
+
+function featureImages(section: SurftripFeatureSection, fallbackImage: SanityImage | null | undefined): FeatureImage[] {
+  const images = section.gallery?.length ? section.gallery : section.image ? [section.image] : fallbackImage ? [fallbackImage] : [];
+
+  return images.map((image, index) => ({
+    src: imageUrl(image, "/photos/chicama.jpg"),
+    alt: image?.alt || `${section.title} ${index + 1}`,
+  }));
 }
 
 export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
@@ -31,97 +67,117 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
     : trip.cardImage
       ? urlForImage(trip.cardImage).width(2400).height(1500).fit("crop").url()
       : "/photos/chicama.jpg";
-  const waveSrc = trip.waveImage
-    ? urlForImage(trip.waveImage).width(1800).height(1200).fit("crop").url()
-    : heroSrc;
-  const hotelSrc = trip.hotelImage
-    ? urlForImage(trip.hotelImage).width(1800).height(1200).fit("crop").url()
-    : heroSrc;
-  const heroSubtitle = trip.heroSubtitle || trip.shortDescription || "";
-  const waveTitle = trip.waveTitle || "La ola";
-  const waveBody = trip.waveBody || trip.shortDescription || "";
-  const hotelTitle = trip.hotelTitle || "Hospedaje";
-  const hotelBody = trip.hotelBody || "Base del viaje enfocada en descanso y entrenamiento.";
-  const itineraryTitle = trip.itineraryTitle || "Como se vive este surftrip";
-  const itineraryBody = trip.itineraryBody || trip.shortDescription || "";
+  const summaryDescription = trip.heroLongDescription || trip.heroSubtitle || trip.shortDescription || "";
   const primaryCtaLabel = trip.primaryCtaLabel || "Reservar ahora";
   const primaryCtaHref = trip.primaryCtaHref || "#reserva";
+  const waveSection = normalizeFeatureSection(trip.waveSection, {
+    eyebrow: "SOBRE LA OLA",
+    icon: "🌊",
+    title: trip.waveTitle || "Sobre la ola",
+    body: trip.waveBody || trip.shortDescription || "",
+    image: trip.waveImage,
+    theme: "light",
+  });
+  const hotelSection = normalizeFeatureSection(trip.hotelSection, {
+    eyebrow: "EL HOTEL",
+    icon: "🛏️",
+    title: trip.hotelTitle || "El hotel",
+    body: trip.hotelBody || "Base del viaje enfocada en descanso y entrenamiento.",
+    image: trip.hotelImage,
+    theme: "light",
+    bullets: trip.hospedaje ? [`Hospedaje base: ${trip.hospedaje}`] : [],
+  });
+  const packageSection: SurftripPackageSection =
+    trip.packageSection ?? {
+      title: "Paquete",
+      subtitle: `Surftrip de ${trip.duracion} en ${trip.title}`,
+      priceLabel: "Consultar",
+      priceSuffix: "Precio por persona",
+      depositNote: `${trip.available} cupos disponibles`,
+      columns: [
+        {
+          title: "Incluye",
+          items: [
+            `Nivel recomendado: ${trip.level}`,
+            `Duración: ${trip.duracion}`,
+            `Hospedaje base: ${trip.hospedaje}`,
+            `Aeropuerto sugerido: ${trip.aeropuerto}`,
+          ],
+        },
+      ],
+      addons: [],
+      ctaLabel: primaryCtaLabel,
+      ctaHref: primaryCtaHref,
+    };
+  const dayDownloadHref = trip.dayInTripSection?.downloadFile ? urlForFile(trip.dayInTripSection.downloadFile) : "";
+  const videoPosterSrc = trip.videoSection?.videoPoster
+    ? urlForImage(trip.videoSection.videoPoster).width(2200).height(1240).fit("crop").url()
+    : heroSrc;
+  const dayImageSrc = trip.dayInTripSection?.image
+    ? urlForImage(trip.dayInTripSection.image).width(1600).height(1000).fit("crop").url()
+    : heroSrc;
+  const featureSections = [waveSection, hotelSection, ...(trip.experienceSections ?? [])];
 
   return (
     <>
-      <section className="px-4 pb-8 pt-0 sm:px-6 md:px-10 lg:px-16">
-        <div className="relative min-h-[72svh] overflow-hidden rounded-[26px] lg:min-h-[84svh] lg:rounded-[40px]">
-          <Image src={heroSrc} alt={trip.title} fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8 lg:p-14">
-            <p className="ds-label text-white/80">{trip.heroKicker || "SURFTRIP"}</p>
-            <h1 className="ds-h1 mt-4 max-w-[13ch]">{trip.title}</h1>
-            <p className="ds-body-m mt-4 max-w-[78ch] text-white/90">{heroSubtitle}</p>
-          </div>
-        </div>
-      </section>
+      <SurftripDetailHero
+        imageSrc={heroSrc}
+        title={trip.title}
+        titleSuffix={trip.heroTitleSuffix}
+        kicker={trip.heroKicker || "SURFTRIP"}
+      />
 
-      <section className="bg-[var(--color-background-default)] px-4 py-12 sm:px-6 md:px-10 lg:px-16">
-        <div className="rounded-[24px] border border-black/10 bg-white px-5 py-5 sm:px-8 lg:px-10">
-          <div className="flex flex-wrap gap-3 text-black/75">
-            <span className="rounded-full border border-black/20 px-4 py-1 text-sm">{trip.country}</span>
-            <span className="rounded-full border border-black/20 px-4 py-1 text-sm">{trip.level}</span>
-            <span className="rounded-full border border-black/20 px-4 py-1 text-sm">
-              {formatDateRange(trip.startDate, trip.endDate)}
-            </span>
-            <span className="rounded-full border border-black/20 px-4 py-1 text-sm">
-              {trip.available}/{trip.capacity} cupos
-            </span>
-          </div>
-        </div>
-      </section>
+      <SurftripDetailSummarySection
+        country={trip.country}
+        locationLabel={trip.heroLocationLabel}
+        title={trip.title}
+        duration={trip.duracion}
+        groupSizeLabel={trip.groupSizeLabel || trip.groupSize}
+        level={trip.level}
+        hospedaje={trip.hospedaje}
+        aeropuerto={trip.aeropuerto}
+        description={summaryDescription}
+        ctaLabel={primaryCtaLabel}
+        ctaHref={primaryCtaHref}
+      />
 
-      <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
-          <div>
-            <p className="ds-label text-[var(--color-label-muted)]">LA OLA</p>
-            <h2 className="ds-h2 mt-4 text-black">{waveTitle}</h2>
-            <p className="ds-body-m mt-5 whitespace-pre-line text-black/85">{waveBody}</p>
-          </div>
-          <div className="relative overflow-hidden rounded-[28px] lg:rounded-[36px]">
-            <Image src={waveSrc} alt={waveTitle} width={1800} height={1200} className="h-auto w-full object-cover" />
-          </div>
-        </div>
-      </section>
+      {trip.videoSection?.videoUrl ? (
+        <SurftripDetailVideoSection
+          title={trip.videoSection.title}
+          videoUrl={trip.videoSection.videoUrl}
+          posterSrc={videoPosterSrc}
+        />
+      ) : null}
 
-      <section className="bg-[var(--color-primary-900)] px-4 py-14 text-white sm:px-6 md:px-10 lg:px-16 lg:py-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
-          <div className="relative order-2 overflow-hidden rounded-[28px] lg:order-1 lg:rounded-[36px]">
-            <Image src={hotelSrc} alt={trip.hotelTitle} width={1800} height={1200} className="h-auto w-full object-cover" />
-          </div>
-          <div className="order-1 lg:order-2">
-            <p className="ds-label text-white/70">HOSPEDAJE</p>
-            <h2 className="ds-h2 mt-4">{hotelTitle}</h2>
-            <p className="ds-body-m mt-5 whitespace-pre-line text-white/85">{hotelBody}</p>
-            <p className="ds-body-m mt-6 text-white/75">
-              Base del viaje: <span className="text-white">{trip.hospedaje}</span>
-            </p>
-          </div>
-        </div>
-      </section>
+      {trip.dayInTripSection ? (
+        <SurftripDetailDaySection
+          section={trip.dayInTripSection}
+          imageSrc={dayImageSrc}
+          downloadHref={dayDownloadHref}
+        />
+      ) : null}
 
-      <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
-        <p className="ds-label text-[var(--color-label-muted)]">EXPERIENCIA</p>
-        <h2 className="ds-h2 mt-4 text-black">{itineraryTitle}</h2>
-        <p className="ds-body-m mt-5 max-w-[95ch] whitespace-pre-line text-black/85">{itineraryBody}</p>
-      </section>
+      {featureSections.map((section, index) => {
+        const fallbackImage = index === 0 ? trip.waveImage : index === 1 ? trip.hotelImage : trip.heroImage;
 
-      <section className="bg-[var(--color-background-default)] px-4 pb-16 pt-4 sm:px-6 md:px-10 lg:px-16 lg:pb-24">
-        <div className="rounded-[30px] bg-[var(--color-primary-900)] p-8 text-white lg:p-12">
-          <h3 className="ds-h2">Reserva tu lugar en {trip.title}</h3>
-          <p className="ds-body-m mt-4 max-w-[70ch] text-white/85">
-            Si este viaje se alinea con tus objetivos, te ayudamos a validar nivel y asegurar tu cupo.
-          </p>
-          <Link href={primaryCtaHref} className="ds-btn ds-btn-secondary ds-btn-lg mt-8 inline-flex">
-            {primaryCtaLabel}
-          </Link>
-        </div>
-      </section>
+        return (
+          <SurftripDetailFeatureBlock
+            key={`${section.title}-${index}`}
+            section={section}
+            images={featureImages(section, fallbackImage)}
+            reverse={index % 2 === 1}
+            withDivider={index > 0}
+          />
+        );
+      })}
+
+      <SurftripDetailPackageSection section={packageSection} />
+
+      {trip.additionalInfoSection ? (
+        <SurftripDetailAdditionalInfoSection section={trip.additionalInfoSection} />
+      ) : null}
+
+      <SurftripDetailFaqSection items={trip.faqItems ?? []} />
     </>
   );
 }

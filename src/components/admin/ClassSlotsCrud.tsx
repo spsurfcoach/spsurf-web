@@ -10,12 +10,13 @@ type SlotItem = {
   capacity: number;
   enrolledCount: number;
   isActive: boolean;
+  location?: string;
 };
 
 type Props = {
   items: SlotItem[];
   isLoading?: boolean;
-  onCreate: (payload: { startsAt: string; capacity: number }) => Promise<void>;
+  onCreate: (payload: { startsAt: string; capacity: number; location: string }) => Promise<void>;
   onToggle: (id: string, current: boolean) => Promise<void>;
   onSelectSlot: (id: string) => void;
 };
@@ -49,6 +50,7 @@ function monthTitle(monthKey: string) {
 export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, onSelectSlot }: Props) {
   const [startsAt, setStartsAt] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [location, setLocation] = useState("Lima");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(() => toMonthKey(new Date()));
@@ -100,7 +102,7 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
     event.preventDefault();
     setIsSubmitting(true);
     try {
-      await onCreate({ startsAt, capacity: Number(capacity) });
+      await onCreate({ startsAt, capacity: Number(capacity), location });
       setStartsAt("");
       setCapacity("");
     } finally {
@@ -111,18 +113,18 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold uppercase">Agenda del Coach</h2>
-        <p className="text-black/60 mt-2">Crea los horarios disponibles y monitorea las reservas de los alumnos.</p>
+        <h2 className="text-xl font-bold">Agenda del coach</h2>
+        <p className="text-sm text-black/50 mt-1">Crea los horarios disponibles y monitorea las reservas de los alumnos.</p>
       </div>
 
       <div className="space-y-8">
-        <form className="grid gap-5 md:grid-cols-[1fr_1fr_auto] rounded-xl bg-black/[0.02] p-6 border border-black/5" onSubmit={submit}>
+        <form className="grid gap-5 md:grid-cols-[1fr_1fr_1fr_auto] rounded-xl bg-black/[0.02] p-6 border border-black/5" onSubmit={submit}>
           <div className="space-y-2">
-            <p className="text-sm font-bold uppercase tracking-wider text-black/60">Fecha y hora</p>
+            <p className="text-sm font-medium text-black/50">Fecha y hora</p>
             <Input className="h-12 bg-white" type="datetime-local" value={startsAt} onChange={(event) => setStartsAt(event.target.value)} required />
           </div>
           <div className="space-y-2">
-            <p className="text-sm font-bold uppercase tracking-wider text-black/60">Capacidad total</p>
+            <p className="text-sm font-medium text-black/50">Capacidad</p>
             <Input
               className="h-12 bg-white"
               type="number"
@@ -133,21 +135,32 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
               required
             />
           </div>
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-black/50">Ubicación</p>
+            <select
+              className="h-12 w-full rounded-md border border-input bg-white px-3 text-sm"
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+            >
+              <option value="Lima">Lima</option>
+              <option value="Sur Chico">Sur Chico</option>
+            </select>
+          </div>
           <div className="flex items-end">
             <Button type="submit" disabled={isSubmitting} className="h-12 px-8 font-bold w-full">
-              {isSubmitting ? "Creando..." : "Crear horario"}
+              {isSubmitting ? "Creando..." : "Crear"}
             </Button>
           </div>
         </form>
 
         <div className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <h3 className="font-bold uppercase tracking-widest text-sm text-black/60">Vista Calendario</h3>
+            <h3 className="font-semibold text-sm text-black/50">Vista de calendario</h3>
             <div className="flex items-center gap-3">
               <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, -1))}>
                 &lt;
               </Button>
-              <p className="min-w-[140px] text-center text-sm font-bold uppercase tracking-widest">{monthTitle(selectedMonth)}</p>
+              <p className="min-w-[140px] text-center text-sm font-semibold capitalize">{monthTitle(selectedMonth)}</p>
               <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, 1))}>
                 &gt;
               </Button>
@@ -180,14 +193,14 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
                   type="button"
                   onClick={() => setSelectedDayKey((current) => (current === cell.dateKey ? null : cell.dateKey))}
                   className={`group relative flex h-16 flex-col items-center justify-center rounded-xl border transition-all ${
-                    isSelected 
-                      ? "border-black bg-black text-white" 
+                    isSelected
+                      ? "border-[var(--color-primary-900)] bg-[var(--color-primary-900)] text-white"
                       : "border-transparent bg-black/[0.03] hover:bg-black/[0.06]"
-                  } ${isToday && !isSelected ? "ring-1 ring-inset ring-black/30" : ""}`}
+                  } ${isToday && !isSelected ? "ring-1 ring-inset ring-[var(--color-primary-500)]" : ""}`}
                 >
                   <span className="text-sm font-bold">{cell.dayNumber}</span>
-                  <span className={`text-[10px] font-medium mt-0.5 ${isSelected ? "text-white/70" : "text-black/40"}`}>
-                    {dayCount > 0 ? `${dayCount} cls` : "-"}
+                  <span className={`text-[10px] font-medium mt-0.5 ${isSelected ? "text-white/70" : dayCount > 0 ? "text-[var(--color-primary-500)]" : "text-black/30"}`}>
+                    {dayCount > 0 ? `${dayCount} cls` : "·"}
                   </span>
                 </button>
               );
@@ -197,7 +210,7 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
 
         <div className="mt-8 border-t border-black/10 pt-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-            <h3 className="text-xl font-bold uppercase">
+            <h3 className="text-lg font-bold">
               {selectedDayKey
                 ? `${new Date(`${selectedDayKey}T00:00:00`).toLocaleDateString("es-PE", { day: "numeric", month: "long" })}`
                 : "Clases del mes"}
@@ -211,10 +224,12 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
           
           <div className="space-y-3">
             {isLoading ? (
-              <div className="rounded-xl border border-black/10 p-6 text-center text-black/60 font-medium">Cargando horarios...</div>
+              <div className="rounded-xl border border-dashed border-black/20 p-6 text-center">
+                <p className="text-sm text-black/50">Cargando horarios...</p>
+              </div>
             ) : filteredSlots.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-black/20 p-8 text-center text-black/60 font-medium">
-                No hay horarios para la fecha seleccionada.
+              <div className="rounded-xl border border-dashed border-black/20 p-8 text-center">
+                <p className="text-sm text-black/50">No hay horarios para la fecha seleccionada</p>
               </div>
             ) : (
               filteredSlots.map((slot) => {
@@ -228,18 +243,23 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
                     <div className="flex items-center gap-5">
                       <div className="flex flex-col items-center justify-center border-r border-black/10 pr-5">
                         <span className="text-xl font-bold">{timeString}</span>
-                        <span className="text-xs font-bold uppercase tracking-wider text-black/50">{dateString}</span>
+                        <span className="text-xs font-medium text-black/40">{dateString}</span>
                       </div>
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${slot.isActive ? "bg-emerald-100 text-emerald-800" : "bg-zinc-200 text-zinc-600"}`}>
+                          <div className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${slot.isActive ? "bg-emerald-100 text-emerald-800" : "bg-zinc-200 text-zinc-600"}`}>
                             {slot.isActive ? "Activo" : "Inactivo"}
                           </div>
-                          <div className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-black text-white">
+                          <div className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/10 text-black/70">
                             {slot.enrolledCount}/{slot.capacity} inscritos
                           </div>
+                          {slot.location && (
+                            <div className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--color-primary-900)]/10 text-[var(--color-primary-900)]">
+                              {slot.location}
+                            </div>
+                          )}
                         </div>
-                        <p className="text-sm text-black/60 font-medium">
+                        <p className="text-sm text-black/50">
                           {available} cupos disponibles
                         </p>
                       </div>

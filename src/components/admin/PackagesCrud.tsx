@@ -60,20 +60,20 @@ export function PackagesCrud({ items, isLoading = false, onCreate, onToggle }: P
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold uppercase">Gestión de Paquetes</h2>
-        <p className="text-black/60 mt-2">Crea y administra los planes que los estudiantes pueden comprar.</p>
+        <h2 className="text-xl font-bold">Gestión de paquetes</h2>
+        <p className="text-sm text-black/50 mt-1">Crea y administra los planes que los estudiantes pueden comprar.</p>
       </div>
 
       <div className="space-y-8">
         <form className="space-y-6 rounded-xl bg-black/[0.02] p-6 border border-black/5" onSubmit={submit}>
-          <h3 className="font-bold uppercase tracking-widest text-sm text-black/60 mb-4">Crear Nuevo Paquete</h3>
+          <h3 className="font-semibold text-sm text-black/50 mb-4">Crear nuevo paquete</h3>
           <div className="grid gap-5 md:grid-cols-3">
             <div className="space-y-2">
-              <p className="text-sm font-bold uppercase tracking-wider text-black/60">Nombre del paquete</p>
+              <p className="text-sm font-medium text-black/50">Nombre del paquete</p>
               <Input className="h-12 bg-white" placeholder="Ej: 4 clases" value={name} onChange={(event) => setName(event.target.value)} required />
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-bold uppercase tracking-wider text-black/60">Precio en PEN</p>
+              <p className="text-sm font-medium text-black/50">Precio en PEN</p>
               <Input
                 className="h-12 bg-white"
                 placeholder="Ej: 320"
@@ -85,7 +85,7 @@ export function PackagesCrud({ items, isLoading = false, onCreate, onToggle }: P
               />
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-bold uppercase tracking-wider text-black/60">Tipo</p>
+              <p className="text-sm font-medium text-black/50">Tipo</p>
               <div className="flex gap-2">
                 <Button className="h-12 flex-1" type="button" variant={type === "credits" ? "primary" : "outline"} onClick={() => setType("credits")}>
                   Créditos
@@ -100,7 +100,7 @@ export function PackagesCrud({ items, isLoading = false, onCreate, onToggle }: P
           <div className="grid gap-5 md:grid-cols-3">
             {type === "credits" ? (
               <div className="space-y-2 md:col-span-2">
-                <p className="text-sm font-bold uppercase tracking-wider text-black/60">Número de clases</p>
+                <p className="text-sm font-medium text-black/50">Número de clases</p>
                 <Input
                   className="h-12 bg-white"
                   placeholder="Ej: 4"
@@ -114,7 +114,7 @@ export function PackagesCrud({ items, isLoading = false, onCreate, onToggle }: P
               </div>
             ) : (
               <div className="space-y-2 md:col-span-2">
-                <p className="text-sm font-bold uppercase tracking-wider text-black/60">Duración (días)</p>
+                <p className="text-sm font-medium text-black/50">Duración (días)</p>
                 <Input
                   className="h-12 bg-white"
                   placeholder="Ej: 30"
@@ -138,10 +138,12 @@ export function PackagesCrud({ items, isLoading = false, onCreate, onToggle }: P
 
         <div className="space-y-3">
           {isLoading ? (
-            <div className="rounded-xl border border-black/10 p-6 text-center text-black/60 font-medium">Cargando paquetes...</div>
+            <div className="rounded-xl border border-dashed border-black/20 p-6 text-center">
+              <p className="text-sm font-medium text-black/50 uppercase tracking-wider">Cargando paquetes...</p>
+            </div>
           ) : items.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-black/20 p-8 text-center text-black/60 font-medium">
-              No hay paquetes todavía. Crea el primero para habilitar compras.
+            <div className="rounded-xl border border-dashed border-black/20 p-8 text-center">
+              <p className="text-sm font-medium text-black/50 uppercase tracking-wider">No hay paquetes todavía. Crea el primero para habilitar compras.</p>
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">

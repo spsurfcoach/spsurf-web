@@ -41,14 +41,90 @@ export const SURFTRIP_BY_SLUG_QUERY = groq`*[_type == "surftrip" && slug.current
   heroImage,
   heroKicker,
   heroSubtitle,
+  heroTitleSuffix,
+  heroLongDescription,
+  heroLocationLabel,
+  groupSizeLabel,
+  videoSection{
+    title,
+    videoUrl,
+    videoPoster
+  },
+  dayInTripSection{
+    title,
+    scheduleItems[]{
+      time,
+      label
+    },
+    bodyLinkLabel,
+    bodyLinkHref,
+    downloadLabel,
+    downloadFile,
+    image
+  },
   waveTitle,
   waveBody,
   waveImage,
+  waveSection{
+    eyebrow,
+    icon,
+    title,
+    body,
+    theme,
+    image,
+    gallery,
+    bullets
+  },
   hotelTitle,
   hotelBody,
   hotelImage,
+  hotelSection{
+    eyebrow,
+    icon,
+    title,
+    body,
+    theme,
+    image,
+    gallery,
+    bullets
+  },
   itineraryTitle,
   itineraryBody,
+  experienceSections[]{
+    eyebrow,
+    icon,
+    title,
+    body,
+    theme,
+    image,
+    gallery,
+    bullets
+  },
+  packageSection{
+    title,
+    subtitle,
+    priceLabel,
+    priceSuffix,
+    depositNote,
+    columns[]{
+      title,
+      items
+    },
+    addons[]{
+      label,
+      priceLabel
+    },
+    ctaLabel,
+    ctaHref
+  },
+  additionalInfoSection{
+    title,
+    items
+  },
+  faqItems[]{
+    question,
+    answer
+  },
   primaryCtaLabel,
   primaryCtaHref
 }`;

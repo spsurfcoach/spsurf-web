@@ -23,7 +23,22 @@
       "Bash(npx next lint)",
       "Bash(timeout 30 cmd //c \"C:/nvm4w/nodejs/npx.cmd tsc --noEmit 2>&1\")",
       "Bash(timeout 15 cmd //c \"curl -s -o /dev/null -w ''%{http_code}'' http://localhost:3000/surftrips\")",
-      "Bash(cmd //c \"gh auth status\")"
+      "Bash(cmd //c \"gh auth status\")",
+      "Bash(find C:Userspaul0.claude -type f -name *.md -o -name SKILL* -o -name *skill*)",
+      "Bash(npx skills:*)",
+      "Bash(cmd /c \"C:/nvm4w/nodejs/npm.cmd\" run lint)",
+      "Bash(\"C:/nvm4w/nodejs/npm.cmd\" run:*)",
+      "Bash(\"C:/nvm4w/nodejs/npx.cmd\" tsc:*)",
+      "Bash(cmd /c \"tasklist /FI \"\"IMAGENAME eq node.exe\"\" /FO CSV /NH\")",
+      "Bash(cmd /c \"netstat -ano | findstr :3000\")",
+      "Bash(ping -n 5 127.0.0.1)",
+      "Bash(ping -n 8 127.0.0.1)",
+      "Bash(\"C:/nvm4w/nodejs/node.exe\" ./scripts/seed-classes.mjs)",
+      "Bash(cmd /c \"netstat -ano | findstr LISTEN | findstr :3000\")",
+      "Bash(cmd /c \"netstat -ano | findstr 3000\")",
+      "Bash(cmd /c \"for /f \"\"tokens=5\"\" %a in \\(''netstat -aon ^| findstr 0.0.0.0:3000''\\) do @echo %a\")",
+      "Bash(powershell -command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess,State\")",
+      "Bash(powershell -command \"Stop-Process -Id 43340 -Force\")"
     ]
   }
 }

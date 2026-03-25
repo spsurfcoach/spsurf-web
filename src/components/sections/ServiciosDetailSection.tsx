@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 import { surfClassSubServices } from "@/lib/content";
 
 export function ServiciosDetailSection() {
@@ -6,7 +7,7 @@ export function ServiciosDetailSection() {
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       <div className="container-site">
         {/* Two-column layout: service list (left) + description (right) */}
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <RevealGroup className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Left: Service title + sub-service list */}
           <div>
             <h2 className="ds-h2 text-black">Clases de surf</h2>
@@ -56,17 +57,19 @@ export function ServiciosDetailSection() {
               </div>
             </div>
           </div>
-        </div>
+        </RevealGroup>
 
         {/* Full-width photo card below */}
-        <div className="relative mt-12 h-[240px] w-full overflow-hidden rounded-[40px] border-2 border-white sm:h-[280px] lg:h-[335px]">
-          <Image
-            src="/photos/servicios_1.jpg"
-            alt="Clase de surf"
-            fill
-            className="object-cover"
-          />
-        </div>
+        <Reveal className="mt-12">
+          <div className="relative h-[240px] w-full overflow-hidden rounded-[40px] border-2 border-white sm:h-[280px] lg:h-[335px]">
+            <Image
+              src="/photos/servicios_1.jpg"
+              alt="Clase de surf"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

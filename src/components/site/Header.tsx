@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { navItems } from "@/lib/content";
 
-const NAV_ORDER = ["/surftrips", "/servicios", "/blog", "/nosotros"];
+const NAV_ORDER = ["/", "/surftrips", "/servicios", "/blog", "/nosotros"];
 const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
 
 export function Header() {
@@ -22,7 +22,6 @@ export function Header() {
   const links = useMemo(
     () =>
       navItems
-        .filter((item) => item.href !== "/")
         .sort((a, b) => NAV_ORDER.indexOf(a.href) - NAV_ORDER.indexOf(b.href)),
     [],
   );

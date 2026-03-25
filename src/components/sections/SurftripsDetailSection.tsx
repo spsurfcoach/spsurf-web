@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal } from "@/components/animations/Reveal";
 import { urlForImage, type SurftripListItem } from "@/lib/sanity";
 
 function PlayIcon() {
@@ -173,20 +174,22 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
           >
             {isDark ? (
               /* Dark variant: full-width dark card */
-              <div className="mx-4 overflow-hidden rounded-[30px] bg-[#011a1f] px-4 py-8 sm:mx-6 sm:px-8 md:mx-10 md:px-10 lg:mx-12 lg:px-16 lg:py-14">
-                <div className="grid items-center gap-10 lg:grid-cols-2">
-                  <div className="order-2 lg:order-1">{infoCol}</div>
-                  <div className="order-1 lg:order-2">{photoCol}</div>
+              <Reveal className="mx-4 sm:mx-6 md:mx-10 lg:mx-12">
+                <div className="overflow-hidden rounded-[30px] bg-[#011a1f] px-4 py-8 sm:px-8 md:px-10 lg:px-16 lg:py-14">
+                  <div className="grid items-center gap-10 lg:grid-cols-2">
+                    <div className="order-2 lg:order-1">{infoCol}</div>
+                    <div className="order-1 lg:order-2">{photoCol}</div>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             ) : (
               /* Light variant: plain background */
-              <div className="container-site px-4 sm:px-6 md:px-10 lg:px-16">
+              <Reveal className="container-site px-4 sm:px-6 md:px-10 lg:px-16">
                 <div className="grid items-center gap-10 lg:grid-cols-2">
                   <div>{photoCol}</div>
                   <div>{infoCol}</div>
                 </div>
-              </div>
+              </Reveal>
             )}
           </section>
         );

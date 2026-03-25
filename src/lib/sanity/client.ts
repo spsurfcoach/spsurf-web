@@ -6,6 +6,8 @@ const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "";
 const token = process.env.SANITY_API_READ_TOKEN;
 
 export const isSanityConfigured = Boolean(projectId && dataset);
+export const sanityProjectId = projectId;
+export const sanityDataset = dataset;
 
 export const sanityClient = createClient({
   projectId: projectId || "missing-project-id",

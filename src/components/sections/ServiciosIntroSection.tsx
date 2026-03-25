@@ -1,9 +1,10 @@
+import { RevealGroup } from "@/components/animations/Reveal";
 import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
 export function ServiciosIntroSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-16">
-      <div className="container-site">
+      <RevealGroup className="container-site">
         {/* Kicker */}
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
           SERVICIOS
@@ -26,7 +27,7 @@ export function ServiciosIntroSection() {
           ratioClassName="aspect-[16/10] sm:aspect-[16/9] lg:aspect-[1512/521]"
           className="mt-14 w-full site-media-frame-lg"
         />
-      </div>
+      </RevealGroup>
     </section>
   );
 }

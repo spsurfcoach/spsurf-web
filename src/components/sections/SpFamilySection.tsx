@@ -1,3 +1,4 @@
+import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 import { CarouselShell } from "@/components/sections/CarouselShell";
 import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame";
 
@@ -31,12 +32,14 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
   return (
     <section className="bg-[#03313b] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       {/* Header */}
-      <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
-        NUESTRA COMUNIDAD
-      </p>
-      <h2 className="ds-display-title mt-3 text-white">La SP Family</h2>
+      <RevealGroup>
+        <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
+          NUESTRA COMUNIDAD
+        </p>
+        <h2 className="ds-display-title mt-3 text-white">La SP Family</h2>
+      </RevealGroup>
 
-      <div className="mt-10 lg:hidden">
+      <Reveal className="mt-10 lg:hidden">
         <CarouselShell
           ariaLabel="Carrusel SP Family"
           slideClassName="basis-[82%] sm:basis-[56%]"
@@ -44,10 +47,10 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
             <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
           ))}
         />
-      </div>
+      </Reveal>
 
       {/* Photo mosaic */}
-      <div className="mt-10 hidden gap-4 lg:grid lg:grid-cols-2">
+      <RevealGroup className="mt-10 hidden gap-4 lg:grid lg:grid-cols-2" stagger={0.14}>
         <div className="flex flex-col gap-4">
           {leftPhotos.map((photo) => (
             <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
@@ -59,7 +62,7 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
             <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
           ))}
         </div>
-      </div>
+      </RevealGroup>
     </section>
   );
 }
