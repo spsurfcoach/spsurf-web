@@ -1,3 +1,4 @@
+import { RevealGroup } from "@/components/animations/Reveal";
 import type { SurftripListItem } from "@/lib/sanity";
 
 function fillColor(available: number, capacity: number): string {
@@ -38,8 +39,8 @@ function formatDateRange(startDate: string, endDate: string) {
 }
 
 function CalendarRow({ item }: { item: CalendarItem }) {
-  const taken = item.capacity - item.available;
   const safeCapacity = Math.max(item.capacity, 1);
+  const taken = Math.min(Math.max(item.capacity - item.available, 0), safeCapacity);
   const fillPct = (taken / safeCapacity) * 100;
   const color = fillColor(item.available, safeCapacity);
 
@@ -107,24 +108,26 @@ export function SurftripsCalendarSection({ trips }: SurftripsCalendarSectionProp
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
-      <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
-        CALENDARIO
-      </p>
+      <RevealGroup>
+        <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
+          CALENDARIO
+        </p>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Left column */}
-        <div className="flex flex-col gap-4">
-          {leftCol.map((item) => (
-            <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
-          ))}
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Left column */}
+          <div className="flex flex-col gap-4">
+            {leftCol.map((item) => (
+              <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
+            ))}
+          </div>
+          {/* Right column */}
+          <div className="flex flex-col gap-4">
+            {rightCol.map((item) => (
+              <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
+            ))}
+          </div>
         </div>
-        {/* Right column */}
-        <div className="flex flex-col gap-4">
-          {rightCol.map((item) => (
-            <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
-          ))}
-        </div>
-      </div>
+      </RevealGroup>
     </section>
   );
 }

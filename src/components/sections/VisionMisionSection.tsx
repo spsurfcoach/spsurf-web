@@ -1,13 +1,16 @@
 import Image from "next/image";
+import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 export function VisionMisionSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       <div className="container-site">
         {/* Divider line */}
-        <div className="mb-14 h-px w-full bg-zinc-200" />
+        <Reveal className="mb-14">
+          <div className="h-px w-full bg-zinc-200" />
+        </Reveal>
 
-        <div className="grid gap-16 lg:grid-cols-2">
+        <RevealGroup className="grid gap-16 lg:grid-cols-2">
           {/* Left — Visión */}
           <div>
             <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
@@ -43,7 +46,7 @@ export function VisionMisionSection() {
               />
             </div>
           </div>
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

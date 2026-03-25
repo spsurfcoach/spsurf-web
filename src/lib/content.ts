@@ -23,14 +23,6 @@ export type SurfTripItem = {
   image: string;
 };
 
-export type CalendarItem = {
-  destination: string;
-  dates: string;
-  level: string;
-  available: number;
-  capacity: number;
-};
-
 export type ProductItem = {
   name: string;
   price: string;
@@ -59,7 +51,7 @@ export type SpFamilyPhotoItem = {
 };
 
 export const navItems: NavItem[] = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "Inicio" },
   { href: "/surftrips", label: "Surftrips" },
   { href: "/servicios", label: "Servicios" },
   { href: "/nosotros", label: "Nosotros" },
@@ -139,21 +131,6 @@ export const surfTrips: SurfTripItem[] = [
     aeropuerto: "Talara (TYL)",
     image: "/photos/hero.jpg",
   },
-];
-
-export const surftripsCalendar: CalendarItem[][] = [
-  // Left column
-  [
-    { destination: "Lobitos",       dates: "15 - 20 de Enero 2026",    level: "Intermedio", available: 2,  capacity: 14 },
-    { destination: "El Salvador",   dates: "11 - 18 de Mayo 2026",     level: "Intermedio", available: 8,  capacity: 15 },
-    { destination: "Chicama",       dates: "1 - 7 de Junio 2026",      level: "Intermedio", available: 8,  capacity: 16 },
-  ],
-  // Right column
-  [
-    { destination: "Chicama",       dates: "1 - 9 de Agosto 2026",     level: "Intermedio", available: 10, capacity: 14 },
-    { destination: "Florianópolis", dates: "11 - 18 de Octubre 2026",  level: "Intermedio", available: 7,  capacity: 12 },
-    { destination: "Pacasmayo",     dates: "1 - 7 de Noviembre 2026",  level: "Intermedio", available: 12, capacity: 15 },
-  ],
 ];
 
 export const products: ProductItem[] = [

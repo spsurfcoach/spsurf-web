@@ -7,15 +7,18 @@ import { HomeServicios } from "@/components/sections/HomeServicios";
 import { ComunidadSection } from "@/components/sections/ComunidadSection";
 import { PartnersSection } from "@/components/sections/PartnersSection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
+import { getSurftrips } from "@/lib/sanity";
 
-export default function Home() {
+export default async function Home() {
+  const trips = await getSurftrips();
+
   return (
     <div className="bg-[var(--color-background-default)] text-[var(--color-text-default)]">
       <HomeHero />
       <BrandStatement />
       <HomeVideoSection />
-      <HomeSurftrips />
-      <DestinosSection />
+      <HomeSurftrips trips={trips} />
+      <DestinosSection trips={trips} />
       <HomeServicios />
       <ComunidadSection />
       <PartnersSection />

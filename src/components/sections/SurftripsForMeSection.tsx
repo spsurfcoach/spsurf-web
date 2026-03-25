@@ -1,10 +1,11 @@
 import Image from "next/image";
+import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 export function SurftripsForMeSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       <div className="grid gap-10 lg:grid-cols-[1fr_456px] lg:items-start">
-        <div>
+        <RevealGroup>
           <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
             COMO SABER SI ESTOS SURFTRIPS SON PARA MI
           </p>
@@ -19,11 +20,13 @@ export function SurftripsForMeSection() {
               SurfTrip es para ti
             </p>
           </div>
-        </div>
-        <div className="relative h-[420px] overflow-hidden rounded-[24px] sm:h-[470px] lg:h-[707px] lg:rounded-[40px]">
-          <Image src="/photos/home1.jpg" alt="SP Surf Coach team" fill className="object-cover" />
-          <div className="absolute inset-0 rounded-[24px] bg-[rgba(0,17,22,0.28)] lg:rounded-[40px]" />
-        </div>
+        </RevealGroup>
+        <Reveal>
+          <div className="relative h-[420px] overflow-hidden rounded-[24px] sm:h-[470px] lg:h-[707px] lg:rounded-[40px]">
+            <Image src="/photos/home1.jpg" alt="SP Surf Coach team" fill className="object-cover" />
+            <div className="absolute inset-0 rounded-[24px] bg-[rgba(0,17,22,0.28)] lg:rounded-[40px]" />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

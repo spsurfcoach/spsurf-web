@@ -1,19 +1,82 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { homePackages } from "@/lib/content";
+import { useEffect, useMemo, useState } from "react";
+import { RevealGroup } from "@/components/animations/Reveal";
+import { toCurrencyPEN } from "@/lib/utils";
 
-const PACKAGE_TABS = ["Clases de surf", "Surf skate", "Video analisis"];
-
-const packageImageByName: Record<string, string> = {
-  Starter: "/photos/servicios_paquete_starter.jpg",
-  Standard: "/photos/servicios_paquete_standard.jpg",
-  Premium: "/photos/servicios_paquete_premium.jpg",
+type PackageItem = {
+  id: string;
+  name: string;
+  type: "credits" | "unlimited";
+  classCount?: number;
+  durationDays?: number;
+  price: number;
 };
 
+const PACKAGE_IMAGES = [
+  "/photos/servicios_paquete_premium.jpg",
+  "/photos/servicios_paquete_standard.jpg",
+  "/photos/servicios_paquete_starter.jpg",
+  "/photos/servicios_hero.jpg",
+];
+
+const TYPE_LABELS: Record<PackageItem["type"], string> = {
+  credits: "Paquete de clases",
+  unlimited: "Membership",
+};
+
+function packageDetail(pkg: PackageItem) {
+  return pkg.type === "credits"
+    ? `${pkg.classCount ?? 0} clases`
+    : `Ilimitado por ${pkg.durationDays ?? 30} días`;
+}
+
 export function ServiciosPackagesSection() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [packages, setPackages] = useState<PackageItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadPackages = async () => {
+      try {
+        const response = await fetch("/api/packages");
+        const data = (await response.json()) as { items?: PackageItem[] };
+
+        if (!cancelled) {
+          setPackages(data.items ?? []);
+        }
+      } catch {
+        if (!cancelled) {
+          setPackages([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadPackages();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sortedPackages = useMemo(
+    () =>
+      [...packages].sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type === "unlimited" ? -1 : 1;
+        }
+
+        return 0;
+      }),
+    [packages],
+  );
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
@@ -30,58 +93,57 @@ export function ServiciosPackagesSection() {
         </div>
 
         <div className="relative z-10">
-          {/* Header */}
-          <h2 className="ds-h2 text-center text-white">Nuestros paquetes</h2>
+          <RevealGroup watch={sortedPackages.length}>
+            {/* Header */}
+            <h2 className="ds-h2 text-center text-white">Nuestros paquetes</h2>
+            <p className="ds-body-s mt-4 text-center text-white/70">
+              Estos son los mismos paquetes disponibles dentro de Clases.
+            </p>
 
-          {/* Tab row */}
-          <div className="mt-6 flex items-center justify-center gap-8 sm:gap-12">
-            {PACKAGE_TABS.map((tab, i) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(i)}
-                className={`ds-body-s relative pb-2 transition-colors ${
-                  activeTab === i ? "font-semibold text-white" : "text-white/60"
-                }`}
-              >
-                {tab}
-                {activeTab === i && (
-                  <span className="absolute bottom-0 left-1/2 size-[10px] -translate-x-1/2 translate-y-[6px] rounded-full bg-white" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Pricing cards */}
-          <div className="mt-12 grid gap-6 sm:grid-cols-3 sm:gap-4 lg:gap-6">
-            {homePackages.map((pkg) => (
-              <article
-                key={pkg.name}
-                className="flex flex-col overflow-hidden rounded-[30px] bg-white"
-              >
-                {/* Photo top */}
-                <div className="relative h-[183px] w-full shrink-0">
-                  <Image
-                    src={packageImageByName[pkg.name] ?? "/photos/servicios_paquete_standard.jpg"}
-                    alt={pkg.name}
-                    fill
-                    className="object-cover"
-                  />
-                  {/* Badge */}
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                    <span className="inline-block rounded-full bg-[var(--color-primary-700)] px-8 py-2 text-xs font-bold uppercase tracking-[0.9px] text-white">
-                      {pkg.name}
-                    </span>
-                  </div>
+            {/* Pricing cards */}
+            <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {isLoading ? (
+                <div className="col-span-full rounded-[30px] border border-white/15 bg-white/5 px-6 py-10 text-center text-white/70">
+                  Cargando paquetes...
                 </div>
+              ) : sortedPackages.length ? (
+                sortedPackages.map((pkg, index) => (
+                  <Link
+                    key={pkg.id}
+                    href="/clases"
+                    className="flex flex-col overflow-hidden rounded-[30px] bg-white transition-transform duration-200 hover:-translate-y-1"
+                  >
+                    <div className="relative h-[183px] w-full shrink-0">
+                      <Image
+                        src={PACKAGE_IMAGES[index % PACKAGE_IMAGES.length]}
+                        alt={pkg.name}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+                        <span className="inline-block rounded-full bg-[var(--color-primary-700)] px-6 py-2 text-xs font-bold uppercase tracking-[0.9px] text-white">
+                          {TYPE_LABELS[pkg.type]}
+                        </span>
+                      </div>
+                    </div>
 
-                {/* Card body */}
-                <div className="flex flex-col items-center px-4 pb-8 pt-10 text-center">
-                  <p className="ds-h3 font-semibold text-black">{pkg.price}</p>
-                  <p className="ds-body-s mt-1 text-zinc-500">{pkg.classes}</p>
+                    <div className="flex flex-1 flex-col items-center px-5 pb-8 pt-10 text-center">
+                      <h3 className="ds-h3 font-semibold text-black">{pkg.name}</h3>
+                      <p className="ds-h3 mt-3 font-semibold text-black">{toCurrencyPEN(pkg.price)}</p>
+                      <p className="ds-body-s mt-2 text-zinc-500">{packageDetail(pkg)}</p>
+                      <span className="ds-btn ds-btn-primary mt-8 inline-flex">
+                        Inicia sesión para comprar
+                      </span>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-full rounded-[30px] border border-white/15 bg-white/5 px-6 py-10 text-center text-white/70">
+                  No hay paquetes activos disponibles en este momento.
                 </div>
-              </article>
-            ))}
-          </div>
+              )}
+            </div>
+          </RevealGroup>
         </div>
       </div>
     </section>

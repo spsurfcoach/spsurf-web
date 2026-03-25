@@ -101,6 +101,41 @@ export const surftrip = defineType({
       validation: (rule) => rule.required().max(220),
     }),
     defineField({
+      name: "heroTitleSuffix",
+      title: "Hero Title Suffix",
+      type: "string",
+      description: "Optional collaborator or subtitle shown inline with the trip title, e.g. x Miguel Tudela.",
+    }),
+    defineField({
+      name: "heroLongDescription",
+      title: "Hero Long Description",
+      type: "text",
+      rows: 5,
+      description: "Longer introductory copy for the first editorial summary section.",
+    }),
+    defineField({
+      name: "heroLocationLabel",
+      title: "Hero Location Label",
+      type: "string",
+      description: "Optional short location label shown above the trip summary.",
+    }),
+    defineField({
+      name: "groupSizeLabel",
+      title: "Group Size Label",
+      type: "string",
+      description: "Optional override for how group size should appear in the summary.",
+    }),
+    defineField({
+      name: "videoSection",
+      title: "Video Section",
+      type: "surftripVideoSection",
+    }),
+    defineField({
+      name: "dayInTripSection",
+      title: "Day In Trip Section",
+      type: "surftripDaySection",
+    }),
+    defineField({
       name: "waveTitle",
       title: "Wave Section Title",
       type: "string",
@@ -141,6 +176,18 @@ export const surftrip = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "waveSection",
+      title: "Wave Section",
+      type: "surftripFeatureSection",
+      description: "Structured replacement for the legacy wave title/body/image fields.",
+    }),
+    defineField({
+      name: "hotelSection",
+      title: "Hotel Section",
+      type: "surftripFeatureSection",
+      description: "Structured replacement for the legacy hotel title/body/image fields.",
+    }),
+    defineField({
       name: "itineraryTitle",
       title: "Itinerary Section Title",
       type: "string",
@@ -166,6 +213,29 @@ export const surftrip = defineType({
       type: "string",
       validation: (rule) => rule.required(),
       description: "Use internal paths or anchor links like #reserva",
+    }),
+    defineField({
+      name: "experienceSections",
+      title: "Experience Sections",
+      type: "array",
+      of: [{ type: "surftripFeatureSection" }],
+      description: "Repeatable sections for yoga, videoanalisis, recovery, and other trip experiences.",
+    }),
+    defineField({
+      name: "packageSection",
+      title: "Package Section",
+      type: "surftripPackageSection",
+    }),
+    defineField({
+      name: "additionalInfoSection",
+      title: "Additional Info Section",
+      type: "surftripAdditionalInfoSection",
+    }),
+    defineField({
+      name: "faqItems",
+      title: "FAQ Items",
+      type: "array",
+      of: [{ type: "surftripFaqItem" }],
     }),
     defineField({
       name: "available",

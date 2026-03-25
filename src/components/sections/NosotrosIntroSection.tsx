@@ -1,10 +1,12 @@
+import { RevealGroup } from "@/components/animations/Reveal";
+
 export function NosotrosIntroSection() {
   return (
     <section className="relative overflow-hidden bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       {/* Decorative ellipse blob */}
       <div className="deco-ellipse -left-[123px] top-[16px] hidden h-[700px] w-[700px] bg-[radial-gradient(circle,rgba(24,212,213,0.15),transparent)] lg:block" />
 
-      <div className="container-site relative">
+      <RevealGroup className="container-site relative">
         {/* Kicker */}
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
           QUIEN ES SP SURF COACH
@@ -19,7 +21,7 @@ export function NosotrosIntroSection() {
             El objetivo: que entiendas el mar, tu cuerpo y tu mente para surfear con propósito.
           </p>
         </div>
-      </div>
+      </RevealGroup>
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { RevealGroup } from "@/components/animations/Reveal";
 
 const serviceCards = [
   {
@@ -24,16 +25,16 @@ export function HomeServicios() {
       <div className="deco-ellipse -left-[230px] -top-[7px] h-[588px] w-[588px] bg-[radial-gradient(circle,rgba(24,212,213,0.15),transparent)] hidden lg:block" />
 
       <div className="relative grid gap-10 px-4 sm:px-6 md:px-10 lg:grid-cols-2 lg:gap-12 lg:px-16">
-        <div>
+        <RevealGroup>
           <p className="ds-label text-[var(--color-label-muted)]">SERVICIOS</p>
           <h2 className="ds-h1 mt-4 max-w-[540px] leading-[1.5] tracking-[-0.04em] lg:leading-[60px]">
             Entrena dentro y fuera del agua en sesiones para cada nivel y objetivo. Uniendo sesiones en el agua,
             video análisis, entrenamientos complementarios y preparación mental.
           </h2>
           <button className="ds-btn ds-btn-primary ds-btn-lg mt-8">Conoce más de nuestros servicios</button>
-        </div>
+        </RevealGroup>
 
-        <div className="mx-auto w-full max-w-[620px] space-y-4 lg:relative lg:h-[440px] lg:space-y-0">
+        <RevealGroup className="mx-auto w-full max-w-[620px] space-y-4 lg:relative lg:h-[440px] lg:space-y-0" stagger={0.14}>
           {serviceCards.map((card) => (
             <article
               key={card.title}
@@ -48,7 +49,7 @@ export function HomeServicios() {
               </div>
             </article>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );
