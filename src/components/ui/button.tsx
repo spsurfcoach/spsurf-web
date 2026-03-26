@@ -12,10 +12,12 @@ const buttonVariants = cva(
       variant: {
         primary: "ds-btn-primary",
         secondary: "ds-btn-secondary",
+        outline: "border border-black/15 bg-transparent text-[var(--color-text-default)] hover:bg-black/5",
         ghost: "bg-transparent text-[var(--color-text-default)] hover:bg-black/5",
       },
       size: {
         default: "h-10 px-4",
+        icon: "h-10 w-10 p-0",
         lg: "ds-btn-lg px-6",
         sm: "h-8 px-3 text-sm",
       },
