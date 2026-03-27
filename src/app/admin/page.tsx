@@ -7,6 +7,8 @@ import { PackagesCrud } from "@/components/admin/PackagesCrud";
 import { SlotBookingsView } from "@/components/admin/SlotBookingsView";
 import { StudentsDatabaseView } from "@/components/admin/StudentsDatabaseView";
 import type { StudentItem } from "@/components/admin/StudentsDatabaseView";
+import { SurftripInventoryCrud } from "@/components/admin/SurftripInventoryCrud";
+import type { SurftripInventoryItem } from "@/components/admin/SurftripInventoryCrud";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
@@ -43,6 +45,7 @@ export default function AdminPage() {
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [students, setStudents] = useState<StudentItem[]>([]);
+  const [surftrips, setSurftrips] = useState<SurftripInventoryItem[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
@@ -51,14 +54,16 @@ export default function AdminPage() {
   async function loadAdminData() {
     setIsLoadingData(true);
     try {
-      const [packagesRes, slotsRes, studentsRes] = await Promise.all([
+      const [packagesRes, slotsRes, studentsRes, surftripsRes] = await Promise.all([
         apiFetch<{ items: PackageItem[] }>("/api/admin/packages"),
         apiFetch<{ items: SlotItem[] }>("/api/admin/class-slots"),
         apiFetch<{ items: StudentItem[]; total: number }>("/api/admin/students"),
+        apiFetch<{ items: SurftripInventoryItem[] }>("/api/admin/surftrip-inventory"),
       ]);
       setPackages(packagesRes.items ?? []);
       setSlots(slotsRes.items ?? []);
       setStudents(studentsRes.items ?? []);
+      setSurftrips(surftripsRes.items ?? []);
     } finally {
       setIsLoadingData(false);
     }
@@ -169,6 +174,32 @@ export default function AdminPage() {
               });
               await loadAdminData();
               setMessage({ type: "success", text: "Créditos actualizados." });
+            }}
+          />
+
+          <SurftripInventoryCrud
+            items={surftrips}
+            isLoading={isLoadingData}
+            onCreate={async (payload) => {
+              try {
+                await apiFetch("/api/admin/surftrip-inventory", { method: "POST", body: JSON.stringify(payload) });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Surftrip creado correctamente." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo crear el surftrip." });
+              }
+            }}
+            onToggle={async (id, current) => {
+              try {
+                await apiFetch("/api/admin/surftrip-inventory", {
+                  method: "PATCH",
+                  body: JSON.stringify({ id, patch: { isActive: !current } }),
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Estado del surftrip actualizado." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo actualizar el surftrip." });
+              }
             }}
           />
 

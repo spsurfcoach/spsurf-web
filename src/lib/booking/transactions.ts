@@ -1,12 +1,14 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
 import { purchaseIsActive, sortPurchasesForConsumption } from "./guards";
-import { ClassSlotDoc, PurchaseDoc } from "./types";
+import { ClassSlotDoc, PurchaseDoc, SurftripInventoryDoc } from "./types";
 
 const PACKAGES_COLLECTION = "packages";
 const CLASS_SLOTS_COLLECTION = "classSlots";
 const PURCHASES_COLLECTION = "purchases";
 const BOOKINGS_COLLECTION = "bookings";
+const SURFTRIP_INVENTORY_COLLECTION = "surftripInventory";
+const SURFTRIP_BOOKINGS_COLLECTION = "surftripBookings";
 
 type BookClassInput = {
   userId: string;
@@ -17,6 +19,84 @@ type BookClassResult = {
   bookingId: string;
   purchaseId: string;
 };
+
+export async function getSurftripInventoryById(surftripId: string) {
+  const snapshot = await adminDb.collection(SURFTRIP_INVENTORY_COLLECTION).doc(surftripId).get();
+  if (!snapshot.exists) return null;
+  return {
+    id: snapshot.id,
+    ...(snapshot.data() as SurftripInventoryDoc),
+  };
+}
+
+export async function createSurftripBookingFromPayment(input: {
+  userId: string;
+  surftripId: string;
+  paymentId: string;
+  preferenceId: string;
+}) {
+  // Idempotency: check if a booking already exists for this payment
+  const duplicateQuery = await adminDb
+    .collection(SURFTRIP_BOOKINGS_COLLECTION)
+    .where("paymentId", "==", input.paymentId)
+    .limit(1)
+    .get();
+
+  if (!duplicateQuery.empty) {
+    return { idempotent: true, bookingId: duplicateQuery.docs[0].id };
+  }
+
+  const surftripRef = adminDb.collection(SURFTRIP_INVENTORY_COLLECTION).doc(input.surftripId);
+
+  return adminDb.runTransaction(async (transaction) => {
+    const surftripSnap = await transaction.get(surftripRef);
+    if (!surftripSnap.exists) throw new Error("SURFTRIP_NOT_FOUND");
+
+    const data = surftripSnap.data() as SurftripInventoryDoc;
+    if (!data.isActive) throw new Error("SURFTRIP_INACTIVE");
+    if (data.enrolledCount >= data.capacity) throw new Error("SURFTRIP_FULL");
+
+    const now = new Date().toISOString();
+
+    // Create purchase record
+    const purchaseRef = adminDb.collection(PURCHASES_COLLECTION).doc();
+    transaction.set(purchaseRef, {
+      userId: input.userId,
+      packageId: input.surftripId,
+      packageType: "credits",
+      itemType: "surftrip",
+      surftripId: input.surftripId,
+      mercadopagoPaymentId: input.paymentId,
+      mercadopagoPreferenceId: input.preferenceId,
+      status: "approved",
+      remainingCredits: null,
+      expiresAt: null,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    // Create surftrip booking
+    const bookingRef = adminDb.collection(SURFTRIP_BOOKINGS_COLLECTION).doc();
+    transaction.set(bookingRef, {
+      userId: input.userId,
+      surftripId: input.surftripId,
+      sanitySlug: data.sanitySlug,
+      purchaseId: purchaseRef.id,
+      paymentId: input.paymentId,
+      status: "confirmed",
+      bookedAt: now,
+      createdAt: now,
+    });
+
+    // Increment enrolled count
+    transaction.update(surftripRef, {
+      enrolledCount: FieldValue.increment(1),
+      updatedAt: now,
+    });
+
+    return { idempotent: false, bookingId: bookingRef.id };
+  });
+}
 
 export async function getPackageById(packageId: string) {
   const snapshot = await adminDb.collection(PACKAGES_COLLECTION).doc(packageId).get();

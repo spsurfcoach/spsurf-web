@@ -33,8 +33,35 @@ export type PurchaseDoc = {
   mercadopagoPaymentId: string;
   mercadopagoPreferenceId: string;
   status: PurchaseStatus;
+  itemType?: "package" | "surftrip";
+  surftripId?: string;
   createdAt: string;
   updatedAt?: string;
+};
+
+export type SurftripInventoryDoc = {
+  sanitySlug: string;
+  title: string;
+  price: number;
+  currency: "PEN";
+  capacity: number;
+  enrolledCount: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SurftripBookingDoc = {
+  userId: string;
+  surftripId: string;
+  sanitySlug: string;
+  purchaseId: string;
+  paymentId: string;
+  status: "confirmed" | "cancelled";
+  bookedAt: string;
+  createdAt: string;
 };
 
 export type BookingDoc = {

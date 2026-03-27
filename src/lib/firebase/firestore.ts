@@ -6,4 +6,6 @@ export const collections = {
   purchases: adminDb.collection("purchases"),
   bookings: adminDb.collection("bookings"),
   profiles: adminDb.collection("profiles"),
+  surftripInventory: adminDb.collection("surftripInventory"),
+  surftripBookings: adminDb.collection("surftripBookings"),
 };
