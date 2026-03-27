@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="antialiased">
-        <div className="min-h-screen bg-[var(--color-background-default)] text-[var(--color-text-default)]">
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen bg-[var(--color-background-default)] text-[var(--color-text-default)]">
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

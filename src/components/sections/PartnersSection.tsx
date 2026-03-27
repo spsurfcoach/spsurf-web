@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { RevealGroup } from "@/components/animations/Reveal";
 
 export function PartnersSection() {
   return (
@@ -6,7 +7,7 @@ export function PartnersSection() {
       {/* Decorative ellipse */}
       <div className="deco-ellipse -left-[150px] top-[173px] h-[588px] w-[588px] bg-[radial-gradient(circle,rgba(24,212,213,0.12),transparent)] hidden lg:block" />
 
-      <div className="relative">
+      <RevealGroup className="relative">
         <p className="ds-label text-[var(--color-label-muted)]">PARTNERS</p>
         <h2 className="ds-display-title mt-3">Nuestros partners</h2>
         <div className="mx-auto mt-8 grid max-w-[900px] gap-6 sm:gap-8 md:grid-cols-2 md:gap-12">
@@ -17,7 +18,7 @@ export function PartnersSection() {
             <Image src="/photos/channel_islands.png" alt="Channel Islands" fill className="object-contain p-5" />
           </div>
         </div>
-      </div>
+      </RevealGroup>
     </section>
   );
 }

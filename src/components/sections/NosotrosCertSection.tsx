@@ -1,17 +1,18 @@
 import Image from "next/image";
+import { RevealGroup } from "@/components/animations/Reveal";
 
 export function NosotrosCertSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-16">
       <div className="container-site">
-        <div className="flex flex-col gap-8 rounded-[30px] bg-white p-8 lg:flex-row lg:items-start lg:p-12">
+        <RevealGroup className="flex flex-col gap-8 rounded-[30px] bg-white p-8 lg:flex-row lg:items-start lg:p-12">
           {/* Logo / cert image */}
           <div className="relative size-[160px] shrink-0 overflow-hidden rounded-[16px] lg:size-[204px]">
             <Image
-              src="/photos/logosp.png"
+              src="/photos/nosotros_map.png"
               alt="Certificación MAP Técnica"
               fill
-              className="object-contain p-2"
+              className="object-cover"
             />
           </div>
 
@@ -22,7 +23,7 @@ export function NosotrosCertSection() {
               Las clases individuales permiten un trabajo totalmente personalizado, ideal para quienes buscan progresar rápido, corregir detalles técnicos y enfocarse en objetivos específicos. Las clases grupales, en cambio, combinan aprendizaje, motivación y comunidad, manteniendo siempre un ratio reducido para asegurar atención real de nuestros coaches.
             </p>
           </div>
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );
