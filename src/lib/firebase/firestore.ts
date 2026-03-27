@@ -5,4 +5,5 @@ export const collections = {
   classSlots: adminDb.collection("classSlots"),
   purchases: adminDb.collection("purchases"),
   bookings: adminDb.collection("bookings"),
+  profiles: adminDb.collection("profiles"),
 };

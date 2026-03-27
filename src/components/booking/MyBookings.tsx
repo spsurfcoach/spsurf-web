@@ -20,9 +20,10 @@ type Props = {
   purchases: PurchaseItem[];
   userEmail?: string;
   onLogout: () => void;
+  onEditProfile?: () => void;
 };
 
-export function MyBookings({ bookings, purchases, userEmail, onLogout }: Props) {
+export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditProfile }: Props) {
   const activePurchase = purchases.find((item) => item.status === "approved");
 
   return (
@@ -33,9 +34,16 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout }: Props) 
           <p className="font-semibold text-base">Mi perfil</p>
           <p className="text-sm text-black/50 truncate mt-0.5">{userEmail}</p>
         </div>
-        <Button variant="outline" className="shrink-0 h-9 text-sm px-4" onClick={onLogout}>
-          Salir
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          {onEditProfile && (
+            <Button variant="outline" className="h-9 text-sm px-3" onClick={onEditProfile}>
+              Editar
+            </Button>
+          )}
+          <Button variant="outline" className="h-9 text-sm px-4" onClick={onLogout}>
+            Salir
+          </Button>
+        </div>
       </div>
 
       {/* Balance */}

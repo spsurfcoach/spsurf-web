@@ -5,6 +5,8 @@ import Image from "next/image";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
 import { MyBookings } from "@/components/booking/MyBookings";
 import { PackageList } from "@/components/booking/PackageList";
+import { ProfileModal } from "@/components/booking/ProfileModal";
+import type { UserProfileDoc } from "@/lib/booking/types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +54,8 @@ export default function ClasesPage() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profile, setProfile] = useState<Partial<UserProfileDoc> | null>(null);
 
   const loadPublicData = useCallback(async () => {
     const [pkgRes, slotsRes] = await Promise.all([
@@ -64,12 +68,14 @@ export default function ClasesPage() {
 
   const loadPrivateData = useCallback(async () => {
     if (!user) return;
-    const [bookingsRes, purchasesRes] = await Promise.all([
+    const [bookingsRes, purchasesRes, profileRes] = await Promise.all([
       apiFetch<{ items: BookingItem[] }>("/api/me/bookings"),
       apiFetch<{ items: PurchaseItem[] }>("/api/me/purchases"),
+      apiFetch<{ profile: Partial<UserProfileDoc> | null }>("/api/me/profile"),
     ]);
     setBookings(bookingsRes.items ?? []);
     setPurchases(purchasesRes.items ?? []);
+    setProfile(profileRes.profile ?? null);
   }, [user]);
 
   useEffect(() => {
@@ -235,11 +241,27 @@ export default function ClasesPage() {
                 purchases={purchases}
                 userEmail={user?.email ?? user?.uid}
                 onLogout={() => void logout()}
+                onEditProfile={() => setProfileOpen(true)}
               />
             </div>
           </aside>
         </div>
       </div>
+
+      <ProfileModal
+        open={profileOpen}
+        initialData={profile}
+        userEmail={user?.email ?? ""}
+        onClose={() => setProfileOpen(false)}
+        onSave={async (data) => {
+          await apiFetch("/api/me/profile", {
+            method: "PATCH",
+            body: JSON.stringify(data),
+          });
+          setProfile(data);
+          setProfileOpen(false);
+        }}
+      />
     </div>
   );
 }
