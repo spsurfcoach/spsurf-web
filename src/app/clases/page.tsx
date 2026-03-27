@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
 import { MyBookings } from "@/components/booking/MyBookings";
@@ -47,6 +48,9 @@ type PurchaseItem = {
 
 export default function ClasesPage() {
   const { user, loading, loginWithGoogle, loginWithEmail, signupWithEmail, logout } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get("payment");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [packages, setPackages] = useState<PackageItem[]>([]);
@@ -55,7 +59,9 @@ export default function ClasesPage() {
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [profile, setProfile] = useState<Partial<UserProfileDoc> | null>(null);
+  // undefined = not yet loaded; null = loaded but no profile exists
+  const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
+  const autoOpenedRef = useRef(false);
 
   const loadPublicData = useCallback(async () => {
     const [pkgRes, slotsRes] = await Promise.all([
@@ -88,6 +94,14 @@ export default function ClasesPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadPrivateData();
   }, [user, loadPrivateData]);
+
+  // After payment success: auto-open profile modal if profile is not yet complete
+  useEffect(() => {
+    if (paymentStatus === "success" && profile === null && !autoOpenedRef.current) {
+      autoOpenedRef.current = true;
+      setProfileOpen(true);
+    }
+  }, [paymentStatus, profile]);
 
   const hasAuth = useMemo(() => !!user, [user]);
 
@@ -250,7 +264,7 @@ export default function ClasesPage() {
 
       <ProfileModal
         open={profileOpen}
-        initialData={profile}
+        initialData={profile ?? null}
         userEmail={user?.email ?? ""}
         onClose={() => setProfileOpen(false)}
         onSave={async (data) => {
@@ -260,6 +274,9 @@ export default function ClasesPage() {
           });
           setProfile(data);
           setProfileOpen(false);
+          if (paymentStatus === "success") {
+            router.replace("/clases");
+          }
         }}
       />
     </div>
