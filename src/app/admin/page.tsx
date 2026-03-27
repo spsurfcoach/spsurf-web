@@ -160,7 +160,17 @@ export default function AdminPage() {
 
         {/* Sections */}
         <div className="space-y-10">
-          <StudentsDatabaseView items={students} />
+          <StudentsDatabaseView
+            items={students}
+            onAdjustCredits={async (purchaseId, delta) => {
+              await apiFetch("/api/admin/students", {
+                method: "PATCH",
+                body: JSON.stringify({ purchaseId, delta }),
+              });
+              await loadAdminData();
+              setMessage({ type: "success", text: "Créditos actualizados." });
+            }}
+          />
 
           <PackagesCrud
             items={packages}
