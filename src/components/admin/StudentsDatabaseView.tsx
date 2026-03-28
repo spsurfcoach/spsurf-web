@@ -16,6 +16,7 @@ export type StudentItem = {
 
 type Props = {
   items: StudentItem[];
+  onAdjustCredits?: (purchaseId: string, delta: number) => Promise<void>;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -41,8 +42,19 @@ function formatDate(isoString: string | null) {
   });
 }
 
-export function StudentsDatabaseView({ items }: Props) {
+export function StudentsDatabaseView({ items, onAdjustCredits }: Props) {
   const [search, setSearch] = useState("");
+  const [loadingUid, setLoadingUid] = useState<string | null>(null);
+
+  async function handleAdjust(student: StudentItem, delta: number) {
+    if (!student.purchaseId || !onAdjustCredits) return;
+    setLoadingUid(student.uid);
+    try {
+      await onAdjustCredits(student.purchaseId, delta);
+    } finally {
+      setLoadingUid(null);
+    }
+  }
 
   const filtered = search.trim()
     ? items.filter((s) => (s.email ?? s.uid).toLowerCase().includes(search.toLowerCase()))
@@ -106,8 +118,30 @@ export function StudentsDatabaseView({ items }: Props) {
                 <span className="md:hidden text-xs font-medium text-black/40 mr-2">Balance:</span>
                 <span className="text-sm font-medium">
                   {student.packageType === "credits" ? (
-                    <span className="font-bold text-[var(--color-primary-900)]">
-                      {student.remainingCredits ?? 0} créditos
+                    <span className="inline-flex items-center gap-1.5">
+                      {onAdjustCredits && (
+                        <button
+                          onClick={() => void handleAdjust(student, -1)}
+                          disabled={loadingUid === student.uid || (student.remainingCredits ?? 0) <= 0}
+                          aria-label="Quitar crédito"
+                          className="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center text-black/50 hover:bg-black/10 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-xs leading-none"
+                        >
+                          −
+                        </button>
+                      )}
+                      <span className="font-bold text-[var(--color-primary-900)]">
+                        {student.remainingCredits ?? 0} créditos
+                      </span>
+                      {onAdjustCredits && (
+                        <button
+                          onClick={() => void handleAdjust(student, +1)}
+                          disabled={loadingUid === student.uid}
+                          aria-label="Agregar crédito"
+                          className="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center text-black/50 hover:bg-black/10 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-xs leading-none"
+                        >
+                          +
+                        </button>
+                      )}
                     </span>
                   ) : student.packageType === "unlimited" ? (
                     <span className="font-bold text-[var(--color-primary-900)]">

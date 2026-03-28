@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
 import { MyBookings } from "@/components/booking/MyBookings";
 import { PackageList } from "@/components/booking/PackageList";
+import { ProfileModal } from "@/components/booking/ProfileModal";
+import type { UserProfileDoc } from "@/lib/booking/types";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +48,9 @@ type PurchaseItem = {
 
 export default function ClasesPage() {
   const { user, loading, loginWithGoogle, loginWithEmail, signupWithEmail, logout } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get("payment");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [packages, setPackages] = useState<PackageItem[]>([]);
@@ -52,6 +58,10 @@ export default function ClasesPage() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  // undefined = not yet loaded; null = loaded but no profile exists
+  const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
+  const autoOpenedRef = useRef(false);
 
   const loadPublicData = useCallback(async () => {
     const [pkgRes, slotsRes] = await Promise.all([
@@ -64,12 +74,14 @@ export default function ClasesPage() {
 
   const loadPrivateData = useCallback(async () => {
     if (!user) return;
-    const [bookingsRes, purchasesRes] = await Promise.all([
+    const [bookingsRes, purchasesRes, profileRes] = await Promise.all([
       apiFetch<{ items: BookingItem[] }>("/api/me/bookings"),
       apiFetch<{ items: PurchaseItem[] }>("/api/me/purchases"),
+      apiFetch<{ profile: Partial<UserProfileDoc> | null }>("/api/me/profile"),
     ]);
     setBookings(bookingsRes.items ?? []);
     setPurchases(purchasesRes.items ?? []);
+    setProfile(profileRes.profile ?? null);
   }, [user]);
 
   useEffect(() => {
@@ -82,6 +94,14 @@ export default function ClasesPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadPrivateData();
   }, [user, loadPrivateData]);
+
+  // After payment success: auto-open profile modal if profile is not yet complete
+  useEffect(() => {
+    if (paymentStatus === "success" && profile === null && !autoOpenedRef.current) {
+      autoOpenedRef.current = true;
+      setProfileOpen(true);
+    }
+  }, [paymentStatus, profile]);
 
   const hasAuth = useMemo(() => !!user, [user]);
 
@@ -235,11 +255,30 @@ export default function ClasesPage() {
                 purchases={purchases}
                 userEmail={user?.email ?? user?.uid}
                 onLogout={() => void logout()}
+                onEditProfile={() => setProfileOpen(true)}
               />
             </div>
           </aside>
         </div>
       </div>
+
+      <ProfileModal
+        open={profileOpen}
+        initialData={profile ?? null}
+        userEmail={user?.email ?? ""}
+        onClose={() => setProfileOpen(false)}
+        onSave={async (data) => {
+          await apiFetch("/api/me/profile", {
+            method: "PATCH",
+            body: JSON.stringify(data),
+          });
+          setProfile(data);
+          setProfileOpen(false);
+          if (paymentStatus === "success") {
+            router.replace("/clases");
+          }
+        }}
+      />
     </div>
   );
 }

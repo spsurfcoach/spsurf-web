@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { serializeFirestore } from "@/lib/firestore-serialize";
 import { forbiddenResponse, getRequiredUser, unauthorizedResponse, userIsAdmin } from "@/lib/server-auth";
@@ -92,5 +92,36 @@ export async function GET() {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
     return NextResponse.json({ error: "Failed to fetch students" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    await requireAdmin();
+    const body = (await request.json()) as { purchaseId?: string; delta?: number };
+    if (!body.purchaseId || typeof body.delta !== "number" || body.delta === 0) {
+      return NextResponse.json({ error: "purchaseId and non-zero delta are required" }, { status: 400 });
+    }
+
+    const docRef = adminDb.collection("purchases").doc(body.purchaseId);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
+    }
+
+    const data = doc.data() as { packageType?: string; remainingCredits?: number };
+    if (data.packageType !== "credits") {
+      return NextResponse.json({ error: "Only credit-type purchases can be adjusted" }, { status: 400 });
+    }
+
+    const current = data.remainingCredits ?? 0;
+    const next = Math.max(0, current + body.delta);
+    await docRef.set({ remainingCredits: next, updatedAt: new Date().toISOString() }, { merge: true });
+
+    return NextResponse.json({ ok: true, remainingCredits: next });
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
+    if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
+    return NextResponse.json({ error: "Failed to update credits" }, { status: 500 });
   }
 }
