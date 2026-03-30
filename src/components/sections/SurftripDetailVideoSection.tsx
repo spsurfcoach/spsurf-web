@@ -43,6 +43,7 @@ export function SurftripDetailVideoSection({
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-16">
+      <div className="container-site">
       {title ? <p className="ds-label mb-6 text-[var(--color-label-muted)]">{title}</p> : null}
 
       <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] lg:rounded-[40px]">
@@ -79,6 +80,7 @@ export function SurftripDetailVideoSection({
             </span>
           </button>
         )}
+      </div>
       </div>
     </section>
   );

@@ -59,6 +59,7 @@ export function SurftripDetailSummarySection({
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16 lg:py-12">
+      <div className="container-site">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
         <div>
           <p className="ds-body-s text-black/60">{locationLabel || country}</p>
@@ -102,6 +103,7 @@ export function SurftripDetailSummarySection({
             </p>
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

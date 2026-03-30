@@ -149,6 +149,28 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
         />
       ) : null}
 
+      {(trip.itineraryTitle || trip.itineraryBody) ? (
+        <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+          <div className="container-site">
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
+              <div>
+                <p className="ds-label tracking-[2.73px] text-[var(--color-label-muted)]">ITINERARIO</p>
+                {trip.itineraryTitle && (
+                  <h2 className="mt-4 text-[40px] font-medium leading-tight tracking-[-0.04em] text-black lg:text-[52px]">
+                    {trip.itineraryTitle}
+                  </h2>
+                )}
+              </div>
+              {trip.itineraryBody && (
+                <div className="flex items-center">
+                  <p className="text-[16px] leading-9 text-black/80">{trip.itineraryBody}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {trip.dayInTripSection ? (
         <SurftripDetailDaySection
           section={trip.dayInTripSection}

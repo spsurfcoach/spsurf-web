@@ -168,6 +168,9 @@
 }
 
 .ds-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: var(--control-height);
   border-radius: var(--radius-pill);
   padding: 8px 24px;

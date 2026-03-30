@@ -14,6 +14,7 @@ export function SurftripDetailDaySection({
 }: SurftripDetailDaySectionProps) {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16 lg:py-12">
+      <div className="container-site">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)] lg:items-center lg:gap-16">
         <div>
           <h2 className="text-[28px] font-medium tracking-[-0.04em] text-black lg:text-[40px]">
@@ -50,6 +51,7 @@ export function SurftripDetailDaySection({
         <div className="relative overflow-hidden rounded-[28px] lg:rounded-[36px]">
           <Image src={imageSrc} alt={section.title} width={1600} height={1000} className="h-auto w-full object-cover" />
         </div>
+      </div>
       </div>
     </section>
   );

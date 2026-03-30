@@ -14,8 +14,8 @@ export function SurftripDetailHero({
   kicker,
 }: SurftripDetailHeroProps) {
   return (
-    <section className="px-4 pb-8 pt-0 sm:px-6 md:px-10 lg:px-16">
-      <div className="relative min-h-[72svh] overflow-hidden rounded-[26px] lg:min-h-[84svh] lg:rounded-[40px]">
+    <section className="pb-0 pt-0">
+      <div className="relative min-h-[72svh] overflow-hidden lg:min-h-[84svh]">
         <Image src={imageSrc} alt={title} fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/28 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8 lg:p-14">
