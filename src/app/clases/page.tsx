@@ -58,6 +58,7 @@ export default function ClasesPage() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"comprar" | "reservar">("comprar");
   const [profileOpen, setProfileOpen] = useState(false);
   // undefined = not yet loaded; null = loaded but no profile exists
   const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
@@ -202,49 +203,71 @@ export default function ClasesPage() {
 
         <div className="flex flex-col gap-12 lg:flex-row">
           {/* Main content */}
-          <div className="flex-1 space-y-14">
-            <section className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold">Planes y paquetes</h2>
-              </div>
-              <PackageList
-                items={packages}
-                onCheckout={async (packageId) => {
-                  const response = await apiFetch<{ initPoint?: string; sandboxInitPoint?: string }>("/api/checkout", {
-                    method: "POST",
-                    body: JSON.stringify({ packageId }),
-                  });
-                  const checkoutUrl = response.initPoint ?? response.sandboxInitPoint;
-                  if (checkoutUrl) {
-                    window.location.href = checkoutUrl;
-                  } else {
-                    setMessage("No se pudo obtener la URL de checkout.");
-                  }
-                }}
-              />
-            </section>
+          <div className="flex-1 space-y-8">
+            {/* Tab switcher */}
+            <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1 w-fit">
+              {(["comprar", "reservar"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-2.5 rounded-lg text-sm font-medium capitalize transition-all ${
+                    activeTab === tab
+                      ? "bg-white shadow-sm text-black"
+                      : "text-black/50 hover:text-black"
+                  }`}
+                >
+                  {tab === "comprar" ? "Comprar" : "Reservar"}
+                </button>
+              ))}
+            </div>
 
-            <section className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold">Reserva tu clase</h2>
-                <p className="text-sm text-black/50 mt-1">Selecciona un día y asegura tu lugar.</p>
-              </div>
-              <ClassSlotList
-                items={slots}
-                onBook={async (slotId) => {
-                  try {
-                    await apiFetch("/api/bookings", {
+            {activeTab === "comprar" && (
+              <section className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Planes y paquetes</h2>
+                </div>
+                <PackageList
+                  items={packages}
+                  onCheckout={async (packageId) => {
+                    const response = await apiFetch<{ initPoint?: string; sandboxInitPoint?: string }>("/api/checkout", {
                       method: "POST",
-                      body: JSON.stringify({ classSlotId: slotId }),
+                      body: JSON.stringify({ packageId }),
                     });
-                    setMessage("Reserva confirmada exitosamente.");
-                    await Promise.all([loadPublicData(), loadPrivateData()]);
-                  } catch (error) {
-                    setMessage(error instanceof Error ? error.message : "No se pudo reservar.");
-                  }
-                }}
-              />
-            </section>
+                    const checkoutUrl = response.initPoint ?? response.sandboxInitPoint;
+                    if (checkoutUrl) {
+                      window.location.href = checkoutUrl;
+                    } else {
+                      setMessage("No se pudo obtener la URL de checkout.");
+                    }
+                  }}
+                />
+              </section>
+            )}
+
+            {activeTab === "reservar" && (
+              <section className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Reserva tu clase</h2>
+                  <p className="text-sm text-black/50 mt-1">Selecciona un día y asegura tu lugar.</p>
+                </div>
+                <ClassSlotList
+                  items={slots}
+                  onBook={async (slotId) => {
+                    try {
+                      await apiFetch("/api/bookings", {
+                        method: "POST",
+                        body: JSON.stringify({ classSlotId: slotId }),
+                      });
+                      setMessage("Reserva confirmada exitosamente.");
+                      await Promise.all([loadPublicData(), loadPrivateData()]);
+                    } catch (error) {
+                      setMessage(error instanceof Error ? error.message : "No se pudo reservar.");
+                    }
+                  }}
+                />
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -256,6 +279,15 @@ export default function ClasesPage() {
                 userEmail={user?.email ?? user?.uid}
                 onLogout={() => void logout()}
                 onEditProfile={() => setProfileOpen(true)}
+                onCancel={async (bookingId) => {
+                  try {
+                    await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
+                    setMessage("Reserva cancelada. Tu clase ha sido devuelta.");
+                    await loadPrivateData();
+                  } catch (error) {
+                    setMessage(error instanceof Error ? error.message : "No se pudo cancelar la reserva.");
+                  }
+                }}
               />
             </div>
           </aside>

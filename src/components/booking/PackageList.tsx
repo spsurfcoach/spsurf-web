@@ -129,7 +129,7 @@ export function PackageList({ items, onCheckout }: Props) {
                   <span
                     className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${
                       pkg.type === "unlimited"
-                        ? "bg-[var(--color-primary-500)]/30 text-[var(--color-primary-500)] border border-[var(--color-primary-500)]/40"
+                        ? "bg-amber-400/20 text-amber-400 border border-amber-400/40"
                         : "bg-white/20 text-white border border-white/30"
                     }`}
                   >

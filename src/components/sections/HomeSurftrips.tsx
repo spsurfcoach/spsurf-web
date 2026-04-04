@@ -53,7 +53,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
             Conoce más
           </Link>
         </RevealGroup>
-        <RevealGroup className="space-y-7" stagger={0.14} watch={displayTrips.length}>
+        <RevealGroup className="space-y-10" stagger={0.14} watch={displayTrips.length}>
           {displayTrips.length ? (
             displayTrips.map((trip) => {
               const safeCapacity = Math.max(trip.capacity, 1);

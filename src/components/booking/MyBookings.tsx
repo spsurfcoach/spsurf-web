@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -21,9 +22,11 @@ type Props = {
   userEmail?: string;
   onLogout: () => void;
   onEditProfile?: () => void;
+  onCancel?: (bookingId: string) => Promise<void>;
 };
 
-export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditProfile }: Props) {
+export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditProfile, onCancel }: Props) {
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const activePurchase = purchases.find((item) => item.status === "approved");
 
   return (
@@ -58,7 +61,7 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditPro
               : "0"}
           </p>
           <p className="text-white/60 text-sm pb-0.5">
-            {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : "créditos"}
+            {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : "clases disponibles"}
           </p>
         </div>
         {activePurchase?.packageType === "unlimited" && activePurchase.expiresAt && (
@@ -85,6 +88,23 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditPro
                   </p>
                   <p className="text-xs text-black/40 mt-0.5">{booking.status}</p>
                 </div>
+                {onCancel && booking.status !== "cancelled" && (
+                  <Button
+                    variant="outline"
+                    className="h-8 text-xs px-3 text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 shrink-0"
+                    disabled={cancellingId === booking.id}
+                    onClick={async () => {
+                      setCancellingId(booking.id);
+                      try {
+                        await onCancel(booking.id);
+                      } finally {
+                        setCancellingId(null);
+                      }
+                    }}
+                  >
+                    {cancellingId === booking.id ? "..." : "Cancelar"}
+                  </Button>
+                )}
               </div>
             ))
           )}

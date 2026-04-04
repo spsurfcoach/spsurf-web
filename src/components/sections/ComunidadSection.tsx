@@ -17,11 +17,12 @@ export function ComunidadSection() {
           darkControls={false}
           slideClassName="basis-[82%] sm:basis-[52%] lg:basis-[38%]"
           slides={surftripsSpFamilyPhotos.map((img) => (
-            <ResponsiveMediaFrame
+          <ResponsiveMediaFrame
               key={img.alt}
               src={img.src}
               alt={img.alt}
               ratioClassName="aspect-[4/3] lg:aspect-[574/372]"
+              imageClassName="object-top"
             />
           ))}
         />
