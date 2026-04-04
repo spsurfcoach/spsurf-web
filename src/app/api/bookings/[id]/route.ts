@@ -37,16 +37,31 @@ export async function DELETE(
         throw new Error("BOOKING_ALREADY_CANCELLED");
       }
 
-      const now = new Date().toISOString();
+      const now = new Date();
+
+      // Enforce 12-hour cancellation window
+      const slotRef = adminDb.collection("classSlots").doc(booking.classSlotId);
+      const slotSnap = await transaction.get(slotRef);
+      if (slotSnap.exists) {
+        const slotData = slotSnap.data() as { startsAt?: string };
+        if (slotData.startsAt) {
+          const startsAt = new Date(slotData.startsAt);
+          const hoursUntilClass = (startsAt.getTime() - now.getTime()) / (1000 * 60 * 60);
+          if (hoursUntilClass < 12) {
+            throw new Error("CANCELLATION_WINDOW_PASSED");
+          }
+        }
+      }
+
+      const nowIso = now.toISOString();
 
       // Cancel the booking
-      transaction.update(bookingRef, { status: "cancelled", updatedAt: now });
+      transaction.update(bookingRef, { status: "cancelled", updatedAt: nowIso });
 
       // Release the slot spot
-      const slotRef = adminDb.collection("classSlots").doc(booking.classSlotId);
       transaction.update(slotRef, {
         enrolledCount: FieldValue.increment(-1),
-        updatedAt: now,
+        updatedAt: nowIso,
       });
 
       // Refund credit if it was a credits package
@@ -58,7 +73,7 @@ export async function DELETE(
         if (purchase.packageType === "credits") {
           transaction.update(purchaseRef, {
             remainingCredits: FieldValue.increment(1),
-            updatedAt: now,
+            updatedAt: nowIso,
           });
         }
       }

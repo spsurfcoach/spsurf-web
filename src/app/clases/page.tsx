@@ -35,7 +35,7 @@ type SlotItem = {
 type BookingItem = {
   id: string;
   status: string;
-  classSlot?: { startsAt?: string } | null;
+  classSlot?: { startsAt?: string; location?: string } | null;
 };
 
 type PurchaseItem = {

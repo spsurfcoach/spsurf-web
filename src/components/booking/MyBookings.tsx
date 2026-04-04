@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 type BookingItem = {
   id: string;
   status: string;
-  classSlot?: { startsAt?: string } | null;
+  classSlot?: { startsAt?: string; location?: string } | null;
 };
 
 type PurchaseItem = {
@@ -80,15 +80,24 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditPro
               <p className="text-sm text-black/40">No tienes reservas todavía</p>
             </div>
           ) : (
-            bookings.map((booking) => (
+            bookings.map((booking) => {
+              const startsAt = booking.classSlot?.startsAt ? new Date(booking.classSlot.startsAt) : null;
+              const hoursUntil = startsAt ? (startsAt.getTime() - Date.now()) / (1000 * 60 * 60) : null;
+              const canCancel = booking.status !== "cancelled" && (hoursUntil === null || hoursUntil >= 12);
+
+              return (
               <div key={booking.id} className="flex items-center justify-between border-b border-black/5 pb-3 last:border-0 last:pb-0">
                 <div>
                   <p className="font-semibold text-sm">
                     {booking.classSlot?.startsAt ? formatDateTime(booking.classSlot.startsAt) : "Horario pendiente"}
                   </p>
-                  <p className="text-xs text-black/40 mt-0.5">{booking.status}</p>
+                  {booking.classSlot?.location && (
+                    <p className="text-xs text-black/50 mt-0.5">{booking.classSlot.location}</p>
+                  )}
+                  <p className="text-xs text-black/30 mt-0.5">{booking.status}</p>
                 </div>
                 {onCancel && booking.status !== "cancelled" && (
+                  canCancel ? (
                   <Button
                     variant="outline"
                     className="h-8 text-xs px-3 text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 shrink-0"
@@ -104,9 +113,13 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditPro
                   >
                     {cancellingId === booking.id ? "..." : "Cancelar"}
                   </Button>
+                  ) : (
+                    <span className="text-xs text-black/30 shrink-0">Sin cancelación</span>
+                  )
                 )}
               </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

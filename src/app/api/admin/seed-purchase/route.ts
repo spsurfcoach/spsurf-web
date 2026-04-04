@@ -1,24 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase/admin";
-import { getRequiredUser, unauthorizedResponse } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Temporary dev-only endpoint.
- * POST /api/admin/seed-purchase
- * Creates a 10-credit test purchase for the currently logged-in user.
+ * POST /api/admin/seed-purchase  body: { "userId": "<firebase-uid>" }
+ * Creates a 10-credit test purchase for the given userId.
  * Delete this file once done testing.
  */
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
-    const user = await getRequiredUser();
+    const body = (await request.json()) as { userId?: string };
+    if (!body.userId) {
+      return NextResponse.json({ error: "userId is required in body" }, { status: 400 });
+    }
 
     const now = new Date().toISOString();
     const ref = adminDb.collection("purchases").doc();
 
     await ref.set({
-      userId: user.uid,
+      userId: body.userId,
       packageId: "seed-test",
       packageType: "credits",
       remainingCredits: 10,
@@ -30,11 +32,8 @@ export async function POST() {
       updatedAt: now,
     });
 
-    return NextResponse.json({ ok: true, purchaseId: ref.id, userId: user.uid, credits: 10 });
+    return NextResponse.json({ ok: true, purchaseId: ref.id, userId: body.userId, credits: 10 });
   } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return unauthorizedResponse();
-    }
-    return NextResponse.json({ error: "Failed to seed purchase" }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
