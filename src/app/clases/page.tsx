@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
@@ -46,7 +46,7 @@ type PurchaseItem = {
   status: string;
 };
 
-export default function ClasesPage() {
+function ClasesPageContent() {
   const { user, loading, loginWithGoogle, loginWithEmail, signupWithEmail, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -312,5 +312,13 @@ export default function ClasesPage() {
         }}
       />
     </div>
+  );
+}
+
+export default function ClasesPage() {
+  return (
+    <Suspense>
+      <ClasesPageContent />
+    </Suspense>
   );
 }
