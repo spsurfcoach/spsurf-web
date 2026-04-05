@@ -16,8 +16,9 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ id
   try {
     await requireAdmin();
     const { id } = await context.params;
+
     const snapshot = await adminDb.collection("bookings").where("classSlotId", "==", id).get();
-    const items = snapshot.docs
+    const rawItems = snapshot.docs
       .map((doc) => ({
         id: doc.id,
         ...serializeFirestore(doc.data()),
@@ -27,6 +28,31 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ id
           String((b as Record<string, unknown>).bookedAt ?? ""),
         ),
       );
+
+    // Batch-fetch student names from profiles
+    const uids = rawItems
+      .map((item) => String((item as Record<string, unknown>).userId ?? ""))
+      .filter(Boolean);
+
+    const profileMap = new Map<string, string>();
+    if (uids.length > 0) {
+      const profileDocs = await Promise.all(
+        uids.map((uid) => adminDb.collection("profiles").doc(uid).get()),
+      );
+      profileDocs.forEach((doc, i) => {
+        if (doc.exists) {
+          const data = doc.data() as { fullName?: string };
+          if (data.fullName) profileMap.set(uids[i], data.fullName);
+        }
+      });
+    }
+
+    const items = rawItems.map((item) => {
+      const rec = item as Record<string, unknown>;
+      const uid = String(rec.userId ?? "");
+      return { ...item, fullName: profileMap.get(uid) ?? null };
+    });
+
     return NextResponse.json({ items });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();

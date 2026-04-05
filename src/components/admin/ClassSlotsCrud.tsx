@@ -18,7 +18,7 @@ type Props = {
   isLoading?: boolean;
   onCreate: (payload: { startsAt: string; capacity: number; location: string }) => Promise<void>;
   onToggle: (id: string, current: boolean) => Promise<void>;
-  onSelectSlot: (id: string) => void;
+  onSelectSlot?: (id: string) => void;
 };
 
 function toDateKey(date: Date) {
@@ -265,9 +265,11 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
                       </div>
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                      <Button variant="outline" className="flex-1 sm:flex-none font-bold" onClick={() => onSelectSlot(slot.id)}>
-                        Ver reservas
-                      </Button>
+                      {onSelectSlot && (
+                        <Button variant="outline" className="flex-1 sm:flex-none font-bold" onClick={() => onSelectSlot(slot.id)}>
+                          Ver reservas
+                        </Button>
+                      )}
                       <Button
                         variant={slot.isActive ? "secondary" : "primary"}
                         className="flex-1 sm:flex-none font-bold"

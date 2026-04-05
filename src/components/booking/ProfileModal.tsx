@@ -18,6 +18,8 @@ type Props = {
   userEmail: string;
   onSave: (data: Partial<UserProfileDoc>) => Promise<void>;
   onClose: () => void;
+  /** Optional banner shown at the top — use when the form is a prerequisite for another action */
+  contextMessage?: string;
 };
 
 const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = [
@@ -145,7 +147,7 @@ const defaultForm = (): Partial<UserProfileDoc> => ({
   authorizesImageUse: false,
 });
 
-export function ProfileModal({ open, initialData, userEmail, onSave, onClose }: Props) {
+export function ProfileModal({ open, initialData, userEmail, onSave, onClose, contextMessage }: Props) {
   const [form, setForm] = useState<Partial<UserProfileDoc>>(defaultForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -253,6 +255,13 @@ export function ProfileModal({ open, initialData, userEmail, onSave, onClose }: 
 
           {/* Form */}
           <div className="px-6 py-6 space-y-10">
+
+            {contextMessage && (
+              <div className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3.5 text-sm text-amber-800">
+                <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{contextMessage}</span>
+              </div>
+            )}
 
             {/* S1: Datos personales */}
             <section>

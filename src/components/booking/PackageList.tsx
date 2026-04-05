@@ -106,11 +106,15 @@ export function PackageList({ items, onCheckout }: Props) {
       <div className="space-y-3">
         {sorted.map((pkg) => {
           const imgIdx = (photoIndex.get(pkg.id) ?? 0) % PHOTOS.length;
+          const detail =
+            pkg.type === "credits"
+              ? `${pkg.classCount ?? 0} sesiones · Videoanálisis incluido`
+              : `Ilimitado · ${pkg.durationDays ?? 30} días`;
 
           return (
             <div
               key={pkg.id}
-              className="group relative overflow-hidden rounded-2xl h-[120px]"
+              className="group relative overflow-hidden rounded-2xl h-[148px] md:h-[120px]"
             >
               {/* Photo background */}
               <Image
@@ -120,12 +124,12 @@ export function PackageList({ items, onCheckout }: Props) {
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               {/* Dark overlay */}
-              <div className="absolute inset-0 bg-black/55" />
+              <div className="absolute inset-0 bg-black/60" />
 
-              {/* Content — fully centered vertically */}
-              <div className="absolute inset-0 flex items-center justify-between gap-4 px-6">
-                {/* Left: badge + name + detail */}
-                <div className="flex items-center gap-4 min-w-0">
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-between px-4 py-3 md:flex-row md:items-center md:px-6 md:py-0 md:gap-4">
+                {/* Top / left: badge + name + detail */}
+                <div className="flex items-center gap-3 min-w-0">
                   <span
                     className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${
                       pkg.type === "unlimited"
@@ -136,24 +140,22 @@ export function PackageList({ items, onCheckout }: Props) {
                     {TYPE_LABELS[pkg.type]}
                   </span>
                   <div className="min-w-0">
-                    <p className="font-bold text-white text-lg leading-tight truncate">
+                    <p className="font-bold text-white text-base md:text-lg leading-tight truncate">
                       {pkg.name}
                     </p>
-                    <p className="text-white/70 text-sm mt-0.5">
-                      {pkg.type === "credits"
-                        ? `${pkg.classCount ?? 0} sesiones · Videoanálisis incluido`
-                        : `Ilimitado · ${pkg.durationDays ?? 30} días`}
+                    <p className="text-white/65 text-xs md:text-sm mt-0.5 truncate">
+                      {detail}
                     </p>
                   </div>
                 </div>
 
-                {/* Right: price + button */}
-                <div className="flex items-center gap-4 shrink-0">
+                {/* Bottom / right: price + button */}
+                <div className="flex items-center justify-between md:justify-end gap-3 md:gap-4 shrink-0">
                   <p className="text-xl font-bold text-white tabular-nums">
                     {toCurrencyPEN(pkg.price)}
                   </p>
                   <Button
-                    className="h-10 px-5 rounded-full font-semibold bg-white text-black hover:bg-white/90 text-sm shrink-0"
+                    className="h-9 md:h-10 px-5 rounded-full font-semibold bg-white text-black hover:bg-white/90 text-sm shrink-0"
                     disabled={loadingId === pkg.id}
                     onClick={async () => {
                       setLoadingId(pkg.id);

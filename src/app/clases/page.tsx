@@ -13,6 +13,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiFetch } from "@/lib/api-client";
 
+function isProfileComplete(profile: Partial<UserProfileDoc> | null | undefined): boolean {
+  if (!profile) return false;
+  return !!(
+    profile.fullName &&
+    profile.dni &&
+    profile.birthDate &&
+    profile.phone &&
+    profile.email &&
+    profile.emergencyName &&
+    profile.emergencyRelation &&
+    profile.emergencyPhone &&
+    (profile.medicalConditions ?? []).length > 0 &&
+    (profile.goals ?? []).length > 0 &&
+    profile.declaresGoodHealth &&
+    profile.understandsRisk &&
+    profile.acceptsTerms
+  );
+}
+
 
 type PackageItem = {
   id: string;
@@ -60,6 +79,7 @@ function ClasesPageContent() {
   const [message, setMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"comprar" | "reservar">("comprar");
   const [profileOpen, setProfileOpen] = useState(false);
+  const [pendingTab, setPendingTab] = useState<"reservar" | null>(null);
   // undefined = not yet loaded; null = loaded but no profile exists
   const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
   const autoOpenedRef = useRef(false);
@@ -210,7 +230,14 @@ function ClasesPageContent() {
                 <button
                   key={tab}
                   type="button"
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => {
+                    if (tab === "reservar" && !isProfileComplete(profile)) {
+                      setPendingTab("reservar");
+                      setProfileOpen(true);
+                    } else {
+                      setActiveTab(tab);
+                    }
+                  }}
                   className={`px-6 py-2.5 rounded-lg text-sm font-medium capitalize transition-all ${
                     activeTab === tab
                       ? "bg-white shadow-sm text-black"
@@ -254,6 +281,11 @@ function ClasesPageContent() {
                 <ClassSlotList
                   items={slots}
                   onBook={async (slotId) => {
+                    if (!isProfileComplete(profile)) {
+                      setPendingTab("reservar");
+                      setProfileOpen(true);
+                      return;
+                    }
                     try {
                       await apiFetch("/api/bookings", {
                         method: "POST",
@@ -298,7 +330,15 @@ function ClasesPageContent() {
         open={profileOpen}
         initialData={profile ?? null}
         userEmail={user?.email ?? ""}
-        onClose={() => setProfileOpen(false)}
+        contextMessage={
+          pendingTab === "reservar"
+            ? "Para reservar una clase necesitas completar tu perfil de alumno primero."
+            : undefined
+        }
+        onClose={() => {
+          setProfileOpen(false);
+          setPendingTab(null);
+        }}
         onSave={async (data) => {
           await apiFetch("/api/me/profile", {
             method: "PATCH",
@@ -306,7 +346,10 @@ function ClasesPageContent() {
           });
           setProfile(data);
           setProfileOpen(false);
-          if (paymentStatus === "success") {
+          if (pendingTab === "reservar") {
+            setActiveTab("reservar");
+            setPendingTab(null);
+          } else if (paymentStatus === "success") {
             router.replace("/clases");
           }
         }}

@@ -3,25 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ClassSlotsCrud } from "@/components/admin/ClassSlotsCrud";
-import { PackagesCrud } from "@/components/admin/PackagesCrud";
-import { SlotBookingsView } from "@/components/admin/SlotBookingsView";
+import { ClassesGridView } from "@/components/admin/ClassesGridView";
 import { StudentsDatabaseView } from "@/components/admin/StudentsDatabaseView";
 import type { StudentItem } from "@/components/admin/StudentsDatabaseView";
-import { SurftripInventoryCrud } from "@/components/admin/SurftripInventoryCrud";
-import type { SurftripInventoryItem } from "@/components/admin/SurftripInventoryCrud";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
-
-type PackageItem = {
-  id: string;
-  name: string;
-  type: "credits" | "unlimited";
-  classCount?: number;
-  durationDays?: number;
-  price: number;
-  isActive: boolean;
-};
 
 type SlotItem = {
   id: string;
@@ -32,38 +19,30 @@ type SlotItem = {
   location?: string;
 };
 
-type BookingItem = {
+type EnrolledStudent = {
   id: string;
   userId: string;
   bookedAt: string;
   status: string;
+  fullName: string | null;
 };
 
 export default function AdminPage() {
   const { user, loginWithGoogle, logout } = useAuth();
-  const [packages, setPackages] = useState<PackageItem[]>([]);
   const [slots, setSlots] = useState<SlotItem[]>([]);
-  const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [students, setStudents] = useState<StudentItem[]>([]);
-  const [surftrips, setSurftrips] = useState<SurftripInventoryItem[]>([]);
-  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
-  const [isLoadingBookings, setIsLoadingBookings] = useState(false);
 
   async function loadAdminData() {
     setIsLoadingData(true);
     try {
-      const [packagesRes, slotsRes, studentsRes, surftripsRes] = await Promise.all([
-        apiFetch<{ items: PackageItem[] }>("/api/admin/packages"),
+      const [slotsRes, studentsRes] = await Promise.all([
         apiFetch<{ items: SlotItem[] }>("/api/admin/class-slots"),
         apiFetch<{ items: StudentItem[]; total: number }>("/api/admin/students"),
-        apiFetch<{ items: SurftripInventoryItem[] }>("/api/admin/surftrip-inventory"),
       ]);
-      setPackages(packagesRes.items ?? []);
       setSlots(slotsRes.items ?? []);
       setStudents(studentsRes.items ?? []);
-      setSurftrips(surftripsRes.items ?? []);
     } finally {
       setIsLoadingData(false);
     }
@@ -79,10 +58,14 @@ export default function AdminPage() {
     });
   }, [user]);
 
-  const activePackagesCount = packages.filter((item) => item.isActive).length;
-  const activeSlotsCount = slots.filter((item) => item.isActive).length;
+  const now = new Date().toISOString();
+  const upcomingSlotsCount = slots.filter((s) => s.startsAt >= now && s.isActive).length;
+  const activeSlotsCount = slots.filter((s) => s.isActive).length;
+  const totalEnrolled = slots
+    .filter((s) => s.isActive && s.startsAt >= now)
+    .reduce((sum, s) => sum + s.enrolledCount, 0);
 
-  // --- Not logged in: full-screen photo + login card ---
+  // --- Not logged in ---
   if (!user) {
     return (
       <div className="relative min-h-screen flex items-center justify-center px-4">
@@ -118,7 +101,7 @@ export default function AdminPage() {
     );
   }
 
-  // --- Logged in: clean dashboard ---
+  // --- Logged in ---
   return (
     <div className="min-h-screen bg-[var(--color-background-default)] pb-20 pt-10">
       <div className="container-site space-y-10">
@@ -139,11 +122,13 @@ export default function AdminPage() {
         </div>
 
         {message ? (
-          <div className={`rounded-xl px-4 py-3 text-sm font-medium ${
-            message.type === "success"
-              ? "bg-emerald-500/10 text-emerald-900 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-900 border border-red-500/20"
-          }`}>
+          <div
+            className={`rounded-xl px-4 py-3 text-sm font-medium ${
+              message.type === "success"
+                ? "bg-emerald-500/10 text-emerald-900 border border-emerald-500/20"
+                : "bg-red-500/10 text-red-900 border border-red-500/20"
+            }`}
+          >
             {message.text}
           </div>
         ) : null}
@@ -151,20 +136,67 @@ export default function AdminPage() {
         {/* Stat cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Paquetes activos", value: activePackagesCount },
+            { label: "Próximas clases", value: upcomingSlotsCount },
             { label: "Horarios activos", value: activeSlotsCount },
-            { label: "Reservas del horario", value: selectedSlotId ? bookings.length : 0 },
+            { label: "Inscritos (próximas)", value: totalEnrolled },
             { label: "Estudiantes", value: students.length },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl border border-black/10 border-t-[3px] border-t-[var(--color-primary-500)] bg-white p-6 shadow-sm">
+            <div
+              key={stat.label}
+              className="rounded-2xl border border-black/10 border-t-[3px] border-t-[var(--color-primary-500)] bg-white p-6 shadow-sm"
+            >
               <p className="text-sm text-black/40 mb-2">{stat.label}</p>
-              <p className="text-5xl font-bold tracking-tighter text-[var(--color-primary-900)]">{stat.value}</p>
+              <p className="text-5xl font-bold tracking-tighter text-[var(--color-primary-900)]">
+                {stat.value}
+              </p>
             </div>
           ))}
         </div>
 
         {/* Sections */}
         <div className="space-y-10">
+          {/* Classes grid — upcoming classes with enrolled students */}
+          <ClassesGridView
+            items={slots}
+            onFetchStudents={async (slotId) => {
+              const res = await apiFetch<{ items: EnrolledStudent[] }>(
+                `/api/admin/class-slots/${slotId}/bookings`,
+              );
+              return res.items ?? [];
+            }}
+          />
+
+          {/* Coach agenda — create + calendar */}
+          <ClassSlotsCrud
+            items={slots}
+            isLoading={isLoadingData}
+            onCreate={async (payload) => {
+              try {
+                await apiFetch("/api/admin/class-slots", {
+                  method: "POST",
+                  body: JSON.stringify(payload),
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Horario creado correctamente." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo crear el horario." });
+              }
+            }}
+            onToggle={async (id, current) => {
+              try {
+                await apiFetch("/api/admin/class-slots", {
+                  method: "PATCH",
+                  body: JSON.stringify({ id, patch: { isActive: !current } }),
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Estado del horario actualizado." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo actualizar el horario." });
+              }
+            }}
+          />
+
+          {/* Students database */}
           <StudentsDatabaseView
             items={students}
             onAdjustCredits={async (purchaseId, delta) => {
@@ -176,116 +208,6 @@ export default function AdminPage() {
               setMessage({ type: "success", text: "Créditos actualizados." });
             }}
           />
-
-          <SurftripInventoryCrud
-            items={surftrips}
-            isLoading={isLoadingData}
-            onCreate={async (payload) => {
-              try {
-                await apiFetch("/api/admin/surftrip-inventory", { method: "POST", body: JSON.stringify(payload) });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Surftrip creado correctamente." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo crear el surftrip." });
-              }
-            }}
-            onToggle={async (id, current) => {
-              try {
-                await apiFetch("/api/admin/surftrip-inventory", {
-                  method: "PATCH",
-                  body: JSON.stringify({ id, patch: { isActive: !current } }),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Estado del surftrip actualizado." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo actualizar el surftrip." });
-              }
-            }}
-          />
-
-          <PackagesCrud
-            items={packages}
-            isLoading={isLoadingData}
-            onCreate={async (payload) => {
-              try {
-                await apiFetch("/api/admin/packages", { method: "POST", body: JSON.stringify(payload) });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Paquete creado correctamente." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo crear el paquete." });
-              }
-            }}
-            onToggle={async (id, current) => {
-              try {
-                await apiFetch("/api/admin/packages", {
-                  method: "PATCH",
-                  body: JSON.stringify({ id, patch: { isActive: !current } }),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Estado del paquete actualizado." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo actualizar el paquete." });
-              }
-            }}
-          />
-
-          <div className="grid gap-10 lg:grid-cols-[1fr_400px]">
-            <ClassSlotsCrud
-              items={slots}
-              isLoading={isLoadingData}
-              onCreate={async (payload) => {
-                try {
-                  await apiFetch("/api/admin/class-slots", { method: "POST", body: JSON.stringify(payload) });
-                  await loadAdminData();
-                  setMessage({ type: "success", text: "Horario creado correctamente." });
-                } catch {
-                  setMessage({ type: "error", text: "No se pudo crear el horario." });
-                }
-              }}
-              onToggle={async (id, current) => {
-                try {
-                  await apiFetch("/api/admin/class-slots", {
-                    method: "PATCH",
-                    body: JSON.stringify({ id, patch: { isActive: !current } }),
-                  });
-                  await loadAdminData();
-                  setMessage({ type: "success", text: "Estado del horario actualizado." });
-                } catch {
-                  setMessage({ type: "error", text: "No se pudo actualizar el horario." });
-                }
-              }}
-              onSelectSlot={async (id) => {
-                setIsLoadingBookings(true);
-                try {
-                  setSelectedSlotId(id);
-                  const response = await apiFetch<{ items: BookingItem[] }>(`/api/admin/class-slots/${id}/bookings`);
-                  setBookings(response.items ?? []);
-                } catch {
-                  setMessage({ type: "error", text: "No se pudieron cargar las reservas del horario." });
-                } finally {
-                  setIsLoadingBookings(false);
-                }
-              }}
-            />
-
-            <div>
-              {selectedSlotId ? (
-                isLoadingBookings ? (
-                  <div className="rounded-2xl border border-dashed border-black/20 p-8 text-center">
-                    <p className="text-sm text-black/40">Cargando reservas...</p>
-                  </div>
-                ) : (
-                  <div className="sticky top-24">
-                    <SlotBookingsView items={bookings} />
-                  </div>
-                )
-              ) : (
-                <div className="sticky top-24 rounded-2xl border border-dashed border-black/20 p-8 text-center">
-                  <p className="text-sm text-black/40">Selecciona un horario para ver sus reservas</p>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
