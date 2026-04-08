@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
+import { purchaseCanBookClasses } from "@/lib/booking/guards";
 import { getRequiredUser, unauthorizedResponse } from "@/lib/server-auth";
 import type { BookingDoc, PurchaseDoc } from "@/lib/booking/types";
 
@@ -70,7 +71,7 @@ export async function DELETE(
 
       if (purchaseSnap.exists) {
         const purchase = purchaseSnap.data() as PurchaseDoc;
-        if (purchase.packageType === "credits") {
+        if (purchaseCanBookClasses(purchase) && purchase.packageType === "credits") {
           transaction.update(purchaseRef, {
             remainingCredits: FieldValue.increment(1),
             updatedAt: nowIso,

@@ -1,6 +1,9 @@
 export type PackageType = "credits" | "unlimited";
 export type PurchaseStatus = "approved" | "pending" | "rejected" | "cancelled";
 export type BookingStatus = "booked" | "cancelled";
+export type ProductCategory = "package" | "membership" | "videoanalysis" | "surfskate" | "surftrip";
+export type ProductFulfillmentType = "class_booking" | "direct_purchase" | "surftrip_booking";
+export type ProductSourceCollection = "packages" | "products" | "surftripInventory";
 
 export type PackageDoc = {
   name: string;
@@ -10,6 +13,33 @@ export type PackageDoc = {
   price: number;
   currency: "PEN";
   isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProductDoc = {
+  slug: string;
+  name: string;
+  shortDescription: string;
+  description?: string;
+  category: ProductCategory;
+  fulfillmentType: ProductFulfillmentType;
+  price: number;
+  currency: "PEN";
+  isActive: boolean;
+  image?: string;
+  badge?: string;
+  features?: string[];
+  sortOrder?: number;
+  sourceCollection?: ProductSourceCollection;
+  sourceId?: string;
+  packageType?: PackageType;
+  classCount?: number;
+  durationDays?: number;
+  capacity?: number;
+  enrolledCount?: number;
+  startDate?: string;
+  endDate?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -26,22 +56,34 @@ export type ClassSlotDoc = {
 
 export type PurchaseDoc = {
   userId: string;
-  packageId: string;
-  packageType: PackageType;
-  remainingCredits?: number;
-  expiresAt?: string;
+  productId?: string;
+  productName?: string;
+  productCategory?: ProductCategory;
+  fulfillmentType?: ProductFulfillmentType;
+  sourceCollection?: ProductSourceCollection;
+  sourceId?: string;
+  packageId?: string | null;
+  packageType?: PackageType | null;
+  remainingCredits?: number | null;
+  expiresAt?: string | null;
   mercadopagoPaymentId: string;
   mercadopagoPreferenceId: string;
   status: PurchaseStatus;
-  itemType?: "package" | "surftrip";
-  surftripId?: string;
+  itemType?: "package" | "surftrip" | "product";
+  surftripId?: string | null;
   createdAt: string;
   updatedAt?: string;
 };
 
 export type SurftripInventoryDoc = {
+  sanityDocumentId: string;
   sanitySlug: string;
   title: string;
+  shortDescription?: string;
+  cardImageUrl?: string;
+  heroImageUrl?: string;
+  country?: string;
+  level?: string;
   price: number;
   currency: "PEN";
   capacity: number;
@@ -49,6 +91,9 @@ export type SurftripInventoryDoc = {
   startDate: string;
   endDate: string;
   isActive: boolean;
+  sanityUpdatedAt?: string;
+  syncedAt?: string;
+  supersededBySurftripId?: string | null;
   createdAt: string;
   updatedAt: string;
 };

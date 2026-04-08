@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ClassSlotsCrud } from "@/components/admin/ClassSlotsCrud";
 import { ClassesGridView } from "@/components/admin/ClassesGridView";
+import { SurftripInventoryCrud } from "@/components/admin/SurftripInventoryCrud";
+import type { SurftripInventoryItem } from "@/components/admin/SurftripInventoryCrud";
 import { StudentsDatabaseView } from "@/components/admin/StudentsDatabaseView";
 import type { StudentItem } from "@/components/admin/StudentsDatabaseView";
 import { useAuth } from "@/components/providers/AuthProvider";
@@ -31,18 +33,21 @@ export default function AdminPage() {
   const { user, loginWithGoogle, logout } = useAuth();
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [students, setStudents] = useState<StudentItem[]>([]);
+  const [surftripInventory, setSurftripInventory] = useState<SurftripInventoryItem[]>([]);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
 
   async function loadAdminData() {
     setIsLoadingData(true);
     try {
-      const [slotsRes, studentsRes] = await Promise.all([
+      const [slotsRes, studentsRes, surftripInventoryRes] = await Promise.all([
         apiFetch<{ items: SlotItem[] }>("/api/admin/class-slots"),
         apiFetch<{ items: StudentItem[]; total: number }>("/api/admin/students"),
+        apiFetch<{ items: SurftripInventoryItem[] }>("/api/admin/surftrip-inventory"),
       ]);
       setSlots(slotsRes.items ?? []);
       setStudents(studentsRes.items ?? []);
+      setSurftripInventory(surftripInventoryRes.items ?? []);
     } finally {
       setIsLoadingData(false);
     }
@@ -64,6 +69,7 @@ export default function AdminPage() {
   const totalEnrolled = slots
     .filter((s) => s.isActive && s.startsAt >= now)
     .reduce((sum, s) => sum + s.enrolledCount, 0);
+  const activeSurftripsCount = surftripInventory.filter((item) => item.isActive).length;
 
   // --- Not logged in ---
   if (!user) {
@@ -134,12 +140,13 @@ export default function AdminPage() {
         ) : null}
 
         {/* Stat cards */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {[
             { label: "Próximas clases", value: upcomingSlotsCount },
             { label: "Horarios activos", value: activeSlotsCount },
             { label: "Inscritos (próximas)", value: totalEnrolled },
             { label: "Estudiantes", value: students.length },
+            { label: "Surftrips activos", value: activeSurftripsCount },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -206,6 +213,35 @@ export default function AdminPage() {
               });
               await loadAdminData();
               setMessage({ type: "success", text: "Créditos actualizados." });
+            }}
+          />
+
+          <SurftripInventoryCrud
+            items={surftripInventory}
+            isLoading={isLoadingData}
+            onSync={async (sanityDocumentId) => {
+              try {
+                await apiFetch("/api/admin/surftrip-inventory", {
+                  method: "POST",
+                  body: JSON.stringify({ sanityDocumentId }),
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Surftrip resincronizado desde Sanity." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo resincronizar el surftrip." });
+              }
+            }}
+            onToggle={async (id, current) => {
+              try {
+                await apiFetch("/api/admin/surftrip-inventory", {
+                  method: "PATCH",
+                  body: JSON.stringify({ id, patch: { isActive: !current } }),
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: "Estado del surftrip actualizado." });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo actualizar el surftrip." });
+              }
             }}
           />
         </div>

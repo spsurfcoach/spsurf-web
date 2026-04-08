@@ -50,6 +50,13 @@ export const surftrip = defineType({
       validation: (rule) => rule.required().max(320),
     }),
     defineField({
+      name: "price",
+      title: "Checkout Price (PEN)",
+      type: "number",
+      description: "Precio numérico usado por la tienda de clases y el checkout.",
+      validation: (rule) => rule.required().min(1),
+    }),
+    defineField({
       name: "groupSize",
       title: "Group Size",
       type: "string",
@@ -238,18 +245,19 @@ export const surftrip = defineType({
       of: [{ type: "surftripFaqItem" }],
     }),
     defineField({
-      name: "available",
-      title: "Available Spots",
-      type: "number",
-      initialValue: 8,
-      validation: (rule) => rule.required().min(0),
-    }),
-    defineField({
       name: "capacity",
       title: "Total Capacity",
       type: "number",
       initialValue: 12,
+      description: "Capacidad total vendible. Los cupos restantes se calculan en Firebase.",
       validation: (rule) => rule.required().min(1),
+    }),
+    defineField({
+      name: "isActive",
+      title: "Sellable",
+      type: "boolean",
+      description: "Controla si el surftrip debe aparecer como comprable cuando esté publicado.",
+      initialValue: true,
     }),
     defineField({
       name: "featured",
@@ -263,13 +271,15 @@ export const surftrip = defineType({
       title: "title",
       subtitle: "country",
       media: "cardImage",
-      available: "available",
+      price: "price",
       capacity: "capacity",
+      isActive: "isActive",
     },
-    prepare({ title, subtitle, media, available, capacity }) {
+    prepare({ title, subtitle, media, price, capacity, isActive }) {
+      const stateLabel = isActive === false ? "Inactivo" : "Activo";
       return {
         title,
-        subtitle: `${subtitle || "No country"} - ${available ?? 0}/${capacity ?? 0} cupos`,
+        subtitle: `${subtitle || "No country"} - ${stateLabel} - S/. ${price ?? 0} - ${capacity ?? 0} cupos`,
         media,
       };
     },

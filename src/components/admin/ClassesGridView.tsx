@@ -46,12 +46,17 @@ export function ClassesGridView({ items, onFetchStudents }: Props) {
   const [studentsMap, setStudentsMap] = useState<Map<string, EnrolledStudent[]>>(new Map());
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  const PAGE_SIZE = 8;
 
   const now = new Date().toISOString();
   const sorted = [...items].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
   const upcoming = sorted.filter((s) => s.startsAt >= now);
   const past = sorted.filter((s) => s.startsAt < now).reverse();
-  const displayed = showAll ? [...upcoming, ...past] : upcoming;
+  const allDisplayed = showAll ? [...upcoming, ...past] : upcoming;
+  const displayed = allDisplayed.slice(0, visibleCount);
+  const hasMore = visibleCount < allDisplayed.length;
 
   async function toggleExpand(slotId: string) {
     if (expandedId === slotId) {
@@ -87,7 +92,7 @@ export function ClassesGridView({ items, onFetchStudents }: Props) {
         <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
           <button
             type="button"
-            onClick={() => setShowAll(false)}
+            onClick={() => { setShowAll(false); setVisibleCount(PAGE_SIZE); }}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
               !showAll ? "bg-white shadow-sm text-black" : "text-black/50 hover:text-black"
             }`}
@@ -96,7 +101,7 @@ export function ClassesGridView({ items, onFetchStudents }: Props) {
           </button>
           <button
             type="button"
-            onClick={() => setShowAll(true)}
+            onClick={() => { setShowAll(true); setVisibleCount(PAGE_SIZE); }}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
               showAll ? "bg-white shadow-sm text-black" : "text-black/50 hover:text-black"
             }`}
@@ -290,18 +295,28 @@ export function ClassesGridView({ items, onFetchStudents }: Props) {
       {/* Footer */}
       <div className="px-6 py-3 border-t border-black/[0.06] bg-black/[0.01] flex items-center justify-between">
         <p className="text-xs text-black/40">
-          {displayed.length} clase{displayed.length !== 1 ? "s" : ""}
+          {displayed.length} de {allDisplayed.length} clase{allDisplayed.length !== 1 ? "s" : ""}
         </p>
-        {!showAll && past.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setShowAll(true)}
-            className="text-xs font-medium text-black/40 hover:text-black transition-colors"
-          >
-            + {past.length} clase{past.length !== 1 ? "s" : ""} pasada
-            {past.length !== 1 ? "s" : ""}
-          </button>
-        )}
+        <div className="flex items-center gap-4">
+          {!showAll && past.length > 0 && (
+            <button
+              type="button"
+              onClick={() => { setShowAll(true); setVisibleCount(PAGE_SIZE); }}
+              className="text-xs font-medium text-black/40 hover:text-black transition-colors"
+            >
+              + {past.length} pasada{past.length !== 1 ? "s" : ""}
+            </button>
+          )}
+          {hasMore && (
+            <button
+              type="button"
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+              className="text-xs font-semibold text-black/60 hover:text-black transition-colors"
+            >
+              Ver más ({allDisplayed.length - visibleCount} restantes)
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

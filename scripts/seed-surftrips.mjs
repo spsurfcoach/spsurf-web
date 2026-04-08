@@ -2,6 +2,7 @@ import "dotenv/config";
 import { createClient } from "@sanity/client";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { backfillSurftripInventory } from "./surftrip-sync.shared.mjs";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
@@ -79,12 +80,13 @@ async function run() {
       endDate: "2026-05-18",
       shortDescription:
         "Entrena dentro y fuera del agua con sesiones personalizadas, video analisis y una experiencia inmersiva junto a la comunidad SP.",
+      price: 1000,
       groupSize: "12 personas",
       hospedaje: "Hotel Pacifico",
       duracion: "7 dias",
       aeropuerto: "San Salvador (SAL)",
-      available: 8,
       capacity: 15,
+      isActive: true,
       featured: true,
       cardImage: heroSurfCity,
       heroImage: heroSurfCity,
@@ -115,12 +117,13 @@ async function run() {
       endDate: "2026-06-07",
       shortDescription:
         "Un destino iconico para trabajar lectura de ola, lineas largas y control tecnico en condiciones de clase mundial.",
+      price: 1000,
       groupSize: "12 - 20 personas",
       hospedaje: "Buena Vista Lobitos",
       duracion: "10 dias",
       aeropuerto: "Talara (TYL)",
-      available: 8,
       capacity: 16,
+      isActive: true,
       featured: true,
       cardImage: heroChicama,
       heroImage: heroChicama,
@@ -329,12 +332,13 @@ async function run() {
       endDate: "2026-01-20",
       shortDescription:
         "Entrenamiento tecnico enfocado en decisiones dentro del agua, adaptacion a diferentes picos y mejora consistente del rendimiento.",
+      price: 900,
       groupSize: "12 personas",
       hospedaje: "Buena Vista Lobitos",
       duracion: "10 dias",
       aeropuerto: "Talara (TYL)",
-      available: 2,
       capacity: 14,
+      isActive: true,
       featured: false,
       cardImage: heroLobitos,
       heroImage: heroLobitos,
@@ -360,6 +364,10 @@ async function run() {
     await client.createOrReplace(doc);
     console.log(`Seeded ${doc.title}`);
   }
+  await backfillSurftripInventory({
+    documentIds: docs.map((doc) => doc._id),
+  });
+  console.log("Surftrip inventory sync complete.");
   console.log("Surftrip seed complete.");
 }
 

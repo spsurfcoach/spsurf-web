@@ -14,6 +14,7 @@ import { SurftripDetailHero } from "@/components/sections/SurftripDetailHero";
 import { SurftripDetailPackageSection } from "@/components/sections/SurftripDetailPackageSection";
 import { SurftripDetailSummarySection } from "@/components/sections/SurftripDetailSummarySection";
 import { SurftripDetailVideoSection } from "@/components/sections/SurftripDetailVideoSection";
+import { toCurrencyPEN } from "@/lib/utils";
 
 type SurftripBlocksRendererProps = {
   trip: SurftripDetail;
@@ -69,7 +70,11 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
       : "/photos/chicama.jpg";
   const summaryDescription = trip.heroLongDescription || trip.heroSubtitle || trip.shortDescription || "";
   const primaryCtaLabel = trip.primaryCtaLabel || "Reservar ahora";
-  const primaryCtaHref = trip.primaryCtaHref || "#reserva";
+  const defaultStoreHref = trip.storeHref || "#reserva";
+  const primaryCtaHref =
+    !trip.primaryCtaHref || trip.primaryCtaHref === "#reserva"
+      ? defaultStoreHref
+      : trip.primaryCtaHref;
   const waveSection = normalizeFeatureSection(trip.waveSection, {
     eyebrow: "SOBRE LA OLA",
     icon: "🌊",
@@ -88,27 +93,39 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
     bullets: trip.hospedaje ? [`Hospedaje base: ${trip.hospedaje}`] : [],
   });
   const packageSection: SurftripPackageSection =
-    trip.packageSection ?? {
-      title: "Paquete",
-      subtitle: `Surftrip de ${trip.duracion} en ${trip.title}`,
-      priceLabel: "Consultar",
-      priceSuffix: "Precio por persona",
-      depositNote: `${trip.available} cupos disponibles`,
-      columns: [
-        {
-          title: "Incluye",
-          items: [
-            `Nivel recomendado: ${trip.level}`,
-            `Duración: ${trip.duracion}`,
-            `Hospedaje base: ${trip.hospedaje}`,
-            `Aeropuerto sugerido: ${trip.aeropuerto}`,
+    trip.packageSection
+      ? {
+          ...trip.packageSection,
+          priceLabel: trip.packageSection.priceLabel || toCurrencyPEN(trip.price),
+          ctaHref:
+            !trip.packageSection.ctaHref || trip.packageSection.ctaHref === "#reserva"
+              ? defaultStoreHref
+              : trip.packageSection.ctaHref,
+        }
+      : {
+          title: "Paquete",
+          subtitle: `Surftrip de ${trip.duracion} en ${trip.title}`,
+          priceLabel: toCurrencyPEN(trip.price),
+          priceSuffix: "Precio por persona",
+          depositNote:
+            trip.availableSpots > 0
+              ? `${trip.availableSpots} cupos disponibles`
+              : "Completo por el momento",
+          columns: [
+            {
+              title: "Incluye",
+              items: [
+                `Nivel recomendado: ${trip.level}`,
+                `Duración: ${trip.duracion}`,
+                `Hospedaje base: ${trip.hospedaje}`,
+                `Aeropuerto sugerido: ${trip.aeropuerto}`,
+              ],
+            },
           ],
-        },
-      ],
-      addons: [],
-      ctaLabel: primaryCtaLabel,
-      ctaHref: primaryCtaHref,
-    };
+          addons: [],
+          ctaLabel: primaryCtaLabel,
+          ctaHref: primaryCtaHref,
+        };
   const dayDownloadHref = trip.dayInTripSection?.downloadFile ? urlForFile(trip.dayInTripSection.downloadFile) : "";
   const videoPosterSrc = trip.videoSection?.videoPoster
     ? urlForImage(trip.videoSection.videoPoster).width(2200).height(1240).fit("crop").url()

@@ -1,9 +1,18 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
 import { purchaseIsActive, sortPurchasesForConsumption } from "./guards";
-import { ClassSlotDoc, PurchaseDoc, SurftripInventoryDoc } from "./types";
+import { buildPackageProductId, buildSurftripProductId } from "./storefront";
+import {
+  ClassSlotDoc,
+  PackageDoc,
+  ProductDoc,
+  PurchaseDoc,
+  SurftripBookingDoc,
+  SurftripInventoryDoc,
+} from "./types";
 
 const PACKAGES_COLLECTION = "packages";
+const PRODUCTS_COLLECTION = "products";
 const CLASS_SLOTS_COLLECTION = "classSlots";
 const PURCHASES_COLLECTION = "purchases";
 const BOOKINGS_COLLECTION = "bookings";
@@ -32,6 +41,7 @@ export async function getSurftripInventoryById(surftripId: string) {
 export async function createSurftripBookingFromPayment(input: {
   userId: string;
   surftripId: string;
+  productId?: string;
   paymentId: string;
   preferenceId: string;
 }) {
@@ -43,7 +53,12 @@ export async function createSurftripBookingFromPayment(input: {
     .get();
 
   if (!duplicateQuery.empty) {
-    return { idempotent: true, bookingId: duplicateQuery.docs[0].id };
+    const existingBooking = duplicateQuery.docs[0].data() as SurftripBookingDoc;
+    return {
+      idempotent: true,
+      bookingId: duplicateQuery.docs[0].id,
+      slug: existingBooking.sanitySlug,
+    };
   }
 
   const surftripRef = adminDb.collection(SURFTRIP_INVENTORY_COLLECTION).doc(input.surftripId);
@@ -62,8 +77,14 @@ export async function createSurftripBookingFromPayment(input: {
     const purchaseRef = adminDb.collection(PURCHASES_COLLECTION).doc();
     transaction.set(purchaseRef, {
       userId: input.userId,
+      productId: input.productId ?? buildSurftripProductId(input.surftripId),
+      productName: data.title,
+      productCategory: "surftrip",
+      fulfillmentType: "surftrip_booking",
+      sourceCollection: "surftripInventory",
+      sourceId: input.surftripId,
       packageId: input.surftripId,
-      packageType: "credits",
+      packageType: null,
       itemType: "surftrip",
       surftripId: input.surftripId,
       mercadopagoPaymentId: input.paymentId,
@@ -94,7 +115,7 @@ export async function createSurftripBookingFromPayment(input: {
       updatedAt: now,
     });
 
-    return { idempotent: false, bookingId: bookingRef.id };
+    return { idempotent: false, bookingId: bookingRef.id, slug: data.sanitySlug };
   });
 }
 
@@ -103,11 +124,7 @@ export async function getPackageById(packageId: string) {
   if (!snapshot.exists) return null;
   return {
     id: snapshot.id,
-    ...(snapshot.data() as {
-      name: string;
-      isActive: boolean;
-      price: number;
-    }),
+    ...(snapshot.data() as Pick<PackageDoc, "name" | "isActive" | "price" | "type" | "classCount" | "durationDays" | "currency">),
   };
 }
 
@@ -173,9 +190,10 @@ export async function createBookingTransaction(input: BookClassInput): Promise<B
   });
 }
 
-export async function createPurchaseFromPayment(input: {
+export async function createPackagePurchaseFromPayment(input: {
   userId: string;
   packageId: string;
+  productId?: string;
   paymentId: string;
   preferenceId: string;
 }) {
@@ -184,11 +202,7 @@ export async function createPurchaseFromPayment(input: {
     throw new Error("PACKAGE_NOT_FOUND");
   }
 
-  const packageData = packageSnapshot.data() as {
-    type: "credits" | "unlimited";
-    classCount?: number;
-    durationDays?: number;
-  };
+  const packageData = packageSnapshot.data() as PackageDoc;
 
   const duplicateQuery = await adminDb
     .collection(PURCHASES_COLLECTION)
@@ -210,6 +224,12 @@ export async function createPurchaseFromPayment(input: {
 
   await purchaseRef.set({
     userId: input.userId,
+    productId: input.productId ?? buildPackageProductId(input.packageId),
+    productName: packageData.name,
+    productCategory: packageData.type === "unlimited" ? "membership" : "package",
+    fulfillmentType: "class_booking",
+    sourceCollection: "packages",
+    sourceId: input.packageId,
     packageId: input.packageId,
     packageType: packageData.type,
     remainingCredits: packageData.type === "credits" ? packageData.classCount ?? 0 : null,
@@ -222,4 +242,65 @@ export async function createPurchaseFromPayment(input: {
   });
 
   return { idempotent: false, purchaseId: purchaseRef.id };
+}
+
+export async function createDirectPurchaseFromPayment(input: {
+  userId: string;
+  productId: string;
+  paymentId: string;
+  preferenceId: string;
+}) {
+  const productSnapshot = await adminDb.collection(PRODUCTS_COLLECTION).doc(input.productId).get();
+  if (!productSnapshot.exists) {
+    throw new Error("PRODUCT_NOT_FOUND");
+  }
+
+  const product = productSnapshot.data() as ProductDoc;
+  if (product.isActive === false) {
+    throw new Error("PRODUCT_INACTIVE");
+  }
+
+  const duplicateQuery = await adminDb
+    .collection(PURCHASES_COLLECTION)
+    .where("mercadopagoPaymentId", "==", input.paymentId)
+    .limit(1)
+    .get();
+
+  if (!duplicateQuery.empty) {
+    return { idempotent: true, purchaseId: duplicateQuery.docs[0].id };
+  }
+
+  const createdAt = new Date().toISOString();
+  const purchaseRef = adminDb.collection(PURCHASES_COLLECTION).doc();
+
+  await purchaseRef.set({
+    userId: input.userId,
+    productId: input.productId,
+    productName: product.name,
+    productCategory: product.category,
+    fulfillmentType: "direct_purchase",
+    sourceCollection: "products",
+    sourceId: input.productId,
+    packageId: null,
+    packageType: null,
+    remainingCredits: null,
+    expiresAt: null,
+    itemType: "product",
+    mercadopagoPaymentId: input.paymentId,
+    mercadopagoPreferenceId: input.preferenceId,
+    status: "approved",
+    createdAt,
+    updatedAt: createdAt,
+  });
+
+  return { idempotent: false, purchaseId: purchaseRef.id };
+}
+
+export async function createPurchaseFromPayment(input: {
+  userId: string;
+  packageId: string;
+  paymentId: string;
+  preferenceId: string;
+}) {
+  return createPackagePurchaseFromPayment(input);
 }

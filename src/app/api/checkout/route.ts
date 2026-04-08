@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPackageById } from "@/lib/booking/transactions";
+import { getStorefrontProductById } from "@/lib/booking/storefront.server";
 import { getPreferenceClient } from "@/lib/mercadopago/client";
 import { getRequiredUser, unauthorizedResponse } from "@/lib/server-auth";
 
@@ -8,40 +8,52 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const user = await getRequiredUser();
-    const body = (await request.json()) as { packageId?: string };
-    if (!body.packageId) {
-      return NextResponse.json({ error: "packageId is required" }, { status: 400 });
+    const body = (await request.json()) as { productId?: string };
+    if (!body.productId) {
+      return NextResponse.json({ error: "productId is required" }, { status: 400 });
     }
 
-    const packageData = await getPackageById(body.packageId);
-    if (!packageData || packageData.isActive === false) {
-      return NextResponse.json({ error: "Package not found" }, { status: 404 });
+    const product = await getStorefrontProductById(body.productId);
+    if (!product || product.isActive === false) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    if (product.fulfillmentType === "surftrip_booking" && product.capacity != null && product.enrolledCount != null) {
+      if (product.enrolledCount >= product.capacity) {
+        return NextResponse.json({ error: "Surftrip is full" }, { status: 409 });
+      }
     }
 
     const preference = getPreferenceClient();
     const appOrigin = request.nextUrl.origin;
-    const successUrl = process.env.MP_SUCCESS_URL ?? `${appOrigin}/clases?payment=success`;
-    const failureUrl = process.env.MP_FAILURE_URL ?? `${appOrigin}/clases?payment=failure`;
-    const pendingUrl = process.env.MP_PENDING_URL ?? `${appOrigin}/clases?payment=pending`;
+    const successUrl = process.env.MP_SUCCESS_URL ?? `${appOrigin}/clases?tab=comprar&payment=success`;
+    const failureUrl = process.env.MP_FAILURE_URL ?? `${appOrigin}/clases?tab=comprar&payment=failure`;
+    const pendingUrl = process.env.MP_PENDING_URL ?? `${appOrigin}/clases?tab=comprar&payment=pending`;
     const notificationUrl = `${appOrigin}/api/webhooks/mercadopago`;
 
     const result = await preference.create({
       body: {
         items: [
           {
-            id: body.packageId,
-            title: String(packageData.name),
+            id: body.productId,
+            title: String(product.name),
             quantity: 1,
             currency_id: "PEN",
-            unit_price: Number(packageData.price),
+            unit_price: Number(product.price),
           },
         ],
         metadata: {
-          packageId: body.packageId,
+          productId: body.productId,
+          productCategory: product.category,
+          fulfillmentType: product.fulfillmentType,
+          sourceCollection: product.sourceCollection,
+          sourceId: product.sourceId,
+          packageId: product.sourceCollection === "packages" ? product.sourceId : undefined,
+          surftripId: product.sourceCollection === "surftripInventory" ? product.sourceId : undefined,
           userId: user.uid,
           userEmail: user.email ?? "",
         },
-        external_reference: `${user.uid}:${body.packageId}`,
+        external_reference: `${user.uid}:${body.productId}`,
         back_urls: {
           success: successUrl,
           failure: failureUrl,

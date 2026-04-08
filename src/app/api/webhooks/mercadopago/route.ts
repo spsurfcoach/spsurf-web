@@ -1,6 +1,11 @@
 import { createHmac } from "node:crypto";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import { createPurchaseFromPayment, createSurftripBookingFromPayment } from "@/lib/booking/transactions";
+import {
+  createDirectPurchaseFromPayment,
+  createPackagePurchaseFromPayment,
+  createSurftripBookingFromPayment,
+} from "@/lib/booking/transactions";
 import { getPaymentClient } from "@/lib/mercadopago/client";
 
 type MercadoPagoWebhook = {
@@ -11,6 +16,15 @@ type MercadoPagoWebhook = {
 };
 
 export const dynamic = "force-dynamic";
+
+function revalidateSurftripPaths(slug?: string) {
+  revalidatePath("/");
+  revalidatePath("/surftrips");
+  revalidatePath("/clases");
+  if (slug) {
+    revalidatePath(`/surftrips/${slug}`);
+  }
+}
 
 function signatureIsValid(request: NextRequest, dataId: string): boolean {
   const secret = process.env.MP_WEBHOOK_SECRET;
@@ -68,8 +82,12 @@ export async function POST(request: NextRequest) {
     }
 
     const metadata = (payment.metadata ?? {}) as {
-      itemType?: string;
       userId?: string;
+      productId?: string;
+      productCategory?: string;
+      fulfillmentType?: string;
+      sourceCollection?: string;
+      sourceId?: string;
       packageId?: string;
       surftripId?: string;
     };
@@ -80,26 +98,41 @@ export async function POST(request: NextRequest) {
 
     const preferenceId = String(payment.order?.id ?? payment.id);
 
-    if (metadata.itemType === "surftrip") {
+    if (metadata.fulfillmentType === "surftrip_booking" || metadata.productCategory === "surftrip") {
       if (!metadata.surftripId) {
         return NextResponse.json({ error: "Missing surftripId in metadata" }, { status: 400 });
       }
       const result = await createSurftripBookingFromPayment({
         userId: metadata.userId,
         surftripId: metadata.surftripId,
+        productId: metadata.productId,
+        paymentId: String(payment.id),
+        preferenceId,
+      });
+      revalidateSurftripPaths(result.slug);
+      return NextResponse.json({ ok: true, ...result });
+    }
+
+    if (metadata.fulfillmentType === "direct_purchase") {
+      if (!metadata.productId) {
+        return NextResponse.json({ error: "Missing productId in metadata" }, { status: 400 });
+      }
+      const result = await createDirectPurchaseFromPayment({
+        userId: metadata.userId,
+        productId: metadata.productId,
         paymentId: String(payment.id),
         preferenceId,
       });
       return NextResponse.json({ ok: true, ...result });
     }
 
-    // Default: class package
     if (!metadata.packageId) {
       return NextResponse.json({ error: "Missing packageId in metadata" }, { status: 400 });
     }
-    const result = await createPurchaseFromPayment({
+    const result = await createPackagePurchaseFromPayment({
       userId: metadata.userId,
       packageId: metadata.packageId,
+      productId: metadata.productId,
       paymentId: String(payment.id),
       preferenceId,
     });

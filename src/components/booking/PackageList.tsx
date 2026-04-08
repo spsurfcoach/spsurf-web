@@ -3,39 +3,44 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_PRODUCT_IMAGES, productCategoryLabel } from "@/lib/booking/storefront";
 import { toCurrencyPEN } from "@/lib/utils";
 
 type PackageItem = {
   id: string;
   name: string;
-  type: "credits" | "unlimited";
+  category: "package" | "membership" | "videoanalysis" | "surfskate" | "surftrip";
+  fulfillmentType: "class_booking" | "direct_purchase" | "surftrip_booking";
+  shortDescription: string;
+  description?: string;
   classCount?: number;
   durationDays?: number;
+  capacity?: number;
+  enrolledCount?: number;
+  startDate?: string;
+  endDate?: string;
   price: number;
+  image?: string;
+  badge?: string;
+  features?: string[];
 };
 
 type Props = {
   items: PackageItem[];
-  onCheckout: (packageId: string) => Promise<void>;
+  onCheckout: (productId: string) => Promise<void>;
 };
 
-type FilterType = "all" | "credits" | "unlimited";
+type FilterType = "all" | PackageItem["category"];
 type SortOrder = "asc" | "desc";
 
-const TYPE_LABELS: Record<string, string> = {
-  credits: "Paquete de clases",
-  unlimited: "Membership",
+const FILTER_LABELS: Record<FilterType, string> = {
+  all: "Todos",
+  membership: "Memberships",
+  package: "Paquetes",
+  videoanalysis: "Videoanalisis",
+  surfskate: "Surfskate",
+  surftrip: "Surftrips",
 };
-
-// One photo per package slot — loops if more packages than photos
-const PHOTOS = [
-  "/photos/servicios_paquete_premium.jpg",
-  "/photos/servicios_paquete_standard.jpg",
-  "/photos/servicios_paquete_starter.jpg",
-  "/photos/home1.jpg",
-  "/photos/home2.jpg",
-  "/photos/servicios_hero.jpg",
-];
 
 export function PackageList({ items, onCheckout }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -43,29 +48,47 @@ export function PackageList({ items, onCheckout }: Props) {
   const [sort, setSort] = useState<SortOrder | null>(null);
 
   if (items.length === 0) {
-    return <div className="text-black/60 text-sm">No hay paquetes disponibles en este momento.</div>;
+    return <div className="text-black/60 text-sm">No hay productos disponibles en este momento.</div>;
   }
 
-  const filtered = items.filter((pkg) => filter === "all" || pkg.type === filter);
+  const filtered = items.filter((product) => filter === "all" || product.category === filter);
   const sorted = sort
-    ? [...filtered].sort((a, b) => sort === "asc" ? a.price - b.price : b.price - a.price)
+    ? [...filtered].sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price))
     : [...filtered].sort((a, b) => {
-        if (a.type !== b.type) return a.type === "unlimited" ? -1 : 1;
-        return 0;
+        if (a.category === b.category) return a.name.localeCompare(b.name);
+        const order = ["membership", "package", "videoanalysis", "surfskate", "surftrip"];
+        return order.indexOf(a.category) - order.indexOf(b.category);
       });
 
-  // Keep stable photo index based on original order (before filter/sort)
-  const photoIndex = new Map(items.map((pkg, i) => [pkg.id, i]));
+  const tabs = (["all", ...new Set(items.map((item) => item.category))] as FilterType[]).map((key) => ({
+    key,
+    label: FILTER_LABELS[key],
+  }));
 
-  const tabs: { key: FilterType; label: string }[] = [
-    { key: "all", label: "Todos" },
-    { key: "unlimited", label: "Membership" },
-    { key: "credits", label: "Paquetes" },
-  ];
+  function productMeta(product: PackageItem) {
+    if (product.category === "package") {
+      return `${product.classCount ?? 0} clases`;
+    }
+
+    if (product.category === "membership") {
+      return `Ilimitado por ${product.durationDays ?? 30} dias`;
+    }
+
+    if (product.category === "surftrip" && product.startDate && product.endDate) {
+      return `${new Date(product.startDate).toLocaleDateString("es-PE")} - ${new Date(product.endDate).toLocaleDateString("es-PE")}`;
+    }
+
+    return product.shortDescription;
+  }
+
+  function ctaLabel(product: PackageItem, soldOut: boolean) {
+    if (soldOut) return "Sin cupos";
+    if (product.fulfillmentType === "surftrip_booking") return "Comprar surftrip";
+    return "Comprar";
+  }
 
   return (
-    <div className="space-y-4">
-      {/* Filter + sort bar */}
+    <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
           {tabs.map((tab) => (
@@ -102,71 +125,81 @@ export function PackageList({ items, onCheckout }: Props) {
         </button>
       </div>
 
-      {/* Cards */}
-      <div className="space-y-3">
-        {sorted.map((pkg) => {
-          const imgIdx = (photoIndex.get(pkg.id) ?? 0) % PHOTOS.length;
-          const detail =
-            pkg.type === "credits"
-              ? `${pkg.classCount ?? 0} sesiones · Videoanálisis incluido`
-              : `Ilimitado · ${pkg.durationDays ?? 30} días`;
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {sorted.map((product) => {
+          const soldOut =
+            product.fulfillmentType === "surftrip_booking" &&
+            product.capacity != null &&
+            product.enrolledCount != null &&
+            product.enrolledCount >= product.capacity;
+          const image = product.image ?? DEFAULT_PRODUCT_IMAGES[product.category];
+          const remainingSeats =
+            product.capacity != null && product.enrolledCount != null
+              ? Math.max(0, product.capacity - product.enrolledCount)
+              : null;
 
           return (
             <div
-              key={pkg.id}
-              className="group relative overflow-hidden rounded-2xl h-[148px] md:h-[120px]"
+              key={product.id}
+              className="overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1"
             >
-              {/* Photo background */}
-              <Image
-                src={PHOTOS[imgIdx]}
-                alt={pkg.name}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {/* Dark overlay */}
-              <div className="absolute inset-0 bg-black/60" />
-
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-between px-4 py-3 md:flex-row md:items-center md:px-6 md:py-0 md:gap-4">
-                {/* Top / left: badge + name + detail */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      pkg.type === "unlimited"
-                        ? "bg-amber-400/20 text-amber-400 border border-amber-400/40"
-                        : "bg-white/20 text-white border border-white/30"
-                    }`}
-                  >
-                    {TYPE_LABELS[pkg.type]}
+              <div className="relative h-52 overflow-hidden">
+                <Image src={image} alt={product.name} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute left-5 right-5 top-5 flex items-start justify-between gap-3">
+                  <span className="rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                    {product.badge ?? productCategoryLabel(product.category)}
                   </span>
-                  <div className="min-w-0">
-                    <p className="font-bold text-white text-base md:text-lg leading-tight truncate">
-                      {pkg.name}
+                  {soldOut ? (
+                    <span className="rounded-full bg-red-500/90 px-3 py-1 text-xs font-semibold text-white">
+                      Completo
+                    </span>
+                  ) : null}
+                </div>
+                <div className="absolute bottom-5 left-5 right-5">
+                  <p className="text-xl font-bold text-white">{product.name}</p>
+                  <p className="mt-1 text-sm text-white/75">{productMeta(product)}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 px-5 py-5">
+                <div>
+                  <p className="text-sm text-black/60">{product.description ?? product.shortDescription}</p>
+                  {product.category === "surftrip" && remainingSeats != null ? (
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-primary-900)]">
+                      {remainingSeats} cupos disponibles
                     </p>
-                    <p className="text-white/65 text-xs md:text-sm mt-0.5 truncate">
-                      {detail}
-                    </p>
-                  </div>
+                  ) : null}
                 </div>
 
-                {/* Bottom / right: price + button */}
-                <div className="flex items-center justify-between md:justify-end gap-3 md:gap-4 shrink-0">
-                  <p className="text-xl font-bold text-white tabular-nums">
-                    {toCurrencyPEN(pkg.price)}
-                  </p>
+                {product.features?.length ? (
+                  <div className="flex flex-wrap gap-2">
+                    {product.features.slice(0, 3).map((feature) => (
+                      <span key={feature} className="rounded-full bg-black/[0.04] px-3 py-1 text-xs text-black/60">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.14em] text-black/40">Precio</p>
+                    <p className="text-2xl font-bold text-black">{toCurrencyPEN(product.price)}</p>
+                  </div>
                   <Button
-                    className="h-9 md:h-10 px-5 rounded-full font-semibold bg-white text-black hover:bg-white/90 text-sm shrink-0"
-                    disabled={loadingId === pkg.id}
+                    className="h-11 rounded-full bg-[var(--color-primary-900)] px-5 font-semibold text-white hover:bg-[var(--color-primary-700)]"
+                    disabled={loadingId === product.id || soldOut}
                     onClick={async () => {
-                      setLoadingId(pkg.id);
+                      setLoadingId(product.id);
                       try {
-                        await onCheckout(pkg.id);
+                        await onCheckout(product.id);
                       } finally {
                         setLoadingId(null);
                       }
                     }}
                   >
-                    {loadingId === pkg.id ? "Cargando..." : "Comprar"}
+                    {loadingId === product.id ? "Cargando..." : ctaLabel(product, soldOut)}
                   </Button>
                 </div>
               </div>

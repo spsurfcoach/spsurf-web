@@ -13,8 +13,9 @@ export const SURFTRIP_LIST_QUERY = groq`*[_type == "surftrip"] | order(startDate
   hospedaje,
   duracion,
   aeropuerto,
-  available,
+  price,
   capacity,
+  isActive,
   featured,
   cardImage
 }`;
@@ -34,8 +35,9 @@ export const SURFTRIP_BY_SLUG_QUERY = groq`*[_type == "surftrip" && slug.current
   hospedaje,
   duracion,
   aeropuerto,
-  available,
+  price,
   capacity,
+  isActive,
   featured,
   cardImage,
   heroImage,

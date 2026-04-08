@@ -87,6 +87,16 @@ export type SurftripFaqItem = {
   answer: string;
 };
 
+export type SurftripCommerceState = {
+  price: number;
+  capacity: number;
+  enrolledCount: number;
+  availableSpots: number;
+  isActive: boolean;
+  storeProductId?: string;
+  storeHref?: string;
+};
+
 export type SurftripListItem = {
   _id: string;
   title: string;
@@ -100,9 +110,14 @@ export type SurftripListItem = {
   hospedaje: string;
   duracion: string;
   aeropuerto: string;
-  available: number;
+  price: number;
   capacity: number;
   featured: boolean;
+  isActive: boolean;
+  enrolledCount: number;
+  availableSpots: number;
+  storeProductId?: string;
+  storeHref?: string;
   cardImage: SanityImage | null;
 };
 

@@ -1,8 +1,8 @@
 import { RevealGroup } from "@/components/animations/Reveal";
 import type { SurftripListItem } from "@/lib/sanity";
 
-function fillColor(available: number, capacity: number): string {
-  const ratio = available / capacity;
+function fillColor(availableSpots: number, capacity: number): string {
+  const ratio = availableSpots / capacity;
   if (ratio <= 0.2) return "rgba(251,210,199,0.9)";
   if (ratio <= 0.5) return "rgba(255,203,147,0.4)";
   return "#d4efc4";
@@ -12,7 +12,7 @@ type CalendarItem = {
   destination: string;
   dates: string;
   level: string;
-  available: number;
+  availableSpots: number;
   capacity: number;
 };
 
@@ -40,9 +40,9 @@ function formatDateRange(startDate: string, endDate: string) {
 
 function CalendarRow({ item }: { item: CalendarItem }) {
   const safeCapacity = Math.max(item.capacity, 1);
-  const taken = Math.min(Math.max(item.capacity - item.available, 0), safeCapacity);
+  const taken = Math.min(Math.max(item.capacity - item.availableSpots, 0), safeCapacity);
   const fillPct = (taken / safeCapacity) * 100;
-  const color = fillColor(item.available, safeCapacity);
+  const color = fillColor(item.availableSpots, safeCapacity);
 
   return (
     <div className="relative h-[67px] overflow-hidden rounded-[40px] border-2 border-black">
@@ -67,7 +67,7 @@ function CalendarRow({ item }: { item: CalendarItem }) {
         <div className="flex shrink-0 items-center gap-4">
           {/* Available count */}
           <span className="text-[14px] font-bold text-black whitespace-nowrap">
-            {item.available} DISPONIBLES
+            {item.availableSpots <= 0 ? "COMPLETO" : `${item.availableSpots} DISPONIBLES`}
           </span>
           {/* Dates */}
           <span className="hidden text-[16px] text-black/50 sm:block whitespace-nowrap">
@@ -87,7 +87,7 @@ export function SurftripsCalendarSection({ trips }: SurftripsCalendarSectionProp
       destination: trip.title,
       dates: formatDateRange(trip.startDate, trip.endDate),
       level: trip.level,
-      available: trip.available,
+      availableSpots: trip.availableSpots,
       capacity: trip.capacity,
     }));
 

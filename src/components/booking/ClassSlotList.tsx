@@ -47,6 +47,7 @@ export function ClassSlotList({ items, onBook }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(() => toMonthKey(new Date()));
   const [selectedDayKey, setSelectedDayKey] = useState<string | null>(() => toDateKey(new Date()));
+  const [locationFilter, setLocationFilter] = useState<"all" | "Lima" | "Sur Chico">("all");
 
   const slotsByDateKey = useMemo(() => {
     const grouped = new Map<string, SlotItem[]>();
@@ -81,13 +82,17 @@ export function ClassSlotList({ items, onBook }: Props) {
   }, [selectedMonth]);
 
   const filteredSlots = useMemo(() => {
-    if (selectedDayKey) {
-      return [...(slotsByDateKey.get(selectedDayKey) ?? [])].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
-    }
-    return items
+    const baseSlots = selectedDayKey
+      ? [...(slotsByDateKey.get(selectedDayKey) ?? [])]
+      : items
       .filter((slot) => toMonthKey(new Date(slot.startsAt)) === selectedMonth)
       .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
-  }, [items, selectedDayKey, selectedMonth, slotsByDateKey]);
+
+    const locationFiltered =
+      locationFilter === "all" ? baseSlots : baseSlots.filter((slot) => slot.location === locationFilter);
+
+    return locationFiltered.sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  }, [items, locationFilter, selectedDayKey, selectedMonth, slotsByDateKey]);
 
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
@@ -147,11 +152,34 @@ export function ClassSlotList({ items, onBook }: Props) {
       </div>
 
       <div className="mt-8 border-t border-black/10 pt-8">
-        <h2 className="text-xl font-bold mb-6">
-          {selectedDayKey
-            ? `${new Date(`${selectedDayKey}T00:00:00`).toLocaleDateString("es-PE", { day: "numeric", month: "long" })}`
-            : "Clases del mes"}
-        </h2>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-xl font-bold">
+            {selectedDayKey
+              ? `${new Date(`${selectedDayKey}T00:00:00`).toLocaleDateString("es-PE", { day: "numeric", month: "long" })}`
+              : "Clases del mes"}
+          </h2>
+
+          <div className="flex flex-wrap gap-2">
+            {([
+              { key: "all", label: "Todos" },
+              { key: "Lima", label: "Lima" },
+              { key: "Sur Chico", label: "Sur Chico" },
+            ] as const).map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setLocationFilter(option.key)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  locationFilter === option.key
+                    ? "bg-[var(--color-primary-900)] text-white"
+                    : "bg-black/[0.04] text-black/60 hover:bg-black/[0.08] hover:text-black"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
         
         <div className="space-y-4">
           {filteredSlots.length === 0 ? (
@@ -170,7 +198,6 @@ export function ClassSlotList({ items, onBook }: Props) {
                   <div className="flex items-center gap-5">
                     <div className="flex flex-col items-center justify-center border-r border-black/10 pr-5">
                       <span className="text-xl font-bold">{timeString}</span>
-                      <span className="text-xs font-medium text-black/40">Hora</span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">

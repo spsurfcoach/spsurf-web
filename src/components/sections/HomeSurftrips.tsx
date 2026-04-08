@@ -6,8 +6,8 @@ type HomeSurftripsProps = {
   trips: SurftripListItem[];
 };
 
-function fillColor(available: number, capacity: number): string {
-  const ratio = available / capacity;
+function fillColor(availableSpots: number, capacity: number): string {
+  const ratio = availableSpots / capacity;
 
   if (ratio <= 0.2) return "rgba(251,210,199,0.9)";
   if (ratio <= 0.5) return "rgba(255,203,147,0.4)";
@@ -33,8 +33,9 @@ function formatDateRange(startDate: string, endDate: string) {
   return `${startText} - ${endText}`;
 }
 
-function availabilityLabel(available: number) {
-  return available <= 2 ? `SOLO ${available} DISPONIBLES` : `${available} DISPONIBLES`;
+function availabilityLabel(availableSpots: number) {
+  if (availableSpots <= 0) return "COMPLETO";
+  return availableSpots <= 2 ? `SOLO ${availableSpots} DISPONIBLES` : `${availableSpots} DISPONIBLES`;
 }
 
 export function HomeSurftrips({ trips }: HomeSurftripsProps) {
@@ -57,7 +58,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
           {displayTrips.length ? (
             displayTrips.map((trip) => {
               const safeCapacity = Math.max(trip.capacity, 1);
-              const taken = Math.min(Math.max(trip.capacity - trip.available, 0), safeCapacity);
+              const taken = Math.min(Math.max(trip.capacity - trip.availableSpots, 0), safeCapacity);
               const fillPct = (taken / safeCapacity) * 100;
 
               return (
@@ -77,11 +78,11 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
                   <h3 className="ds-h2-sm mt-2 leading-none">{trip.title}</h3>
                   <div className="relative mt-2 h-[60px] overflow-hidden rounded-full border-2 border-black">
                     <div
-                      style={{ width: `${fillPct}%`, backgroundColor: fillColor(trip.available, safeCapacity) }}
+                      style={{ width: `${fillPct}%`, backgroundColor: fillColor(trip.availableSpots, safeCapacity) }}
                       className="h-full rounded-l-full"
                     />
                     <div className="absolute inset-0 flex h-[60px] items-center justify-end pr-5 ds-body-s transition-colors duration-200 group-hover:text-black">
-                      {availabilityLabel(trip.available)}
+                      {availabilityLabel(trip.availableSpots)}
                     </div>
                   </div>
                 </Link>

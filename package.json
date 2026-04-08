@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "sanity": "sanity",
+    "backfill:surftrips": "node ./scripts/backfill-surftrip-inventory.mjs",
     "seed:surftrips": "node ./scripts/seed-surftrips.mjs",
     "seed:classes": "node ./scripts/seed-classes.mjs"
   },

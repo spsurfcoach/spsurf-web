@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSurftripInventoryById } from "@/lib/booking/transactions";
+import { getStorefrontProductById } from "@/lib/booking/storefront.server";
+import { buildSurftripProductId } from "@/lib/booking/storefront";
 import { getPreferenceClient } from "@/lib/mercadopago/client";
 import { getRequiredUser, unauthorizedResponse } from "@/lib/server-auth";
 
@@ -13,39 +14,44 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "surftripId is required" }, { status: 400 });
     }
 
-    const surftrip = await getSurftripInventoryById(body.surftripId);
-    if (!surftrip || !surftrip.isActive) {
+    const productId = buildSurftripProductId(body.surftripId);
+    const product = await getStorefrontProductById(productId);
+    if (!product || !product.isActive) {
       return NextResponse.json({ error: "Surftrip not found or inactive" }, { status: 404 });
     }
-    if (surftrip.enrolledCount >= surftrip.capacity) {
+    if ((product.enrolledCount ?? 0) >= (product.capacity ?? 0)) {
       return NextResponse.json({ error: "Surftrip is full" }, { status: 409 });
     }
 
     const preference = getPreferenceClient();
     const appOrigin = request.nextUrl.origin;
-    const successUrl = process.env.MP_SURFTRIP_SUCCESS_URL ?? `${appOrigin}/surftrips?payment=success`;
-    const failureUrl = process.env.MP_FAILURE_URL ?? `${appOrigin}/surftrips?payment=failure`;
-    const pendingUrl = process.env.MP_PENDING_URL ?? `${appOrigin}/surftrips?payment=pending`;
+    const successUrl = process.env.MP_SUCCESS_URL ?? `${appOrigin}/clases?tab=comprar&payment=success`;
+    const failureUrl = process.env.MP_FAILURE_URL ?? `${appOrigin}/clases?tab=comprar&payment=failure`;
+    const pendingUrl = process.env.MP_PENDING_URL ?? `${appOrigin}/clases?tab=comprar&payment=pending`;
     const notificationUrl = `${appOrigin}/api/webhooks/mercadopago`;
 
     const result = await preference.create({
       body: {
         items: [
           {
-            id: body.surftripId,
-            title: surftrip.title,
+            id: productId,
+            title: product.name,
             quantity: 1,
             currency_id: "PEN",
-            unit_price: Number(surftrip.price),
+            unit_price: Number(product.price),
           },
         ],
         metadata: {
-          itemType: "surftrip",
+          productId,
+          productCategory: product.category,
+          fulfillmentType: product.fulfillmentType,
+          sourceCollection: product.sourceCollection,
+          sourceId: product.sourceId,
           surftripId: body.surftripId,
           userId: user.uid,
           userEmail: user.email ?? "",
         },
-        external_reference: `${user.uid}:surftrip:${body.surftripId}`,
+        external_reference: `${user.uid}:${productId}`,
         back_urls: {
           success: successUrl,
           failure: failureUrl,
