@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase/admin";
 import {
   listSurftripInventory,
+  syncAllSurftripInventory,
   syncSurftripInventoryByDocumentId,
 } from "@/lib/booking/surftrip-sync";
 import type { SurftripInventoryDoc } from "@/lib/booking/types";
@@ -56,6 +57,20 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
     return NextResponse.json({ error: "Failed to sync surftrip" }, { status: 500 });
+  }
+}
+
+export async function PUT() {
+  try {
+    await requireAdmin();
+    const result = await syncAllSurftripInventory();
+    revalidateSurftripPaths();
+    return NextResponse.json({ ok: true, ...result });
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
+    if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
+    console.error("[admin/surftrip-inventory] Bulk sync failed:", error);
+    return NextResponse.json({ error: "Failed to sync surftrips from Sanity" }, { status: 500 });
   }
 }
 

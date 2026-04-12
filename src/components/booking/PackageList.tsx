@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_PRODUCT_IMAGES, productCategoryLabel } from "@/lib/booking/storefront";
 import { toCurrencyPEN } from "@/lib/utils";
 
 type PackageItem = {
   id: string;
+  slug?: string;
   name: string;
   category: "package" | "membership" | "videoanalysis" | "surfskate" | "surftrip";
   fulfillmentType: "class_booking" | "direct_purchase" | "surftrip_booking";
@@ -234,20 +236,30 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                     <p className="text-xs uppercase tracking-[0.14em] text-black/40">Precio</p>
                     <p className="text-2xl font-bold text-black">{toCurrencyPEN(product.price)}</p>
                   </div>
-                  <Button
-                    className="h-11 rounded-full bg-[var(--color-primary-900)] px-5 font-semibold text-white hover:bg-[var(--color-primary-700)]"
-                    disabled={loadingId === product.id || soldOut}
-                    onClick={async () => {
-                      setLoadingId(product.id);
-                      try {
-                        await onCheckout(product.id);
-                      } finally {
-                        setLoadingId(null);
-                      }
-                    }}
-                  >
-                    {loadingId === product.id ? "Cargando..." : ctaLabel(product, soldOut)}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {product.category === "surftrip" && product.slug ? (
+                      <Link
+                        href={`/surftrips/${product.slug}`}
+                        className="h-11 inline-flex items-center rounded-full border border-black/15 px-5 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
+                      >
+                        Conoce mas
+                      </Link>
+                    ) : null}
+                    <Button
+                      className="h-11 rounded-full bg-[var(--color-primary-900)] px-5 font-semibold text-white hover:bg-[var(--color-primary-700)]"
+                      disabled={loadingId === product.id || soldOut}
+                      onClick={async () => {
+                        setLoadingId(product.id);
+                        try {
+                          await onCheckout(product.id);
+                        } finally {
+                          setLoadingId(null);
+                        }
+                      }}
+                    >
+                      {loadingId === product.id ? "Cargando..." : ctaLabel(product, soldOut)}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

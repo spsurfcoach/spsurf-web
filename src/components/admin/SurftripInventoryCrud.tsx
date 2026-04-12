@@ -24,6 +24,7 @@ type Props = {
   items: SurftripInventoryItem[];
   isLoading: boolean;
   onSync: (sanityDocumentId: string) => Promise<void>;
+  onSyncAll: () => Promise<void>;
   onToggle: (id: string, current: boolean) => Promise<void>;
 };
 
@@ -32,8 +33,9 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export function SurftripInventoryCrud({ items, isLoading, onSync, onToggle }: Props) {
+export function SurftripInventoryCrud({ items, isLoading, onSync, onSyncAll, onToggle }: Props) {
   const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [syncingAll, setSyncingAll] = useState(false);
 
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
@@ -45,6 +47,20 @@ export function SurftripInventoryCrud({ items, isLoading, onSync, onToggle }: Pr
             desactivar o resincronizar filas ya enlazadas.
           </p>
         </div>
+        <Button
+          className="h-10 rounded-full bg-[var(--color-primary-900)] px-5 text-sm font-semibold text-white hover:bg-[var(--color-primary-700)]"
+          disabled={syncingAll || isLoading}
+          onClick={async () => {
+            setSyncingAll(true);
+            try {
+              await onSyncAll();
+            } finally {
+              setSyncingAll(false);
+            }
+          }}
+        >
+          {syncingAll ? "Sincronizando..." : "Importar desde Sanity"}
+        </Button>
       </div>
 
       {isLoading ? (

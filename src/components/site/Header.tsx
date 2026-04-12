@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { navItems } from "@/lib/content";
 
@@ -113,22 +113,41 @@ export function Header() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/clases"
-            className="ds-btn inline-flex h-9 items-center gap-2 whitespace-nowrap border border-white bg-white px-3 text-[13px] text-[var(--color-text-default)] hover:bg-white/90 sm:px-4 sm:text-sm"
-            aria-label="Acceder"
-          >
-            <User className="h-4 w-4 shrink-0" strokeWidth={1.8} aria-hidden />
-            Acceder
-          </Link>
           {user ? (
-            <button
-              className="hidden lg:inline-flex ds-btn ds-btn-secondary h-9 px-4 text-sm"
-              onClick={() => void logout()}
+            <>
+              <Link
+                href="/clases/perfil"
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 ${
+                  isOverlay
+                    ? "text-white/80 hover:bg-white/10 hover:text-white"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
+                }`}
+                aria-label="Mi perfil"
+              >
+                <User className="h-[18px] w-[18px]" strokeWidth={1.8} />
+              </Link>
+              <button
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-150 ${
+                  isOverlay
+                    ? "text-white/80 hover:bg-white/10 hover:text-white"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
+                }`}
+                onClick={() => void logout()}
+                aria-label="Cerrar sesión"
+              >
+                <LogOut className="h-[18px] w-[18px]" strokeWidth={1.8} />
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/clases"
+              className="ds-btn inline-flex h-9 items-center gap-2 whitespace-nowrap border border-white bg-white px-3 text-[13px] text-[var(--color-text-default)] hover:bg-white/90 sm:px-4 sm:text-sm"
+              aria-label="Acceder"
             >
-              Salir
-            </button>
-          ) : null}
+              <User className="h-4 w-4 shrink-0" strokeWidth={1.8} aria-hidden />
+              Acceder
+            </Link>
+          )}
 
           {/* Hamburger — mobile only */}
           <button
@@ -188,6 +207,24 @@ export function Header() {
                 >
                   Admin
                 </Link>
+                <Link
+                  href="/clases/perfil"
+                  className="ds-nav-link flex items-center gap-3 py-4 border-b border-white/5 text-white/70 hover:text-white transition-colors duration-150"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <User className="h-4 w-4" strokeWidth={1.8} />
+                  Mi perfil
+                </Link>
+                <button
+                  className="ds-nav-link flex items-center gap-3 py-4 text-white/70 hover:text-white transition-colors duration-150 text-left"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    void logout();
+                  }}
+                >
+                  <LogOut className="h-4 w-4" strokeWidth={1.8} />
+                  Salir
+                </button>
               </>
             )}
           </nav>

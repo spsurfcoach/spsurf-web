@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { User } from "lucide-react";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
 import { PackageList } from "@/components/booking/PackageList";
 import { UpcomingBookingsList } from "@/components/booking/UpcomingBookingsList";
@@ -227,7 +225,7 @@ function ClasesPageContent() {
       <div className="container-site space-y-6">
         {displayMessage ? <div className="rounded-xl bg-black px-4 py-3 text-sm text-white">{displayMessage}</div> : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
             {(["comprar", "reservar"] as const).map((tab) => (
               <button
@@ -242,29 +240,14 @@ function ClasesPageContent() {
               </button>
             ))}
           </div>
-
-          <Button
-            asChild
-            variant="outline"
-            size="icon"
-            className="rounded-full border-black/15 bg-white text-black hover:bg-black/[0.04] hover:text-black"
-            title="Gestionar perfil"
-          >
-            <Link
-              href={paymentStatus === "success" && !profileComplete ? buildProfileHref("reservar", "post-payment") : buildProfileHref(activeTab)}
-              aria-label="Gestionar perfil"
-            >
-              <User className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
 
         {activeTab === "comprar" ? (
           <section className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold">Store de clases</h2>
+              <h2 className="text-2xl font-bold">Tu tienda de surf</h2>
               <p className="mt-1 text-sm text-black/50">
-                Compra memberships, paquetes, videoanalisis, surfskate y surftrips desde el mismo lugar.
+                Elige tu plan, asegura tu cupo en el proximo surftrip o suma clases sueltas. Todo en un solo lugar.
               </p>
             </div>
             <PackageList

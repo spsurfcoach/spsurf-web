@@ -49,7 +49,7 @@ export function MyBookings({ bookings, purchases, userEmail, onLogout, onEditPro
         </div>
       </div>
       <div className="border-t border-black/[0.06] p-0">
-        <ClassBalanceCard purchases={purchases as PurchaseDoc[]} className="rounded-none shadow-none" />
+        <ClassBalanceCard purchases={purchases as unknown as PurchaseDoc[]} className="rounded-none shadow-none" />
       </div>
       <div className="border-t border-black/[0.06] p-6">
         <UpcomingBookingsList bookings={bookings} onCancel={onCancel} title="Próximas reservas" className="border-0 p-0 shadow-none" />

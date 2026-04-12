@@ -231,6 +231,17 @@ export default function AdminPage() {
                 setMessage({ type: "error", text: "No se pudo resincronizar el surftrip." });
               }
             }}
+            onSyncAll={async () => {
+              try {
+                const result = await apiFetch<{ synced: number }>("/api/admin/surftrip-inventory", {
+                  method: "PUT",
+                });
+                await loadAdminData();
+                setMessage({ type: "success", text: `${result.synced} surftrips sincronizados desde Sanity.` });
+              } catch {
+                setMessage({ type: "error", text: "No se pudo sincronizar los surftrips desde Sanity." });
+              }
+            }}
             onToggle={async (id, current) => {
               try {
                 await apiFetch("/api/admin/surftrip-inventory", {

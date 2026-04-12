@@ -288,3 +288,49 @@ export async function syncSurftripInventoryByDocumentId(documentId: string) {
 
   return upsertSurftripInventoryFromSanity(document);
 }
+
+const SURFTRIP_ALL_SYNC_QUERY = `
+  *[_type == "surftrip"]{
+    _id,
+    _updatedAt,
+    title,
+    "slug": slug.current,
+    startDate,
+    endDate,
+    shortDescription,
+    price,
+    capacity,
+    isActive,
+    country,
+    level,
+    cardImage,
+    heroImage
+  }
+`;
+
+export async function syncAllSurftripInventory() {
+  if (!sanitySyncClient) {
+    throw new Error("Sanity client is not configured");
+  }
+
+  const documents = await sanitySyncClient.fetch<SanitySurftripSyncDoc[]>(SURFTRIP_ALL_SYNC_QUERY);
+  const results: Array<{ documentId: string; title: string; action: string }> = [];
+
+  for (const doc of documents) {
+    const normalizedId = normalizeSanityDocumentId(doc._id);
+
+    if (!isSyncableSurftrip(doc)) {
+      const result = await deactivateSurftripInventorySync({
+        documentId: normalizedId,
+        slug: doc.slug,
+      });
+      results.push({ documentId: normalizedId, title: doc.title, action: result?.action ?? "skipped" });
+      continue;
+    }
+
+    const result = await upsertSurftripInventoryFromSanity(doc);
+    results.push({ documentId: normalizedId, title: doc.title, action: result.action });
+  }
+
+  return { synced: results.length, results };
+}
