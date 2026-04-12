@@ -66,17 +66,15 @@ export function ServiciosPackagesSection() {
     };
   }, []);
 
-  const sortedPackages = useMemo(
-    () =>
-      [...packages].sort((a, b) => {
-        if (a.type !== b.type) {
-          return a.type === "unlimited" ? -1 : 1;
-        }
-
-        return 0;
-      }),
-    [packages],
-  );
+  const sortedPackages = useMemo(() => {
+    const classPackages = packages.filter((p) => p.type === "credits");
+    return [...classPackages].sort((a, b) => {
+      const ac = a.classCount ?? 0;
+      const bc = b.classCount ?? 0;
+      if (ac !== bc) return ac - bc;
+      return a.price - b.price;
+    });
+  }, [packages]);
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
@@ -96,7 +94,7 @@ export function ServiciosPackagesSection() {
           <RevealGroup watch={sortedPackages.length}>
             {/* Header */}
             <h2 className="ds-h2 text-center text-white">Nuestros paquetes</h2>
-            <p className="ds-body-s mt-4 text-center text-white/70">
+            <p className="ds-body-s ds-section-lead-gap text-center text-white/70">
               Estos son los mismos paquetes disponibles dentro de Clases.
             </p>
 

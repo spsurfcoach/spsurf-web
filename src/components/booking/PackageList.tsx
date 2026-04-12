@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_PRODUCT_IMAGES, productCategoryLabel } from "@/lib/booking/storefront";
@@ -27,6 +27,7 @@ type PackageItem = {
 
 type Props = {
   items: PackageItem[];
+  highlightProductId?: string | null;
   onCheckout: (productId: string) => Promise<void>;
 };
 
@@ -42,10 +43,49 @@ const FILTER_LABELS: Record<FilterType, string> = {
   surftrip: "Surftrips",
 };
 
-export function PackageList({ items, onCheckout }: Props) {
+const CATEGORY_BY_PREFIX: Record<string, PackageItem["category"]> = {
+  "surftrip:": "surftrip",
+  "package:": "package",
+};
+
+function categoryFromProductId(productId: string): PackageItem["category"] | null {
+  for (const [prefix, category] of Object.entries(CATEGORY_BY_PREFIX)) {
+    if (productId.startsWith(prefix)) return category;
+  }
+  return null;
+}
+
+export function PackageList({ items, highlightProductId, onCheckout }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>(() => {
+    if (highlightProductId) {
+      return categoryFromProductId(highlightProductId) ?? "all";
+    }
+    return "all";
+  });
   const [sort, setSort] = useState<SortOrder | null>(null);
+  const [highlightedId, setHighlightedId] = useState<string | null>(highlightProductId ?? null);
+  const highlightRef = useRef<HTMLDivElement | null>(null);
+  const didScrollRef = useRef(false);
+
+  const cardRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      highlightRef.current = node;
+      if (node && !didScrollRef.current) {
+        didScrollRef.current = true;
+        requestAnimationFrame(() => {
+          node.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!highlightedId) return;
+    const timer = setTimeout(() => setHighlightedId(null), 2500);
+    return () => clearTimeout(timer);
+  }, [highlightedId]);
 
   if (items.length === 0) {
     return <div className="text-black/60 text-sm">No hay productos disponibles en este momento.</div>;
@@ -138,10 +178,17 @@ export function PackageList({ items, onCheckout }: Props) {
               ? Math.max(0, product.capacity - product.enrolledCount)
               : null;
 
+          const isHighlighted = product.id === highlightedId;
+
           return (
             <div
               key={product.id}
-              className="overflow-hidden rounded-[28px] border border-black/10 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1"
+              ref={product.id === highlightProductId ? cardRef : undefined}
+              className={`overflow-hidden rounded-[28px] border bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 ${
+                isHighlighted
+                  ? "border-[var(--color-primary-900)] ring-2 ring-[var(--color-primary-900)]/30 animate-[highlight-pulse_1.5s_ease-in-out]"
+                  : "border-black/10"
+              }`}
             >
               <div className="relative h-52 overflow-hidden">
                 <Image src={image} alt={product.name} fill className="object-cover" />

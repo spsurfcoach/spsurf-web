@@ -76,6 +76,7 @@ function ClasesPageContent() {
   const searchParams = useSearchParams();
   const activeTab = getTab(searchParams.get("tab"));
   const paymentStatus = searchParams.get("payment");
+  const highlightProductId = searchParams.get("product");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -268,6 +269,7 @@ function ClasesPageContent() {
             </div>
             <PackageList
               items={products}
+              highlightProductId={highlightProductId}
               onCheckout={async (productId) => {
                 const response = await apiFetch<{ initPoint?: string; sandboxInitPoint?: string }>("/api/checkout", {
                   method: "POST",

@@ -84,6 +84,8 @@
   --radius-media: 30px;
   --radius-media-lg: 40px;
   --radius-hero-mobile: 30px;
+  /* Space from section kicker → headline and headline → lead copy (home sections) */
+  --section-lead-gap: 1.5rem;
 }
 
 .ds-h1 {
@@ -165,6 +167,10 @@
   letter-spacing: var(--type-label-letter);
   font-weight: var(--type-label-weight);
   text-transform: uppercase;
+}
+
+.ds-section-lead-gap {
+  margin-top: var(--section-lead-gap);
 }
 
 .ds-btn {

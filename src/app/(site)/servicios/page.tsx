@@ -1,7 +1,6 @@
 import { ServiciosHero } from "@/components/sections/ServiciosHero";
 import { ServiciosIntroSection } from "@/components/sections/ServiciosIntroSection";
 import { ServiciosDetailSection } from "@/components/sections/ServiciosDetailSection";
-import { ServiciosPackagesSection } from "@/components/sections/ServiciosPackagesSection";
 import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
 import { ComunidadSection } from "@/components/sections/ComunidadSection";
 import { FaqsSection } from "@/components/sections/FaqsSection";
@@ -12,7 +11,6 @@ export default function ServiciosPage() {
       <ServiciosHero />
       <ServiciosIntroSection />
       <ServiciosDetailSection />
-      <ServiciosPackagesSection />
       <TestimoniosSection />
       <ComunidadSection />
       <FaqsSection />

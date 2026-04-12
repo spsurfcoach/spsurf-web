@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { RevealGroup } from "@/components/animations/Reveal";
 
 const HERO_SLIDES = [
-  { src: "/photos/hero.jpg", alt: "Surfista entrando al mar" },
   { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family compartiendo un surftrip" },
   { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "Momento de surf con SP Family" },
+  { src: "/photos/hero.jpg", alt: "Surfista entrando al mar" },
 ] as const;
 
 const AUTO_PLAY_MS = 5000;
@@ -44,7 +45,7 @@ export function HomeHero() {
 
   return (
     <section className="pt-0">
-      <div className="relative min-h-[100svh] overflow-hidden">
+      <div className="relative min-h-[100svh] overflow-hidden rounded-b-[24px] sm:rounded-b-[28px] lg:rounded-b-[40px]">
         {HERO_SLIDES.map((slide, index) => {
           const isActive = index === activeSlide;
 
@@ -74,10 +75,13 @@ export function HomeHero() {
               <h1 className="ds-h1 leading-[1.15]">
                 Mejora tu surfing, entiende el mar y disfruta cada sesion.
               </h1>
-              <div className="mt-5 md:mt-8">
-                <button className="ds-btn ds-btn-lg border border-white bg-white/10 text-white hover:bg-white/20">
-                  Explora nuestros Surf trips
-                </button>
+              <div className="ds-section-lead-gap">
+                <Link
+                  href="/servicios"
+                  className="ds-btn ds-btn-lg inline-flex border border-white bg-white/10 text-white hover:bg-white/20"
+                >
+                  Comprar Clases
+                </Link>
               </div>
               {HERO_SLIDES.length > 1 ? (
                 <div className="mt-6 flex items-center gap-2" aria-hidden="true">

@@ -25,11 +25,12 @@ export async function POST(request: NextRequest) {
     }
 
     const preference = getPreferenceClient();
-    const appOrigin = request.nextUrl.origin;
+    const appOrigin = process.env.APP_URL ?? request.nextUrl.origin;
     const successUrl = process.env.MP_SUCCESS_URL ?? `${appOrigin}/clases?tab=comprar&payment=success`;
     const failureUrl = process.env.MP_FAILURE_URL ?? `${appOrigin}/clases?tab=comprar&payment=failure`;
     const pendingUrl = process.env.MP_PENDING_URL ?? `${appOrigin}/clases?tab=comprar&payment=pending`;
     const notificationUrl = `${appOrigin}/api/webhooks/mercadopago`;
+    const isLocalhost = appOrigin.includes("localhost") || appOrigin.includes("127.0.0.1");
 
     const result = await preference.create({
       body: {
@@ -59,8 +60,7 @@ export async function POST(request: NextRequest) {
           failure: failureUrl,
           pending: pendingUrl,
         },
-        notification_url: notificationUrl,
-        auto_return: "approved",
+        ...(isLocalhost ? {} : { notification_url: notificationUrl, auto_return: "approved" as const }),
       },
     });
 
@@ -73,6 +73,8 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return unauthorizedResponse();
     }
-    return NextResponse.json({ error: "Failed to create checkout" }, { status: 500 });
+    console.error("[checkout] Failed to create checkout:", error);
+    const detail = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: "Failed to create checkout", detail }, { status: 500 });
   }
 }

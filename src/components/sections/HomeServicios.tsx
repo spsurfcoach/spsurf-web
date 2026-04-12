@@ -28,7 +28,7 @@ export function HomeServicios() {
       <div className="relative grid gap-10 px-4 sm:px-6 md:px-10 lg:grid-cols-2 lg:gap-12 lg:px-16">
         <RevealGroup>
           <p className="ds-label text-[var(--color-label-muted)]">SERVICIOS</p>
-          <h2 className="ds-h1 mt-4 max-w-[540px] leading-[1.5] tracking-[-0.04em] lg:leading-[60px]">
+          <h2 className="ds-h1 ds-section-lead-gap max-w-[540px] leading-[1.5] tracking-[-0.04em] lg:leading-[60px]">
             Entrena dentro y fuera del agua en sesiones para cada nivel y objetivo. Uniendo sesiones en el agua,
             video análisis, entrenamientos complementarios y preparación mental.
           </h2>

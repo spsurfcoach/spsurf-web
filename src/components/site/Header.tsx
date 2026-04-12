@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { User } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { navItems } from "@/lib/content";
 
-const NAV_ORDER = ["/", "/surftrips", "/servicios", "/blog", "/nosotros"];
+const NAV_ORDER = ["/", "/servicios", "/surftrips", "/blog", "/nosotros"];
 const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
 
 export function Header() {
@@ -21,8 +22,7 @@ export function Header() {
 
   const links = useMemo(
     () =>
-      navItems
-        .sort((a, b) => NAV_ORDER.indexOf(a.href) - NAV_ORDER.indexOf(b.href)),
+      [...navItems].sort((a, b) => NAV_ORDER.indexOf(a.href) - NAV_ORDER.indexOf(b.href)),
     [],
   );
 
@@ -46,12 +46,12 @@ export function Header() {
 
   return (
     <header
-      className={`inset-x-0 top-0 z-50 border-b ${
+      className={`inset-x-0 z-50 border-b transition-[top,background-color,border-color] duration-200 ${
         isHeroRoute ? "fixed" : "sticky"
       } ${
         isOverlay
-          ? "border-transparent bg-transparent"
-          : "border-white/10 bg-[var(--color-surface-dark)]/95 backdrop-blur-sm"
+          ? "top-3 border-transparent bg-transparent lg:top-5"
+          : "top-0 border-white/10 bg-[var(--color-surface-dark)]/95 backdrop-blur-sm"
       }`}
     >
       {/* Main bar */}
@@ -112,16 +112,14 @@ export function Header() {
         </nav>
 
         {/* Right actions */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-2">
           <Link
             href="/clases"
-            className="p-2.5 text-white/70 hover:text-white transition-colors duration-150"
-            aria-label="Mi cuenta"
+            className="ds-btn inline-flex h-9 items-center gap-2 whitespace-nowrap border border-white bg-white px-3 text-[13px] text-[var(--color-text-default)] hover:bg-white/90 sm:px-4 sm:text-sm"
+            aria-label="Acceder"
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <circle cx="12" cy="7.5" r="3.5" />
-              <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
-            </svg>
+            <User className="h-4 w-4 shrink-0" strokeWidth={1.8} aria-hidden />
+            Acceder
           </Link>
           {user ? (
             <button

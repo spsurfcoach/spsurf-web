@@ -6,7 +6,7 @@ export function Footer() {
   const quickLinks = navItems.filter((item) => item.href !== "/");
 
   return (
-    <footer className="bg-[var(--color-primary-900)] py-12 text-white lg:py-14">
+    <footer className="bg-[var(--color-primary-900)] py-12 text-white lg:py-14 rounded-t-[24px] sm:rounded-t-[28px] lg:rounded-t-[40px]">
       <div className="container-site px-6 lg:px-10">
         <div>
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">

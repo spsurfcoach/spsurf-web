@@ -11,11 +11,11 @@ export function BrandStatement() {
 
       <div className="relative grid gap-10 lg:grid-cols-[1fr_456px] lg:items-start">
         <RevealGroup>
-          <p className="ds-label text-[var(--color-label-muted)]">SP SURF COACH</p>
-          <p className="ds-h2 mt-4 max-w-[724px] leading-[1.5] tracking-[-0.04em] lg:leading-[56px]">
+          <p className="ds-label leading-[1.85] text-[var(--color-label-muted)]">SP SURF COACH</p>
+          <p className="ds-h2 ds-section-lead-gap max-w-[724px] leading-[1.5] tracking-[-0.04em] lg:leading-[56px]">
             SP Surf Coach es un espacio para surfistas que quieren mejorar realmente junto a una comunidad.
           </p>
-          <p className="ds-body-m mt-6 max-w-[724px] text-[var(--color-text-default)]">
+          <p className="ds-body-m ds-section-lead-gap max-w-[724px] text-[var(--color-text-default)]">
             Trabajamos con una metodología basada en técnica, lectura de mar y conexión con tu propio cuerpo. El
             objetivo es simple: que avances con confianza y consistencia, sesión tras sesión.
           </p>
