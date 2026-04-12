@@ -102,7 +102,7 @@ function imageUrl(image: SanityImage | null | undefined, width: number, height: 
   }
 }
 
-function isSyncableSurftrip(doc: SanitySurftripSyncDoc | null) {
+function isSyncableSurftrip(doc: SanitySurftripSyncDoc | null): doc is SanitySurftripSyncDoc {
   if (!doc) return false;
 
   const price = toNumber(doc.price);
