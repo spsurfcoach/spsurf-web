@@ -1,140 +1,112 @@
 import Link from "next/link";
 import Image from "next/image";
 import { RevealGroup } from "@/components/animations/Reveal";
+import { cn } from "@/lib/utils";
 
 const MEMBERSHIPS = [
   {
-    label: "3 meses",
+    id: "3m",
+    duration: "3 meses",
     price: "S/1,590",
     unit: "/ mes",
     featured: false,
     description: "Ideal para arrancar tu progreso con compromiso real.",
+    image: "/photos/servicios_paquete_starter.jpg",
   },
   {
-    label: "12 meses",
-    sublabel: "Anual",
+    id: "12m",
+    duration: "12 meses",
+    badge: "Anual",
     price: "S/1,290",
     unit: "/ mes",
     featured: true,
     description: "El mejor valor. Progreso sostenido durante todo el año.",
+    image: "/photos/servicios_paquete_premium.jpg",
   },
   {
-    label: "6 meses",
+    id: "6m",
+    duration: "6 meses",
     price: "S/1,450",
     unit: "/ mes",
     featured: false,
     description: "Seis meses de entrenamiento continuo y resultados visibles.",
+    image: "/photos/servicios_paquete_standard.jpg",
   },
-];
-
-const SESSION_PACKS = [
-  { label: "1 sesión", price: "S/160" },
-  { label: "4 sesiones", price: "S/580" },
-  { label: "6 sesiones", price: "S/840" },
-  { label: "8 sesiones", price: "S/990" },
-  { label: "12 sesiones", price: "S/1,390" },
-];
+] as const;
 
 export function HomeSubscriptionsSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
-      <div className="relative overflow-hidden rounded-[30px] bg-[var(--color-primary-900)] px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
-        {/* Background overlay */}
-        <div className="absolute inset-0 opacity-20">
-          <Image
-            src="/photos/servicios_hero.jpg"
-            alt=""
-            fill
-            className="object-cover"
-            aria-hidden="true"
-          />
-        </div>
+      <div className="overflow-hidden rounded-[30px] bg-[var(--color-primary-900)] px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
+        <RevealGroup>
+          <p className="ds-label text-center text-[var(--color-primary-400)]">MEMBRESÍAS</p>
+          <h2 className="ds-h2 mt-4 text-center text-white">Elige tu plan</h2>
+          <p className="ds-body-s mt-3 text-center text-white/60">
+            Entrena de forma continua y progresa con estructura.
+          </p>
 
-        <div className="relative z-10">
-          <RevealGroup>
-            {/* Header */}
-            <p className="ds-label text-center text-[var(--color-primary-400)]">PLANES Y MEMBRESÍAS</p>
-            <h2 className="ds-h2 mt-4 text-center text-white">Elige tu plan</h2>
-            <p className="ds-body-s mt-3 text-center text-white/70">
-              Membresías mensuales o paquetes de clases sueltas. Tú eliges cómo progresar.
-            </p>
-
-            {/* Membership cards */}
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {MEMBERSHIPS.map((m) => (
-                <Link
-                  key={m.label}
-                  href="/clases"
-                  className={[
-                    "relative flex flex-col rounded-[24px] p-7 transition-transform duration-200 hover:-translate-y-1",
-                    m.featured
-                      ? "bg-white text-black shadow-2xl ring-2 ring-white"
-                      : "bg-white/10 text-white hover:bg-white/15",
-                  ].join(" ")}
-                >
+          <div className="mt-12 grid items-end gap-5 md:grid-cols-3">
+            {MEMBERSHIPS.map((m) => (
+              <Link
+                key={m.id}
+                href="/clases"
+                className={cn(
+                  "flex flex-col overflow-hidden rounded-[24px] bg-white transition-transform duration-200 hover:-translate-y-1",
+                  m.featured && "shadow-2xl ring-2 ring-white/40 md:-translate-y-3",
+                )}
+              >
+                <div className="relative h-[200px] w-full shrink-0">
+                  <Image
+                    src={m.image}
+                    alt={m.duration}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover"
+                    priority={m.featured}
+                  />
                   {m.featured && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--color-primary-400)] px-4 py-1 text-[11px] font-bold uppercase tracking-[1px] text-white">
-                      Más popular
-                    </span>
+                    <div className="absolute inset-0 bg-[var(--color-primary-900)]/20" />
                   )}
-                  <p className={["ds-label text-xs tracking-[1.5px]", m.featured ? "text-[var(--color-primary-700)]" : "text-white/50"].join(" ")}>
-                    MEMBRESÍA
-                  </p>
-                  <p className={["mt-2 text-xl font-semibold", m.featured ? "text-black" : "text-white"].join(" ")}>
-                    {m.label}
-                    {m.sublabel && (
-                      <span className={["ml-2 rounded-full px-2 py-0.5 text-xs font-bold", m.featured ? "bg-[var(--color-primary-400)] text-white" : "bg-white/20"].join(" ")}>
-                        {m.sublabel}
-                      </span>
-                    )}
-                  </p>
-                  <div className="mt-4 flex items-end gap-1">
-                    <span className={["text-4xl font-bold leading-none", m.featured ? "text-black" : "text-white"].join(" ")}>
-                      {m.price}
-                    </span>
-                    <span className={["pb-1 text-sm", m.featured ? "text-black/50" : "text-white/50"].join(" ")}>
-                      {m.unit}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary-700)] px-5 py-2 text-xs font-bold uppercase tracking-[0.9px] text-white shadow-lg">
+                      Membresía
+                      {"badge" in m && (
+                        <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px]">
+                          {m.badge}
+                        </span>
+                      )}
                     </span>
                   </div>
-                  <p className={["mt-3 text-sm leading-relaxed", m.featured ? "text-black/60" : "text-white/50"].join(" ")}>
-                    {m.description}
-                  </p>
-                  <span className={["ds-btn mt-6 inline-flex justify-center rounded-full px-6 py-3 text-sm font-semibold transition-colors", m.featured ? "ds-btn-primary" : "border border-white/30 text-white hover:bg-white/10"].join(" ")}>
+                </div>
+
+                <div className="flex flex-1 flex-col items-center px-6 pb-8 pt-10 text-center">
+                  <h3 className="ds-h3 font-semibold text-black">{m.duration}</h3>
+                  <div className="mt-3 flex items-end gap-1">
+                    <span className="text-3xl font-bold leading-none text-black">{m.price}</span>
+                    <span className="pb-0.5 text-sm text-black/40">{m.unit}</span>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-black/50">{m.description}</p>
+                  <span
+                    className={cn(
+                      "ds-btn mt-7 inline-flex w-full justify-center",
+                      m.featured ? "ds-btn-primary" : "ds-btn-secondary",
+                    )}
+                  >
                     Comenzar
                   </span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Divider */}
-            <div className="mt-12 flex items-center gap-4">
-              <div className="h-px flex-1 bg-white/20" />
-              <p className="ds-label text-xs tracking-[2px] text-white/50">PAQUETES DE CLASES</p>
-              <div className="h-px flex-1 bg-white/20" />
-            </div>
-
-            {/* Session packs */}
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-              {SESSION_PACKS.map((pack) => (
-                <Link
-                  key={pack.label}
-                  href="/clases"
-                  className="flex flex-col items-center gap-2 rounded-[18px] bg-white/10 px-4 py-5 text-center transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5"
-                >
-                  <p className="text-sm font-medium text-white/70">{pack.label}</p>
-                  <p className="text-xl font-bold text-white">{pack.price}</p>
-                </Link>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <div className="mt-10 text-center">
-              <Link href="/clases" className="ds-btn ds-btn-primary ds-btn-lg inline-flex">
-                Ver todos los planes
+                </div>
               </Link>
-            </div>
-          </RevealGroup>
-        </div>
+            ))}
+          </div>
+
+          <p className="mt-10 text-center text-sm text-white/40">
+            También disponibles paquetes de sesiones individuales en{" "}
+            <Link href="/clases" className="text-white/70 underline underline-offset-2 hover:text-white">
+              Clases
+            </Link>
+            .
+          </p>
+        </RevealGroup>
       </div>
     </section>
   );
