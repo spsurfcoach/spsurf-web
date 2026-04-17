@@ -278,11 +278,12 @@ export async function deactivateSurftripInventorySync(input: { documentId: strin
 export async function syncSurftripInventoryByDocumentId(documentId: string) {
   const normalizedId = normalizeSanityDocumentId(documentId);
   const document = await fetchPublishedSurftripByDocumentId(normalizedId);
+  const slug = document?.slug;
 
   if (!isSyncableSurftrip(document)) {
     return deactivateSurftripInventorySync({
       documentId: normalizedId,
-      slug: document?.slug,
+      slug,
     });
   }
 
