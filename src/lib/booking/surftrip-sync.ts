@@ -319,13 +319,15 @@ export async function syncAllSurftripInventory() {
 
   for (const doc of documents) {
     const normalizedId = normalizeSanityDocumentId(doc._id);
+    const slug = doc.slug;
+    const title = doc.title;
 
     if (!isSyncableSurftrip(doc)) {
       const result = await deactivateSurftripInventorySync({
         documentId: normalizedId,
-        slug: doc.slug,
+        slug,
       });
-      results.push({ documentId: normalizedId, title: doc.title, action: result?.action ?? "skipped" });
+      results.push({ documentId: normalizedId, title, action: result?.action ?? "skipped" });
       continue;
     }
 
