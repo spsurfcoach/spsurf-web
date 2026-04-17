@@ -244,11 +244,19 @@ function ClasesPageContent() {
 
         {activeTab === "comprar" ? (
           <section className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold">Tu tienda de surf</h2>
-              <p className="mt-1 text-sm text-black/50">
-                Elige tu plan, asegura tu cupo en el proximo surftrip o suma clases sueltas. Todo en un solo lugar.
-              </p>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">Tu tienda de surf</h2>
+                <p className="mt-1 text-sm text-black/50">
+                  Elige tu plan, asegura tu cupo en el proximo surftrip o suma clases sueltas. Todo en un solo lugar.
+                </p>
+              </div>
+              <a
+                href="/servicios#clases"
+                className="shrink-0 rounded-full border border-black/20 px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-black hover:text-white"
+              >
+                Conoce más
+              </a>
             </div>
             <PackageList
               items={products}

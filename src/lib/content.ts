@@ -201,8 +201,6 @@ export const testimonials: TestimonialItem[] = [
 export const surfClassSubServices = [
   "Videoanalisis",
   "Clases de Surfskate",
-  "Talleres de Yoga Restaurativo",
-  "Talleres de respiración & meditación",
 ];
 
 export const methodologyPillars = [
