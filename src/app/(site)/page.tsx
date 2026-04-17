@@ -2,9 +2,8 @@ import { HomeHero } from "@/components/sections/HomeHero";
 import { BrandStatement } from "@/components/sections/BrandStatement";
 import { HomeVideoSection } from "@/components/sections/HomeVideoSection";
 import { HomeSurftrips } from "@/components/sections/HomeSurftrips";
-import { HomeServicios } from "@/components/sections/HomeServicios";
 import { HomePrimeSection } from "@/components/sections/HomePrimeSection";
-import { ServiciosPackagesSection } from "@/components/sections/ServiciosPackagesSection";
+import { HomeSubscriptionsSection } from "@/components/sections/HomeSubscriptionsSection";
 import { ComunidadSection } from "@/components/sections/ComunidadSection";
 import { PartnersSection } from "@/components/sections/PartnersSection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
@@ -18,9 +17,8 @@ export default async function Home() {
       <HomeHero />
       <BrandStatement />
       <HomeVideoSection />
-      <HomeServicios />
       <HomePrimeSection />
-      <ServiciosPackagesSection />
+      <HomeSubscriptionsSection />
       <HomeSurftrips trips={trips} />
       <ComunidadSection />
       <PartnersSection />

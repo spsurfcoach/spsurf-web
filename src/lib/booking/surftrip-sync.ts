@@ -278,11 +278,12 @@ export async function deactivateSurftripInventorySync(input: { documentId: strin
 export async function syncSurftripInventoryByDocumentId(documentId: string) {
   const normalizedId = normalizeSanityDocumentId(documentId);
   const document = await fetchPublishedSurftripByDocumentId(normalizedId);
+  const slug = document?.slug;
 
   if (!isSyncableSurftrip(document)) {
     return deactivateSurftripInventorySync({
       documentId: normalizedId,
-      slug: document?.slug,
+      slug,
     });
   }
 
@@ -318,13 +319,15 @@ export async function syncAllSurftripInventory() {
 
   for (const doc of documents) {
     const normalizedId = normalizeSanityDocumentId(doc._id);
+    const slug = doc.slug;
+    const title = doc.title;
 
     if (!isSyncableSurftrip(doc)) {
       const result = await deactivateSurftripInventorySync({
         documentId: normalizedId,
-        slug: doc.slug,
+        slug,
       });
-      results.push({ documentId: normalizedId, title: doc.title, action: result?.action ?? "skipped" });
+      results.push({ documentId: normalizedId, title, action: result?.action ?? "skipped" });
       continue;
     }
 
