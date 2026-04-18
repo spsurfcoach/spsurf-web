@@ -1,181 +1,163 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { Reveal, RevealGroup } from "@/components/animations/Reveal";
+import { serviciosDetailTabs } from "@/lib/content";
 
-type ServiceEntry = {
-  id: string;
-  title: string;
-  heading: string;
-  paragraphs: string[];
-  testimonialName: string;
-  testimonialText: string;
-  image: string;
-};
+const LG_MIN = 1024;
 
-const SERVICES: ServiceEntry[] = [
-  {
-    id: "clases-surf",
-    title: "Clases de surf",
-    heading: "Clases de surf",
-    paragraphs: [
-      "Nuestras clases de surf están diseñadas para adaptarse a tu nivel, tus objetivos y tu estilo de aprendizaje. Ofrecemos clases individuales y grupales, ambas con coaching en el agua y video análisis incluido.",
-      "Las clases individuales permiten un trabajo totalmente personalizado, ideal para quienes buscan progresar rápido, corregir detalles técnicos y enfocarse en objetivos específicos. Las clases grupales combinan aprendizaje, motivación y comunidad, manteniendo siempre un ratio reducido para asegurar atención real de nuestros coaches.",
-      "En cada sesión grabamos tus olas y luego las analizamos en video, revisando postura, línea, velocidad y maniobras. Esto te permite entender exactamente qué estás haciendo y cómo mejorar en cada entrada al agua.",
-    ],
-    testimonialName: "Ivo Escuza",
-    testimonialText: "Nuestras clases de surf están diseñadas para adaptarse a tu nivel, tus objetivos y tu estilo de aprendizaje. Ofrecemos clases individuales.",
-    image: "/photos/servicios_1.jpg",
-  },
-  {
-    id: "clases-surfskate",
-    title: "Clases de surfskate",
-    heading: "Clases de surfskate",
-    paragraphs: [
-      "El surfskate es la herramienta perfecta para entrenar tu surf fuera del agua. Trabajamos los mismos movimientos, timing y postura que usarás en el océano, pero en tierra firme.",
-      "Nuestras sesiones de surfskate están estructuradas para reforzar el bottom turn, el top turn y la fluidez de movimiento. Ideal para los días sin olas o para acelerar tu progreso técnico.",
-      "Con feedback inmediato y repeticiones controladas, el surfskate te ayuda a automatizar los patrones de movimiento que luego aplicas directamente al surf.",
-    ],
-    testimonialName: "Coach SP Surf",
-    testimonialText: "El surfskate te permite trabajar tu técnica todos los días, sin depender de las condiciones del mar. Es una extensión natural del entrenamiento.",
-    image: "/photos/servicios_1.jpg",
-  },
-  {
-    id: "videoanalisis",
-    title: "Videoanalisis",
-    heading: "Videoanalisis",
-    paragraphs: [
-      "El video análisis es uno de los pilares de nuestra metodología. Grabamos tus olas desde tierra y desde el agua para darte una visión objetiva de tu técnica.",
-      "Analizamos postura, posición de pies, movimiento de brazos, timing del take-off y lectura de ola. Cada detalle cuenta para entender qué estás haciendo bien y qué ajustar.",
-      "Después de cada sesión revisamos el material contigo, comparando con referencias técnicas. Esto acelera el aprendizaje de forma exponencial porque ves exactamente lo que necesitas corregir.",
-    ],
-    testimonialName: "Coach SP Surf",
-    testimonialText: "Ver tus propias olas en video cambia todo. Lo que creías que estabas haciendo y lo que realmente estás haciendo son dos cosas muy distintas.",
-    image: "/photos/servicios_1.jpg",
-  },
-];
-
-const ACCORDION_ITEMS = [
-  {
-    id: "validez",
-    question: "¿Cuánto tiempo tengo para usar mis créditos?",
-    answer: "Los créditos tienen una validez de 90 días desde la fecha de compra. Asegúrate de reservar tus clases dentro de ese período para aprovecharlos al máximo.",
-  },
-  {
-    id: "terminos",
-    question: "Términos y condiciones",
-    answer: "Al adquirir cualquier paquete o membresía aceptas nuestros términos y condiciones. Los paquetes no son reembolsables una vez activados. Las clases canceladas con menos de 12 horas de anticipación no serán reembolsadas.",
-  },
-  {
-    id: "cancelacion",
-    question: "Política de cancelación y reagendamiento",
-    answer: "Puedes cancelar o reagendar tu clase hasta 12 horas antes sin costo. Cancelaciones fuera de este plazo consumen el crédito. Las membresías pueden pausarse una vez al mes por un máximo de 7 días.",
-  },
-];
-
-function AccordionItem({ item }: { item: typeof ACCORDION_ITEMS[number] }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="border-b border-black/10 last:border-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-4 text-left"
-        aria-expanded={open}
-      >
-        <span className="ds-body-s font-semibold text-black">{item.question}</span>
-        <span
-          className={[
-            "ml-4 shrink-0 text-xl font-light text-black/40 transition-transform duration-200",
-            open ? "rotate-45" : "",
-          ].join(" ")}
-          aria-hidden="true"
-        >
-          +
-        </span>
-      </button>
-      {open && (
-        <p className="pb-4 ds-body-s leading-[1.7] text-black/60">{item.answer}</p>
-      )}
-    </div>
-  );
-}
+type Connector = { x1: number; y: number; x2: number };
 
 export function ServiciosDetailSection() {
-  const [activeId, setActiveId] = useState(SERVICES[0].id);
-  const active = SERVICES.find((s) => s.id === activeId) ?? SERVICES[0];
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [connector, setConnector] = useState<Connector | null>(null);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const updateConnector = useCallback(() => {
+    if (typeof window === "undefined" || window.innerWidth < LG_MIN) {
+      setConnector(null);
+      return;
+    }
+
+    const container = containerRef.current;
+    const tabEl = tabRefs.current[activeIndex];
+    const contentEl = contentRef.current;
+
+    if (!container || !tabEl || !contentEl) {
+      setConnector(null);
+      return;
+    }
+
+    const c = container.getBoundingClientRect();
+    const t = tabEl.getBoundingClientRect();
+    const co = contentEl.getBoundingClientRect();
+
+    const y = t.top + t.height / 2 - c.top;
+    const x1 = t.right - c.left;
+    const x2 = co.left - c.left;
+
+    if (x2 <= x1) {
+      setConnector(null);
+      return;
+    }
+
+    setConnector({ x1, y, x2 });
+  }, [activeIndex]);
+
+  useLayoutEffect(() => {
+    updateConnector();
+  }, [updateConnector]);
+
+  useLayoutEffect(() => {
+    const onResize = () => updateConnector();
+    window.addEventListener("resize", onResize);
+
+    const node = containerRef.current;
+    const ro =
+      node && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => updateConnector())
+        : null;
+    if (node && ro) ro.observe(node);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      ro?.disconnect();
+    };
+  }, [updateConnector]);
+
+  const active = serviciosDetailTabs[activeIndex]!;
 
   return (
     <section id="clases" className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       <div className="container-site">
-        <RevealGroup className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Left: clickable service titles */}
-          <div>
-            <ul className="space-y-[24px]">
-              {SERVICES.map((service) => {
-                const isActive = service.id === activeId;
-                return (
-                  <li key={service.id}>
-                    <button
-                      type="button"
-                      onClick={() => setActiveId(service.id)}
-                      className={[
-                        "ds-h2 text-left transition-colors duration-200",
-                        isActive ? "text-black" : "text-zinc-300 hover:text-zinc-500",
-                      ].join(" ")}
-                    >
-                      {service.title}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Right: content that changes based on active service */}
-          <div key={active.id}>
-            {active.paragraphs.map((para, i) => (
-              <p
-                key={i}
-                className={["ds-body-s leading-[1.8] text-black/90", i > 0 ? "mt-6" : ""].join(" ")}
-              >
-                {para}
-              </p>
-            ))}
-
-            {/* Testimonial card */}
-            <div className="mt-10 flex items-start gap-4">
-              <div className="relative size-[60px] shrink-0 overflow-hidden rounded-full">
-                <Image
-                  src="/photos/servicios_1.jpg"
-                  alt={active.testimonialName}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+        <RevealGroup>
+          <div ref={containerRef} className="relative">
+            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
               <div>
-                <p className="ds-body-s font-semibold text-black">{active.testimonialName}</p>
-                <p className="ds-body-s mt-1 leading-[1.7] text-black/70">{active.testimonialText}</p>
+                <h2 className="sr-only">Servicios detallados</h2>
+                <div role="tablist" aria-label="Tipos de servicio" className="flex flex-col gap-1">
+                  {serviciosDetailTabs.map((item, index) => {
+                    const selected = index === activeIndex;
+                    return (
+                      <button
+                        key={item.id}
+                        ref={(el) => {
+                          tabRefs.current[index] = el;
+                        }}
+                        type="button"
+                        role="tab"
+                        id={`servicio-tab-${item.id}`}
+                        aria-selected={selected}
+                        aria-controls="servicio-tab-panel"
+                        tabIndex={selected ? 0 : -1}
+                        onClick={() => setActiveIndex(index)}
+                        className={`w-full rounded-lg py-3 text-left text-lg font-bold leading-snug transition-colors lg:py-2.5 lg:pr-4 lg:text-xl ${
+                          selected ? "text-black" : "text-zinc-400 hover:text-zinc-600"
+                        }`}
+                      >
+                        {item.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div ref={contentRef} className="relative z-10">
+                <div id="servicio-tab-panel" role="tabpanel" aria-labelledby={`servicio-tab-${active.id}`}>
+                  {active.paragraphs.map((p, i) => (
+                    <p key={i} className="ds-body-s mt-6 leading-[1.8] text-black/90 first:mt-0">
+                      {p}
+                    </p>
+                  ))}
+
+                  {active.showTestimonial ? (
+                    <div className="mt-10 flex items-start gap-4">
+                      <div className="relative size-[60px] shrink-0 overflow-hidden rounded-full">
+                        <Image
+                          src="/photos/servicios_1.jpg"
+                          alt="Ivo Escuza"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="ds-body-s font-semibold text-black">Ivo Escuza</p>
+                        <p className="ds-body-s mt-1 leading-[1.7] text-black/70">
+                          Las clases combinan agua y vídeo: ves el detalle que en la ola pasa desapercibido y progresas
+                          con foco.
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
 
-            {/* Accordion: package terms */}
-            <div className="mt-10 rounded-[18px] bg-white px-6 py-2">
-              {ACCORDION_ITEMS.map((item) => (
-                <AccordionItem key={item.id} item={item} />
-              ))}
-            </div>
+            {connector ? (
+              <div
+                className="pointer-events-none absolute z-[1] hidden bg-[#96D3DF] lg:block"
+                style={{
+                  left: connector.x1,
+                  top: connector.y,
+                  width: connector.x2 - connector.x1,
+                  height: 2,
+                  transform: "translateY(-50%)",
+                }}
+                aria-hidden
+              />
+            ) : null}
           </div>
         </RevealGroup>
 
-        {/* Full-width photo card below */}
         <Reveal className="mt-12">
           <div className="relative h-[240px] w-full overflow-hidden rounded-[40px] border-2 border-white sm:h-[280px] lg:h-[335px]">
             <Image
-              src={active.image}
-              alt={active.title}
+              src="/photos/servicios_1.jpg"
+              alt="Clase de surf"
               fill
               className="object-cover"
             />

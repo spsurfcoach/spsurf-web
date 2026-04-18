@@ -3,9 +3,11 @@ import { RevealGroup } from "@/components/animations/Reveal";
 
 type ImagePartner = {
   type: "image";
-  file: string;
+  /** Path under `public/` */
+  src: string;
   alt: string;
-  unoptimized?: true;
+  unoptimized?: boolean;
+  invert?: boolean;
 };
 
 type TextPartner = {
@@ -17,15 +19,12 @@ type TextPartner = {
 type Partner = ImagePartner | TextPartner;
 
 const PARTNERS: Partner[] = [
-  { type: "image", file: "surfplace.png", alt: "Surf Place" },
-  { type: "image", file: "Asset 3.svg", alt: "Partner", unoptimized: true },
-  { type: "image", file: "Título secundario.png", alt: "Partner" },
-  { type: "text", name: "Futures Fins", subtitle: "Official Partner" },
-] as const;
-
-function photoSrc(file: string) {
-  return `/photos/${encodeURIComponent(file)}`;
-}
+  { type: "image", src: "/photos/soma.png", alt: "Soma" },
+  { type: "image", src: "/photos/Título secundario.png", alt: "Partner" },
+  { type: "image", src: "/photos/surfplace.png", alt: "Surf Place" },
+  { type: "image", src: "/channelilsands.png", alt: "Channel Islands", invert: true },
+  { type: "image", src: "/photos/Logo minimalista de Futures..png", alt: "Futures" },
+];
 
 export function PartnersSection() {
   return (
@@ -36,18 +35,18 @@ export function PartnersSection() {
       <RevealGroup className="relative">
         <p className="ds-label text-[var(--color-label-muted)]">PARTNERS</p>
         <h2 className="ds-display-title ds-section-lead-gap">Nuestros partners</h2>
-        <div className="mx-auto mt-8 grid max-w-[1100px] grid-cols-2 gap-6 sm:gap-8 md:grid-cols-4 md:gap-10">
+        <div className="mx-auto mt-8 grid max-w-[1200px] grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8 lg:grid-cols-5 lg:gap-8">
           {PARTNERS.map((partner) =>
             partner.type === "image" ? (
               <div
-                key={partner.file}
-                className="relative flex min-h-[135px] items-center justify-center overflow-hidden rounded-xl bg-transparent p-5 md:min-h-[159px]"
+                key={partner.src}
+                className="relative flex h-[120px] items-center justify-center overflow-hidden rounded-xl bg-transparent p-4 md:h-[140px]"
               >
                 <Image
-                  src={photoSrc(partner.file)}
+                  src={partner.src}
                   alt={partner.alt}
                   fill
-                  className="object-contain p-5"
+                  className={`object-contain p-4${partner.invert ? " brightness-0" : ""}`}
                   unoptimized={partner.unoptimized ?? false}
                 />
               </div>
