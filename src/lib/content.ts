@@ -168,6 +168,8 @@ export type TestimonialItem = {
   quote: string;
   author: string;
   tripName?: string;
+  /** Foto de fondo del slide en testimonios (home) */
+  image?: string;
 };
 
 export const faqs: FaqItem[] = [
@@ -187,22 +189,66 @@ export const faqs: FaqItem[] = [
 
 export const testimonials: TestimonialItem[] = [
   {
-    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
-    author: "Jane Doe",
-    tripName: "Surftrip Chicama 2024",
+    quote:
+      "Ha sido increíble este surftrip con Sebas, el grupo se ha vuelto super unido y poder conocer sobre todo a mas mujeres que corren es lo mejor, el coaching me ha servido inmensamente, creo que no podría estar corriendo hoy en día si no fuera por Sebas me ha ayudado tanto técnicamente como en lo mental y en tener la cabeza en el lugar correcto para poder entrar al agua",
+    author: "Jimena",
+    image: "/photos/testimony_jimena.jpg",
   },
   {
-    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
-    author: "Jane Doe",
-    tripName: "Surftrip Chicama 2024",
+    quote:
+      "Este surftrip me ha parecido increíble, he podido conocer otras playas y el coaching que da Sebas es super preciso, bien detallista en las cosas que puedes corregir y en verdad me sirvió mucho para surfing, todos nos volvimos bien unidos dentro y fuera del agua y lo recomiendo un montón",
+    author: "Gino",
+    image: "/photos/testimony_2.jpg",
   },
 ];
 
-export const surfClassSubServices = [
-  "Videoanalisis",
-  "Clases de Surfskate",
-  "Talleres de Yoga Restaurativo",
-  "Talleres de respiración & meditación",
+export type ServicioDetailTab = {
+  id: string;
+  title: string;
+  paragraphs: string[];
+  showTestimonial?: boolean;
+};
+
+/** Servicios en la página /servicios: títulos seleccionables + textos cortos asociados */
+export const serviciosDetailTabs: ServicioDetailTab[] = [
+  {
+    id: "clases",
+    title: "Clases de surf",
+    paragraphs: [
+      "Sesiones en el agua con ratio reducido: feedback al momento, prioridades claras y ritmo acorde a tu nivel.",
+      "Individual para foco total o grupal para energía y comunidad, siempre con ojo de coach.",
+      "Grabamos olas y las revisamos en pantalla para cerrar la brecha entre lo que sientes y lo que realmente haces.",
+    ],
+    showTestimonial: true,
+  },
+  {
+    id: "video",
+    title: "Videoanálisis",
+    paragraphs: [
+      "Revisión cuadro a cuadro de tus olas: línea, timing y postura. Te llevas tres ajustes concretos para la próxima sesión.",
+    ],
+  },
+  {
+    id: "surfskate",
+    title: "Clases de Surfskate",
+    paragraphs: [
+      "Traducimos movimiento en tierra a tablero y olas: carril, peso y giros con repetición segura fuera del agua.",
+    ],
+  },
+  {
+    id: "yoga",
+    title: "Talleres de Yoga Restaurativo",
+    paragraphs: [
+      "Secuencias suaves para abrir cadera, espalda y hombros después de surfear. Ideal para recuperar y dormir mejor.",
+    ],
+  },
+  {
+    id: "respiracion",
+    title: "Talleres de respiración & meditación",
+    paragraphs: [
+      "Técnicas simples para bajar revoluciones antes de entrar al mar y sostener foco cuando la sesión se pone intensa.",
+    ],
+  },
 ];
 
 export const methodologyPillars = [

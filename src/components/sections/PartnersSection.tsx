@@ -2,14 +2,12 @@ import Image from "next/image";
 import { RevealGroup } from "@/components/animations/Reveal";
 
 const PARTNERS = [
-  { file: "surfplace.png", alt: "Surf Place" },
-  { file: "Asset 3.svg", alt: "Partner", unoptimized: true as const },
-  { file: "Título secundario.png", alt: "Partner" },
-] as const;
-
-function photoSrc(file: string) {
-  return `/photos/${encodeURIComponent(file)}`;
-}
+  { src: "/photos/soma.png", alt: "Soma" },
+  { src: "/photos/T%C3%ADtulo%20secundario.png", alt: "Partner" },
+  { src: "/photos/surfplace.png", alt: "Surf Place" },
+  { src: "/channelilsands.png", alt: "Channel Islands", invert: true },
+  { src: "/photos/Logo%20minimalista%20de%20Futures..png", alt: "Futures" },
+];
 
 export function PartnersSection() {
   return (
@@ -20,18 +18,17 @@ export function PartnersSection() {
       <RevealGroup className="relative">
         <p className="ds-label text-[var(--color-label-muted)]">PARTNERS</p>
         <h2 className="ds-display-title ds-section-lead-gap">Nuestros partners</h2>
-        <div className="mx-auto mt-8 grid max-w-[1100px] grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3 md:gap-10">
+        <div className="mx-auto mt-8 grid max-w-[1200px] grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8 lg:grid-cols-5 lg:gap-8">
           {PARTNERS.map((partner) => (
             <div
-              key={partner.file}
-              className="relative flex min-h-[135px] items-center justify-center overflow-hidden rounded-xl bg-transparent p-5 md:min-h-[159px]"
+              key={partner.src}
+              className="relative flex h-[120px] items-center justify-center overflow-hidden rounded-xl bg-transparent p-4 md:h-[140px]"
             >
               <Image
-                src={photoSrc(partner.file)}
+                src={partner.src}
                 alt={partner.alt}
                 fill
-                className="object-contain p-5"
-                unoptimized={"unoptimized" in partner ? partner.unoptimized : false}
+                className={`object-contain p-4${partner.invert ? " brightness-0" : ""}`}
               />
             </div>
           ))}

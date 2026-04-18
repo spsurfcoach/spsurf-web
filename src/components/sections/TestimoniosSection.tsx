@@ -28,14 +28,15 @@ export function TestimoniosSection() {
           slideClassName="basis-[92%] lg:basis-[50%]"
           slides={testimonials.map((item, i) => {
             const style = BLOCK_STYLES[i % BLOCK_STYLES.length];
+            const photoSrc = item.image ?? style.photo;
             return (
               <article key={i} className={`relative min-h-[360px] overflow-hidden rounded-[30px] lg:min-h-[520px] ${style.bg}`}>
                 <div className="absolute inset-0">
-                  <Image src={style.photo} alt="" fill className="object-cover" aria-hidden="true" />
+                  <Image src={photoSrc} alt="" fill className="object-cover" aria-hidden="true" />
                   <div className="absolute inset-0 bg-black/40" />
                 </div>
 
-                <div className="relative z-10 flex h-full flex-col justify-center px-8 py-10 sm:px-12 lg:px-16">
+                <div className="relative z-10 flex h-full flex-col justify-center px-10 pt-12 pb-10 sm:px-14 sm:pt-14 sm:pb-11 lg:px-20 lg:pt-16 lg:pb-12">
                   <blockquote>
                     <p className="ds-h3 font-semibold leading-[1.5] text-white">&ldquo;{item.quote}&rdquo;</p>
                     <footer className="mt-8">
