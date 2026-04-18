@@ -72,7 +72,7 @@ export function ServiciosDetailSection() {
   const active = serviciosDetailTabs[activeIndex]!;
 
   return (
-    <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+    <section id="clases" className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       <div className="container-site">
         <RevealGroup>
           <div ref={containerRef} className="relative">

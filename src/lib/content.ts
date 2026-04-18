@@ -251,6 +251,8 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
   },
 ];
 
+export const surfClassSubServices = ["Videoanalisis", "Clases de Surfskate"];
+
 export const methodologyPillars = [
   "Tecnica y lectura de ola",
   "Analisis en video de cada sesion",
