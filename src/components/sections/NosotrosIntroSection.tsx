@@ -6,7 +6,7 @@ export function NosotrosIntroSection() {
       {/* Decorative ellipse blob */}
       <div className="deco-ellipse -left-[123px] top-[16px] hidden h-[700px] w-[700px] bg-[radial-gradient(circle,rgba(24,212,213,0.15),transparent)] lg:block" />
 
-      <RevealGroup className="container-site relative">
+      <RevealGroup className="relative">
         {/* Kicker */}
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
           QUIEN ES SP SURF COACH

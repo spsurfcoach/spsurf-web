@@ -9,7 +9,7 @@ export function BrandStatement() {
       <div className="deco-ellipse left-[586px] top-[304px] h-[700px] w-[700px] bg-[radial-gradient(circle,rgba(24,212,213,0.1),transparent)] hidden lg:block" />
       <div className="deco-ellipse left-[1038px] top-[310px] h-[700px] w-[700px] bg-[radial-gradient(circle,rgba(24,212,213,0.1),transparent)] hidden lg:block" />
 
-      <div className="relative grid gap-10 lg:grid-cols-[1fr_456px] lg:items-start">
+      <div className="relative grid gap-10 lg:grid-cols-[1fr_456px] lg:gap-20 lg:items-start">
         <RevealGroup>
           <p className="ds-label leading-[1.85] text-[var(--color-label-muted)]">SP SURF COACH</p>
           <p className="ds-h2 ds-section-lead-gap max-w-[724px] leading-[1.5] tracking-[-0.04em] lg:leading-[56px]">

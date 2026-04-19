@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { RevealGroup } from "@/components/animations/Reveal";
 
+const MAP_CERT_IMAGE_SRC = `/photos/${encodeURIComponent("Diseño sin título (12).png")}`;
+
 export function NosotrosCertSection() {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-16">
-      <div className="container-site">
         <RevealGroup className="flex flex-col gap-8 rounded-[30px] bg-white p-8 lg:flex-row lg:items-start lg:p-12">
           {/* Logo / cert image */}
           <div className="relative size-[160px] shrink-0 overflow-hidden rounded-[16px] lg:size-[204px]">
             <Image
-              src="/photos/nosotros_map.png"
+              src={MAP_CERT_IMAGE_SRC}
               alt="Certificación MAP Técnica"
               fill
               className="object-cover"
@@ -24,7 +25,6 @@ export function NosotrosCertSection() {
             </p>
           </div>
         </RevealGroup>
-      </div>
     </section>
   );
 }

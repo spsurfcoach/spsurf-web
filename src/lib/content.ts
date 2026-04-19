@@ -281,7 +281,7 @@ export const blogPosts: BlogPostItem[] = [
 export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
   { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family Surftrips 1" },
   { src: "/photos/surftrips/gallery_spfamily_2.jpg", alt: "SP Family Surftrips 2" },
-  { src: "/photos/surftrips/gallery_spfamily_3.jpg", alt: "SP Family Surftrips 3" },
+  { src: "/photos/DSC_4280%201.jpg", alt: "SP Family Surftrips 3" },
   { src: "/photos/surftrips/gallery_spfamily_4.jpg", alt: "SP Family Surftrips 4" },
   { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "SP Family Surftrips 5" },
   { src: "/photos/surftrips/gallery_spfamily_6.jpg", alt: "SP Family Surftrips 6" },

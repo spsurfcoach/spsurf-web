@@ -39,9 +39,9 @@ export default async function SurftripsPage() {
       <SurftripsDetailSection trips={trips} />
       <SurftripsCalendarSection trips={trips} />
       <SurftripsForMeSection />
+      <TestimoniosSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
       <FaqsSection items={surftripsFaqs} />
-      <TestimoniosSection />
     </>
   );
 }

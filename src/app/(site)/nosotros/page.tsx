@@ -17,10 +17,10 @@ export default function NosotrosPage() {
       <NosotrosCertSection />
       <NosotrosVideoSection />
       <NosotrosQuoteSection />
+      <TestimoniosSection />
+      <SurfTalksSection />
       <VisionMisionSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
-      <SurfTalksSection />
-      <TestimoniosSection />
     </>
   );
 }

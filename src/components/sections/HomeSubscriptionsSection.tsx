@@ -99,13 +99,21 @@ export function HomeSubscriptionsSection() {
             ))}
           </div>
 
-          <p className="mt-10 text-center text-sm text-white/40">
-            También disponibles paquetes de sesiones individuales en{" "}
-            <Link href="/clases" className="text-white/70 underline underline-offset-2 hover:text-white">
-              Clases
+          {/* Packages callout */}
+          <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/10 pt-10 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="ds-h3 text-white">Paquetes de 4 · 8 · 12 sesiones</p>
+              <p className="mt-1 text-sm text-white/50">
+                También disponibles paquetes de sesiones individuales en Clases.
+              </p>
+            </div>
+            <Link
+              href="/clases"
+              className="ds-btn ds-btn-secondary shrink-0 border-white/20 bg-white/10 text-white hover:bg-white/20"
+            >
+              Conoce los paquetes
             </Link>
-            .
-          </p>
+          </div>
         </RevealGroup>
       </div>
     </section>

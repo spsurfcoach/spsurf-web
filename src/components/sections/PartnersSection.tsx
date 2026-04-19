@@ -8,6 +8,8 @@ type ImagePartner = {
   alt: string;
   unoptimized?: boolean;
   invert?: boolean;
+  /** Extra inset so the logo reads smaller (Tailwind padding on the image) */
+  imagePaddingClass?: string;
 };
 
 type TextPartner = {
@@ -19,9 +21,19 @@ type TextPartner = {
 type Partner = ImagePartner | TextPartner;
 
 const PARTNERS: Partner[] = [
-  { type: "image", src: "/photos/soma.png", alt: "Soma" },
-  { type: "image", src: "/photos/Título secundario.png", alt: "Partner" },
-  { type: "image", src: "/photos/surfplace.png", alt: "Surf Place" },
+  {
+    type: "image",
+    src: "/photos/soma_logo_verde.svg",
+    alt: "Soma",
+    unoptimized: true,
+    imagePaddingClass: "p-6 md:p-7",
+  },
+  {
+    type: "image",
+    src: "/photos/surfplace.png",
+    alt: "Surf Place",
+    imagePaddingClass: "p-6 md:p-7",
+  },
   { type: "image", src: "/channelilsands.png", alt: "Channel Islands", invert: true },
   { type: "image", src: "/photos/Logo minimalista de Futures..png", alt: "Futures" },
 ];
@@ -35,7 +47,7 @@ export function PartnersSection() {
       <RevealGroup className="relative">
         <p className="ds-label text-[var(--color-label-muted)]">PARTNERS</p>
         <h2 className="ds-display-title ds-section-lead-gap">Nuestros partners</h2>
-        <div className="mx-auto mt-8 grid max-w-[1200px] grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8 lg:grid-cols-5 lg:gap-8">
+        <div className="mx-auto mt-8 grid max-w-[1200px] grid-cols-2 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-8">
           {PARTNERS.map((partner) =>
             partner.type === "image" ? (
               <div
@@ -46,7 +58,7 @@ export function PartnersSection() {
                   src={partner.src}
                   alt={partner.alt}
                   fill
-                  className={`object-contain p-4${partner.invert ? " brightness-0" : ""}`}
+                  className={`object-contain ${partner.imagePaddingClass ?? "p-4"}${partner.invert ? " brightness-0" : ""}`}
                   unoptimized={partner.unoptimized ?? false}
                 />
               </div>
