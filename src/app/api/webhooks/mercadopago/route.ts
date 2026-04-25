@@ -1,6 +1,7 @@
 import { createHmac } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { parseSourceProductId } from "@/lib/booking/storefront";
 import {
   createDirectPurchaseFromPayment,
   createPackagePurchaseFromPayment,
@@ -15,6 +16,8 @@ type MercadoPagoWebhook = {
   id?: number;
 };
 
+const LOG = "[webhook/mp]";
+
 export const dynamic = "force-dynamic";
 
 function revalidateSurftripPaths(slug?: string) {
@@ -24,6 +27,23 @@ function revalidateSurftripPaths(slug?: string) {
   if (slug) {
     revalidatePath(`/surftrips/${slug}`);
   }
+}
+
+// MP normalizes preference metadata keys to snake_case when fetched back via
+// Payment.get. Read both casings so the webhook never silently fails on a
+// camelCase miss.
+function pickMeta<T = string>(
+  meta: Record<string, unknown>,
+  ...keys: string[]
+): T | undefined {
+  for (const key of keys) {
+    const snake = key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+    const value = meta[key] ?? meta[snake];
+    if (value !== undefined && value !== null && value !== "") {
+      return value as T;
+    }
+  }
+  return undefined;
 }
 
 function signatureIsValid(request: NextRequest, dataId: string): boolean {
@@ -48,6 +68,8 @@ function signatureIsValid(request: NextRequest, dataId: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const requestId = request.headers.get("x-request-id");
+
   let rawBody: string;
   try {
     rawBody = await request.text();
@@ -62,7 +84,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const paymentId = payload.data?.id ?? String(payload.id ?? "");
+  // MP signs the value of the `data.id` query parameter; prefer that over the
+  // body so signature verification stays consistent across notification flavors.
+  const queryDataId = request.nextUrl.searchParams.get("data.id") ?? "";
+  const paymentId = queryDataId || payload.data?.id || String(payload.id ?? "");
   const notificationType = payload.type ?? payload.action;
 
   if (!paymentId || !notificationType?.includes("payment")) {
@@ -70,6 +95,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!signatureIsValid(request, paymentId)) {
+    console.warn(`${LOG} invalid signature`, { paymentId, requestId });
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
@@ -81,63 +107,141 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true, paymentStatus: payment.status });
     }
 
-    const metadata = (payment.metadata ?? {}) as {
-      userId?: string;
-      productId?: string;
-      productCategory?: string;
-      fulfillmentType?: string;
-      sourceCollection?: string;
-      sourceId?: string;
-      packageId?: string;
-      surftripId?: string;
-    };
+    const meta = (payment.metadata ?? {}) as Record<string, unknown>;
+    const metaUserId = pickMeta<string>(meta, "userId");
+    const metaProductId = pickMeta<string>(meta, "productId");
+    const metaProductCategory = pickMeta<string>(meta, "productCategory");
+    const metaFulfillmentType = pickMeta<string>(meta, "fulfillmentType");
+    const metaPackageId = pickMeta<string>(meta, "packageId");
+    const metaSurftripId = pickMeta<string>(meta, "surftripId");
 
-    if (!metadata.userId) {
-      return NextResponse.json({ error: "Missing userId in metadata" }, { status: 400 });
+    // external_reference is set as `${user.uid}:${productId}` by both checkout
+    // routes. Use it as a safety net if MP drops or renames metadata keys.
+    const externalReference = String(payment.external_reference ?? "");
+    let resolvedUserId = metaUserId;
+    let resolvedProductId = metaProductId;
+    if ((!resolvedUserId || !resolvedProductId) && externalReference.includes(":")) {
+      const [refUser, ...refProductParts] = externalReference.split(":");
+      resolvedUserId ||= refUser;
+      resolvedProductId ||= refProductParts.join(":");
     }
 
-    const preferenceId = String(payment.order?.id ?? payment.id);
+    if (!resolvedUserId) {
+      console.error(`${LOG} missing userId`, {
+        paymentId,
+        requestId,
+        externalReference,
+        metaKeys: Object.keys(meta),
+      });
+      // Return 200 so MP stops retrying a permanently broken payload; the log
+      // above gives us everything needed to recover manually.
+      return NextResponse.json({ ok: false, reason: "missing-user" });
+    }
 
-    if (metadata.fulfillmentType === "surftrip_booking" || metadata.productCategory === "surftrip") {
-      if (!metadata.surftripId) {
-        return NextResponse.json({ error: "Missing surftripId in metadata" }, { status: 400 });
+    const parsedProduct = resolvedProductId ? parseSourceProductId(resolvedProductId) : null;
+    const resolvedFulfillment =
+      metaFulfillmentType ??
+      (parsedProduct?.kind === "surftrip"
+        ? "surftrip_booking"
+        : parsedProduct?.kind === "package"
+          ? "class_booking"
+          : "direct_purchase");
+    const resolvedPackageId =
+      metaPackageId ?? (parsedProduct?.kind === "package" ? parsedProduct.sourceId : undefined);
+    const resolvedSurftripId =
+      metaSurftripId ?? (parsedProduct?.kind === "surftrip" ? parsedProduct.sourceId : undefined);
+
+    const preferenceId = String(payment.order?.id ?? payment.id);
+    const stringPaymentId = String(payment.id);
+
+    if (resolvedFulfillment === "surftrip_booking" || metaProductCategory === "surftrip") {
+      if (!resolvedSurftripId) {
+        console.error(`${LOG} missing surftripId`, {
+          paymentId,
+          requestId,
+          externalReference,
+          metaKeys: Object.keys(meta),
+        });
+        return NextResponse.json({ ok: false, reason: "missing-surftrip" });
       }
       const result = await createSurftripBookingFromPayment({
-        userId: metadata.userId,
-        surftripId: metadata.surftripId,
-        productId: metadata.productId,
-        paymentId: String(payment.id),
+        userId: resolvedUserId,
+        surftripId: resolvedSurftripId,
+        productId: resolvedProductId,
+        paymentId: stringPaymentId,
         preferenceId,
       });
       revalidateSurftripPaths(result.slug);
-      return NextResponse.json({ ok: true, ...result });
-    }
-
-    if (metadata.fulfillmentType === "direct_purchase") {
-      if (!metadata.productId) {
-        return NextResponse.json({ error: "Missing productId in metadata" }, { status: 400 });
-      }
-      const result = await createDirectPurchaseFromPayment({
-        userId: metadata.userId,
-        productId: metadata.productId,
-        paymentId: String(payment.id),
-        preferenceId,
+      console.log(`${LOG} surftrip booking fulfilled`, {
+        paymentId: stringPaymentId,
+        userId: resolvedUserId,
+        surftripId: resolvedSurftripId,
+        bookingId: result.bookingId,
+        idempotent: result.idempotent,
       });
       return NextResponse.json({ ok: true, ...result });
     }
 
-    if (!metadata.packageId) {
-      return NextResponse.json({ error: "Missing packageId in metadata" }, { status: 400 });
+    if (resolvedFulfillment === "direct_purchase") {
+      if (!resolvedProductId) {
+        console.error(`${LOG} missing productId`, {
+          paymentId,
+          requestId,
+          externalReference,
+          metaKeys: Object.keys(meta),
+        });
+        return NextResponse.json({ ok: false, reason: "missing-product" });
+      }
+      const result = await createDirectPurchaseFromPayment({
+        userId: resolvedUserId,
+        productId: resolvedProductId,
+        paymentId: stringPaymentId,
+        preferenceId,
+      });
+      console.log(`${LOG} direct purchase fulfilled`, {
+        paymentId: stringPaymentId,
+        userId: resolvedUserId,
+        productId: resolvedProductId,
+        purchaseId: result.purchaseId,
+        idempotent: result.idempotent,
+      });
+      return NextResponse.json({ ok: true, ...result });
+    }
+
+    if (!resolvedPackageId) {
+      console.error(`${LOG} missing packageId`, {
+        paymentId,
+        requestId,
+        externalReference,
+        metaKeys: Object.keys(meta),
+      });
+      return NextResponse.json({ ok: false, reason: "missing-package" });
     }
     const result = await createPackagePurchaseFromPayment({
-      userId: metadata.userId,
-      packageId: metadata.packageId,
-      productId: metadata.productId,
-      paymentId: String(payment.id),
+      userId: resolvedUserId,
+      packageId: resolvedPackageId,
+      productId: resolvedProductId,
+      paymentId: stringPaymentId,
       preferenceId,
     });
+    console.log(`${LOG} package purchase fulfilled`, {
+      paymentId: stringPaymentId,
+      userId: resolvedUserId,
+      packageId: resolvedPackageId,
+      purchaseId: result.purchaseId,
+      idempotent: result.idempotent,
+    });
     return NextResponse.json({ ok: true, ...result });
-  } catch {
+  } catch (error) {
+    console.error(`${LOG} processing failed`, {
+      paymentId,
+      requestId,
+      error:
+        error instanceof Error
+          ? { message: error.message, stack: error.stack }
+          : error,
+    });
+    // Keep 500 for transient failures so MP retries.
     return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 });
   }
 }

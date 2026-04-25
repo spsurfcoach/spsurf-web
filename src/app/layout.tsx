@@ -9,6 +9,20 @@ export const metadata: Metadata = {
   },
   description:
     "Entrenamiento de surf personalizado, surftrips, videocoaching y comunidad para progresar dentro y fuera del agua.",
+  icons: {
+    icon: [
+      {
+        url: "/photos/logosp%20-%20copia.png",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/photos/logosp%20-%20copia.png",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
