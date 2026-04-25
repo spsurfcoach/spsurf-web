@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CarouselShell } from "@/components/sections/CarouselShell";
-import { testimonials } from "@/lib/content";
+import { testimonials, type TestimonialItem } from "@/lib/content";
 
 const BLOCK_STYLES = [
   {
@@ -13,7 +13,11 @@ const BLOCK_STYLES = [
   },
 ];
 
-export function TestimoniosSection() {
+type TestimoniosSectionProps = {
+  items?: TestimonialItem[];
+};
+
+export function TestimoniosSection({ items = testimonials }: TestimoniosSectionProps) {
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-4 sm:px-6 md:px-0 lg:py-0">
       {/* Kicker above */}
@@ -26,7 +30,7 @@ export function TestimoniosSection() {
           ariaLabel="Carrusel de testimonios"
           darkControls={false}
           slideClassName="basis-[92%] lg:basis-[50%]"
-          slides={testimonials.map((item, i) => {
+          slides={items.map((item, i) => {
             const style = BLOCK_STYLES[i % BLOCK_STYLES.length];
             const photoSrc = item.image ?? style.photo;
             return (

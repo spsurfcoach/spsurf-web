@@ -202,12 +202,38 @@ export const testimonials: TestimonialItem[] = [
   },
 ];
 
+export const surftripsTestimonials: TestimonialItem[] = [
+  {
+    quote:
+      "Fui al surfcamp de lobitos con un objetivo super claro que era aprender a correr izquierdas y al segundo día mi primera encarrilada en una y el ultimo día ya en una ola bastante larga y buena, me divertí un montón, todos los tips te ayudan a mejorar",
+    author: "Diego",
+    image: "/photos/DSC_5848.jpg",
+  },
+  {
+    quote:
+      "Este surfcamp en chicama ha significado mucha experiencia, el hecho de trabajar con Sebas me ha facilitado mucho las cosas. La verdad ha sido una gran experiencia y sobre todo por el grupo, se comparten experiencias y el aprendizaje va mas allá de meterse al mar",
+    author: "Jose",
+    image: "/photos/DSC_8125.jpg",
+  },
+];
+
+export type ServicioDetailCoach = {
+  name: string;
+  /** Qué enseña esta persona en este servicio (línea corta bajo el nombre). */
+  role: string;
+  imageSrc?: string;
+};
+
 export type ServicioDetailTab = {
   id: string;
   title: string;
   paragraphs: string[];
-  showTestimonial?: boolean;
+  /** Instructor asociado al servicio. */
+  coach?: ServicioDetailCoach;
 };
+
+const SEBASTIAN_PORTRAIT = "/photos/95B6F509-89D2-41CC-8CBA-AC87E4D45ABA.JPG.jpeg";
+const IVO_PORTRAIT = "/photos/DSC09031.JPG";
 
 /** Servicios en la página /servicios: títulos seleccionables + textos cortos asociados */
 export const serviciosDetailTabs: ServicioDetailTab[] = [
@@ -215,39 +241,46 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     id: "clases",
     title: "Clases de surf",
     paragraphs: [
-      "Sesiones en el agua con ratio reducido: feedback al momento, prioridades claras y ritmo acorde a tu nivel.",
-      "Individual para foco total o grupal para energía y comunidad, siempre con ojo de coach.",
-      "Grabamos olas y las revisamos en pantalla para cerrar la brecha entre lo que sientes y lo que realmente haces.",
+      "Nuestras clases de surf están pensadas para adaptarse a tu nivel, tus objetivos y tu momento como surfista. Trabajamos tanto en formato individual como grupal, siempre con coaching en el agua y video análisis incluido.",
+      "Las clases individuales permiten un trabajo totalmente personalizado, ideal para corregir detalles técnicos, acelerar el progreso y enfocarse en objetivos concretos.",
+      "Las clases grupales combinan aprendizaje y motivación en un entorno de comunidad, manteniendo grupos reducidos para asegurar atención real.",
+      "En cada sesión grabamos tus olas y las analizamos, revisando postura, línea, timing, velocidad y toma de decisiones. La idea es que entiendas claramente qué estás haciendo y qué ajustar para mejorar.",
+      "Aquí no solo surfeas más.",
+      "Surfeas mejor.",
     ],
-    showTestimonial: true,
+    coach: {
+      name: "Sebastián Portocarrero",
+      role: "Imparte clases de surf",
+      imageSrc: SEBASTIAN_PORTRAIT,
+    },
   },
   {
     id: "video",
     title: "Videoanálisis",
     paragraphs: [
-      "Revisión cuadro a cuadro de tus olas: línea, timing y postura. Te llevas tres ajustes concretos para la próxima sesión.",
+      "Este servicio está pensado para surfistas que quieren recibir feedback técnico sin necesidad de estar presentes en una sesión de coaching.",
+      "Envía tus clips de surfing y realizaremos un análisis detallado de cada ola, evaluando aspectos como posicionamiento en la ola, timing, selección de maniobras, línea de surfing y uso del cuerpo. A partir de este análisis se entrega un feedback claro con correcciones específicas y recomendaciones técnicas para mejorar el rendimiento en el agua.",
+      "Este proceso permite identificar errores que muchas veces pasan desapercibidos durante la sesión y enfocar el entrenamiento de manera más consciente y eficiente.",
     ],
+    coach: {
+      name: "Sebastián Portocarrero",
+      role: "Imparte videoanálisis",
+      imageSrc: SEBASTIAN_PORTRAIT,
+    },
   },
   {
     id: "surfskate",
     title: "Clases de Surfskate",
     paragraphs: [
-      "Traducimos movimiento en tierra a tablero y olas: carril, peso y giros con repetición segura fuera del agua.",
+      "El surfskate se utiliza como herramienta de entrenamiento fuera del agua para trabajar técnica, postura y mecánica de movimientos que utilizas en tu surfing.",
+      "Practicamos giros, compresión y extensión, transferencia de peso y generación de velocidad, replicando las sensaciones del surfing en la ola.",
+      "Esto permite interiorizar patrones de movimiento correctos y mejorar el control y fluidez cuando vuelves al agua.",
     ],
-  },
-  {
-    id: "yoga",
-    title: "Talleres de Yoga Restaurativo",
-    paragraphs: [
-      "Secuencias suaves para abrir cadera, espalda y hombros después de surfear. Ideal para recuperar y dormir mejor.",
-    ],
-  },
-  {
-    id: "respiracion",
-    title: "Talleres de respiración & meditación",
-    paragraphs: [
-      "Técnicas simples para bajar revoluciones antes de entrar al mar y sostener foco cuando la sesión se pone intensa.",
-    ],
+    coach: {
+      name: "Ivo Escuza",
+      role: "Imparte clases de surfskate",
+      imageSrc: IVO_PORTRAIT,
+    },
   },
 ];
 
@@ -279,7 +312,7 @@ export const blogPosts: BlogPostItem[] = [
 ];
 
 export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
-  { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family Surftrips 1" },
+  { src: "/photos/DSC_5512.jpg", alt: "SP Family surftrip" },
   { src: "/photos/surftrips/gallery_spfamily_2.jpg", alt: "SP Family Surftrips 2" },
   { src: "/photos/DSC_4280%201.jpg", alt: "SP Family Surftrips 3" },
   { src: "/photos/surftrips/gallery_spfamily_4.jpg", alt: "SP Family Surftrips 4" },

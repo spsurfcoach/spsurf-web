@@ -3,8 +3,8 @@ import { ResponsiveMediaFrame } from "@/components/sections/ResponsiveMediaFrame
 
 export function ServiciosIntroSection() {
   return (
-    <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-16">
-      <RevealGroup className="container-site">
+    <section className="bg-[var(--color-background-default)] py-14 lg:py-16">
+      <RevealGroup className="w-full px-4 sm:px-6 md:px-10 lg:px-16">
         {/* Kicker */}
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
           SERVICIOS

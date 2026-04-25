@@ -11,8 +11,8 @@ export function FaqsSection({ items = faqs }: FaqsSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16 lg:py-14">
-      <div className="container-site">
+    <section className="bg-[var(--color-background-default)] py-10 lg:py-14">
+      <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16">
         <div className="rounded-[40px] bg-white px-6 py-10 sm:px-10 sm:py-14 lg:rounded-[60px] lg:px-16 lg:py-20">
           <h2 className="ds-h2 text-black">FAQS</h2>
 

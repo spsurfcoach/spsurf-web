@@ -21,7 +21,12 @@ export function NosotrosCertSection() {
           <div className="flex-1">
             <p className="ds-body-s font-bold text-black">Certificación MAP Técnica</p>
             <p className="ds-body-s mt-3 leading-[1.8] text-black/80">
-              Las clases individuales permiten un trabajo totalmente personalizado, ideal para quienes buscan progresar rápido, corregir detalles técnicos y enfocarse en objetivos específicos. Las clases grupales, en cambio, combinan aprendizaje, motivación y comunidad, manteniendo siempre un ratio reducido para asegurar atención real de nuestros coaches.
+              MAP es una metodología de entrenamiento de surf basada en la ciencia de la biomecánica, que analiza los
+              movimientos que se emplean en el surf y lo convierte en un sistema claro, entrenable y repetible.
+            </p>
+            <p className="ds-body-s mt-3 leading-[1.8] text-black/80">
+              A través de entrenamiento en tierra, surfskate, sesiones en el mar y video análisis, permite identificar
+              errores con precisión y corregirlos de forma consciente, acelerando el proceso de aprendizaje.
             </p>
           </div>
         </RevealGroup>

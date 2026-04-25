@@ -14,11 +14,19 @@ export function NosotrosIntroSection() {
 
         {/* Editorial text */}
         <div className="mt-6 max-w-[1312px] space-y-6">
-          <p className="ds-display-title text-black">
-            Combinamos técnica, análisis y mentalidad para que progreses de forma real y sostenible. Cada surfista entrena con un enfoque personalizado que integra práctica en el agua, videoanálisis, entrenamiento físico y ejercicios mentales para ganar confianza y fluidez.
+          <p className="ds-section-title text-black">
+            SP nace también como extensión de una filosofía personal: entender el surf no solo como deporte, sino
+            como práctica, lenguaje y forma de crecimiento.
           </p>
-          <p className="ds-display-title text-black">
-            El objetivo: que entiendas el mar, tu cuerpo y tu mente para surfear con propósito.
+          <p className="ds-section-title text-black">
+            Detrás del proyecto está Sebastián Portocarrero, surfista con más de 15 años en el agua, experiencia
+            competitiva, reconocido por su trayectoria en la escena local y su enfoque en progresión, su búsqueda por
+            entender el rendimiento lo llevó a profundizar en metodologías como MAP Técnica Surf y a expandir esa visión
+            a través de Surf Talks Podcast, conversando con los mayores referentes del surf latinoamericano.
+          </p>
+          <p className="ds-section-title text-black">
+            SP Surf Coach reúne esa experiencia en un programa de coaching enfocado en desarrollar técnica, criterio y
+            progresión real en el agua.
           </p>
         </div>
       </RevealGroup>

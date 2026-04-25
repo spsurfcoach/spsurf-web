@@ -7,7 +7,7 @@ import { RevealGroup } from "@/components/animations/Reveal";
 
 const HERO_SLIDES = [
   { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family compartiendo un surftrip" },
-  { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "Momento de surf con SP Family" },
+  { src: "/photos/IMG_1401.jpg", alt: "Momento de surf con SP Family" },
   { src: "/photos/hero.jpg", alt: "Surfista entrando al mar" },
 ] as const;
 

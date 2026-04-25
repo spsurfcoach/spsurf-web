@@ -6,6 +6,7 @@ import { NosotrosQuoteSection } from "@/components/sections/NosotrosQuoteSection
 import { VisionMisionSection } from "@/components/sections/VisionMisionSection";
 import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
+import { SurfTalksVideosPicksSection } from "@/components/sections/SurfTalksVideosPicksSection";
 import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
 import { surftripsSpFamilyPhotos } from "@/lib/content";
 
@@ -19,6 +20,7 @@ export default function NosotrosPage() {
       <NosotrosQuoteSection />
       <TestimoniosSection />
       <SurfTalksSection />
+      <SurfTalksVideosPicksSection />
       <VisionMisionSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
     </>

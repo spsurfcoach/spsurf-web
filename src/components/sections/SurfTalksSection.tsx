@@ -24,7 +24,7 @@ export function SurfTalksSection() {
 
           <p className="ds-label mt-12 text-[var(--color-label-muted)]">NUESTROS SURFTALKS</p>
           <h2 className="ds-h1 ds-section-lead-gap max-w-[1312px] leading-[1.5] tracking-[-0.04em] lg:leading-[63px]">
-            Cada episodio es una charla honesta entre surfistas, entrenadores y apasionados del mar. Hablamos de progresar, de disfrutar el proceso, de encontrar equilibrio y propósito dentro y fuera del agua.
+            Canal creado para la comunidad, donde hablamos con diferentes surfistas, entrenadores e iconos del mundo del surf.
           </h2>
           <span className="ds-btn ds-btn-primary ds-btn-lg mt-9 inline-flex">
             Suscríbete a nuestro canal

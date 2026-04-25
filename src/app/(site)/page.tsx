@@ -7,6 +7,7 @@ import { HomeSubscriptionsSection } from "@/components/sections/HomeSubscription
 import { ComunidadSection } from "@/components/sections/ComunidadSection";
 import { PartnersSection } from "@/components/sections/PartnersSection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
+import { SurfTalksVideosPicksSection } from "@/components/sections/SurfTalksVideosPicksSection";
 import { getSurftrips } from "@/lib/sanity";
 
 export default async function Home() {
@@ -23,6 +24,7 @@ export default async function Home() {
       <ComunidadSection />
       <PartnersSection />
       <SurfTalksSection />
+      <SurfTalksVideosPicksSection />
     </div>
   );
 }
