@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { CheckCircle2, Info, XCircle } from "lucide-react";
 import { ClassSlotList } from "@/components/booking/ClassSlotList";
 import { PackageList } from "@/components/booking/PackageList";
 import { UpcomingBookingsList } from "@/components/booking/UpcomingBookingsList";
@@ -43,17 +44,52 @@ function getTab(value: string | null): ClassesTab {
   return value === "reservar" ? "reservar" : "comprar";
 }
 
-function getPaymentMessage(status: string | null) {
+type FlashVariant = "success" | "error" | "neutral";
+
+type FlashBanner = { variant: FlashVariant; text: string };
+
+function getPaymentBanner(status: string | null): FlashBanner | null {
   switch (status) {
     case "success":
-      return "Pago confirmado. Tu compra aparecera en tu cuenta en cuanto se procese el webhook.";
+      return {
+        variant: "success",
+        text: "Pago confirmado. Tu compra aparecera en tu cuenta en cuanto se procese el webhook.",
+      };
     case "failure":
-      return "No se pudo completar el pago. Intentalo nuevamente.";
+      return {
+        variant: "error",
+        text: "No se pudo completar el pago. Intentalo nuevamente.",
+      };
     case "pending":
-      return "Tu pago esta pendiente de confirmacion.";
+      return {
+        variant: "neutral",
+        text: "Tu pago esta pendiente de confirmacion.",
+      };
     default:
       return null;
   }
+}
+
+function FlashBanner({ variant, text }: FlashBanner) {
+  const Icon = variant === "success" ? CheckCircle2 : variant === "error" ? XCircle : Info;
+  const iconClass =
+    variant === "success" ? "text-emerald-600" : variant === "error" ? "text-red-600" : "text-black/45";
+  const wrapClass =
+    variant === "success"
+      ? "border border-emerald-200/80 bg-emerald-50"
+      : variant === "error"
+        ? "border border-red-200/80 bg-red-50"
+        : "border border-black/10 bg-white";
+
+  return (
+    <div
+      role={variant === "error" ? "alert" : "status"}
+      className={`flex items-start gap-3 rounded-xl px-4 py-3 text-sm text-black ${wrapClass}`}
+    >
+      <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${iconClass}`} aria-hidden />
+      <span className="min-w-0 flex-1 leading-snug">{text}</span>
+    </div>
+  );
 }
 
 function buildProfileHref(tab: ClassesTab, context?: "reservar" | "post-payment") {
@@ -81,7 +117,7 @@ function ClasesPageContent() {
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [purchases, setPurchases] = useState<PurchaseItem[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
+  const [banner, setBanner] = useState<FlashBanner | null>(null);
   const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
 
   const loadPublicData = useCallback(async () => {
@@ -121,7 +157,8 @@ function ClasesPageContent() {
 
   const hasAuth = !!user;
   const profileComplete = isProfileComplete(profile);
-  const displayMessage = message ?? getPaymentMessage(paymentStatus);
+  const paymentBanner = useMemo(() => getPaymentBanner(paymentStatus), [paymentStatus]);
+  const displayBanner = banner ?? paymentBanner;
   const activePurchase = getActiveClassPurchase(purchases);
 
   useEffect(() => {
@@ -135,6 +172,7 @@ function ClasesPageContent() {
       return;
     }
 
+    setBanner(null);
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", tab);
     params.delete("payment");
@@ -223,7 +261,7 @@ function ClasesPageContent() {
   return (
     <div className="min-h-screen bg-[var(--color-background-default)] pb-20 pt-10">
       <div className="container-site space-y-6">
-        {displayMessage ? <div className="rounded-xl bg-black px-4 py-3 text-sm text-white">{displayMessage}</div> : null}
+        {displayBanner ? <FlashBanner variant={displayBanner.variant} text={displayBanner.text} /> : null}
 
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
@@ -270,7 +308,7 @@ function ClasesPageContent() {
                 if (checkoutUrl) {
                   window.location.href = checkoutUrl;
                 } else {
-                  setMessage("No se pudo obtener la URL de checkout.");
+                  setBanner({ variant: "error", text: "No se pudo obtener la URL de checkout." });
                 }
               }}
             />
@@ -299,10 +337,13 @@ function ClasesPageContent() {
               onCancel={async (bookingId) => {
                 try {
                   await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
-                  setMessage("Reserva cancelada. Tu clase ha sido devuelta.");
+                  setBanner({ variant: "success", text: "Reserva cancelada. Tu clase ha sido devuelta." });
                   await loadPrivateData();
                 } catch (error) {
-                  setMessage(error instanceof Error ? error.message : "No se pudo cancelar la reserva.");
+                  setBanner({
+                    variant: "error",
+                    text: error instanceof Error ? error.message : "No se pudo cancelar la reserva.",
+                  });
                 }
               }}
             />
@@ -319,10 +360,13 @@ function ClasesPageContent() {
                     method: "POST",
                     body: JSON.stringify({ classSlotId: slotId }),
                   });
-                  setMessage("Reserva confirmada exitosamente.");
+                  setBanner({ variant: "success", text: "Reserva confirmada exitosamente." });
                   await Promise.all([loadPublicData(), loadPrivateData()]);
                 } catch (error) {
-                  setMessage(error instanceof Error ? error.message : "No se pudo reservar.");
+                  setBanner({
+                    variant: "error",
+                    text: error instanceof Error ? error.message : "No se pudo reservar.",
+                  });
                 }
               }}
             />

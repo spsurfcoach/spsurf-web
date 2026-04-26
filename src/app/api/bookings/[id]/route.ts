@@ -54,6 +54,10 @@ export async function DELETE(
         }
       }
 
+      // All reads must finish before any writes (Firestore transaction rule).
+      const purchaseRef = adminDb.collection("purchases").doc(booking.purchaseId);
+      const purchaseSnap = await transaction.get(purchaseRef);
+
       const nowIso = now.toISOString();
 
       // Cancel the booking
@@ -66,9 +70,6 @@ export async function DELETE(
       });
 
       // Refund credit if it was a credits package
-      const purchaseRef = adminDb.collection("purchases").doc(booking.purchaseId);
-      const purchaseSnap = await transaction.get(purchaseRef);
-
       if (purchaseSnap.exists) {
         const purchase = purchaseSnap.data() as PurchaseDoc;
         if (purchaseCanBookClasses(purchase) && purchase.packageType === "credits") {
