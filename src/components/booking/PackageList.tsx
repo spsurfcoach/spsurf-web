@@ -42,7 +42,7 @@ const FILTER_LABELS: Record<FilterType, string> = {
   package: "Paquetes",
   videoanalysis: "Videoanalisis",
   surfskate: "Surfskate",
-  surftrip: "Surftrips",
+  surftrip: "Surfcamps",
 };
 
 const CATEGORY_BY_PREFIX: Record<string, PackageItem["category"]> = {
@@ -125,7 +125,7 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
 
   function ctaLabel(product: PackageItem, soldOut: boolean) {
     if (soldOut) return "Sin cupos";
-    if (product.fulfillmentType === "surftrip_booking") return "Comprar surftrip";
+    if (product.fulfillmentType === "surftrip_booking") return "Comprar surfcamp";
     return "Comprar";
   }
 

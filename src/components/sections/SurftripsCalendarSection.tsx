@@ -100,7 +100,7 @@ export function SurftripsCalendarSection({ trips }: SurftripsCalendarSectionProp
       <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">CALENDARIO</p>
         <p className="ds-body-m mt-6 text-black">
-          Publica surftrips en <code>/studio</code> para ver disponibilidad y calendario aquí.
+          Publica surfcamps en <code>/studio</code> para ver disponibilidad y calendario aquí.
         </p>
       </section>
     );

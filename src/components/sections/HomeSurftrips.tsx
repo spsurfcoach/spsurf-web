@@ -46,7 +46,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
     <section className="py-14 md:py-16">
       <div className="grid gap-10 px-4 sm:px-6 md:grid-cols-[1fr_1.1fr] md:px-10 lg:px-16">
         <RevealGroup>
-          <p className="ds-label text-[var(--color-label-muted)]">NUESTROS SURFTRIPS</p>
+          <p className="ds-label text-[var(--color-label-muted)]">NUESTROS SURFCAMPS</p>
           <h2 className="ds-section-title ds-section-lead-gap max-w-[540px]">
             Mejora tu surfing en los mejores destinos y vive experiencias únicas junto a una comunidad que comparte tu misma pasión por el mar.
           </h2>
@@ -89,7 +89,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
               );
             })
           ) : (
-            <p className="ds-body-m text-black/70">Pronto compartiremos los próximos surftrips.</p>
+            <p className="ds-body-m text-black/70">Pronto compartiremos los próximos surfcamps.</p>
           )}
         </RevealGroup>
       </div>

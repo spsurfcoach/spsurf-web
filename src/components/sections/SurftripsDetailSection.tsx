@@ -62,7 +62,7 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
     return (
       <section className="bg-[var(--color-background-default)] px-4 py-12 text-black sm:px-6 md:px-10 lg:px-16">
         <p className="ds-body-m">
-          Aún no hay surftrips publicados en Sanity. Agrega uno en <code>/studio</code> para mostrarlo aquí.
+          Aún no hay surfcamps publicados en Sanity. Agrega uno en <code>/studio</code> para mostrarlo aquí.
         </p>
       </section>
     );
@@ -161,7 +161,7 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
                     : "bg-black text-white hover:bg-black/85"
                 }`}
               >
-                Ver surftrip completo
+                Ver surfcamp completo
               </Link>
             </div>
           </div>

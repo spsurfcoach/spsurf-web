@@ -1,13 +1,13 @@
 import { NosotrosHero } from "@/components/sections/NosotrosHero";
 import { NosotrosIntroSection } from "@/components/sections/NosotrosIntroSection";
 import { NosotrosCertSection } from "@/components/sections/NosotrosCertSection";
-import { NosotrosVideoSection } from "@/components/sections/NosotrosVideoSection";
 import { NosotrosQuoteSection } from "@/components/sections/NosotrosQuoteSection";
 import { VisionMisionSection } from "@/components/sections/VisionMisionSection";
 import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
 import { SurfTalksVideosPicksSection } from "@/components/sections/SurfTalksVideosPicksSection";
-import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
+import { NosotrosTestimoniosVideosSection } from "@/components/sections/NosotrosTestimoniosVideosSection";
+import { PartnersSection } from "@/components/sections/PartnersSection";
 import { surftripsSpFamilyPhotos } from "@/lib/content";
 
 export default function NosotrosPage() {
@@ -16,13 +16,13 @@ export default function NosotrosPage() {
       <NosotrosHero />
       <NosotrosIntroSection />
       <NosotrosCertSection />
-      <NosotrosVideoSection />
       <NosotrosQuoteSection />
-      <TestimoniosSection />
-      <SurfTalksSection />
-      <SurfTalksVideosPicksSection />
+      <NosotrosTestimoniosVideosSection />
+      <PartnersSection />
       <VisionMisionSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
+      <SurfTalksSection />
+      <SurfTalksVideosPicksSection />
     </>
   );
 }

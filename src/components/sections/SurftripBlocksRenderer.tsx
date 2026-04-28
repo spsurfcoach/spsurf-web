@@ -104,7 +104,7 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
         }
       : {
           title: "Paquete",
-          subtitle: `Surftrip de ${trip.duracion} en ${trip.title}`,
+          subtitle: `Surfcamp de ${trip.duracion} en ${trip.title}`,
           priceLabel: toCurrencyPEN(trip.price),
           priceSuffix: "Precio por persona",
           depositNote:
@@ -141,7 +141,7 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
         imageSrc={heroSrc}
         title={trip.title}
         titleSuffix={trip.heroTitleSuffix}
-        kicker={trip.heroKicker || "SURFTRIP"}
+        kicker={trip.heroKicker || "SURFCAMP"}
       />
 
       <SurftripDetailSummarySection

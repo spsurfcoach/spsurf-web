@@ -10,7 +10,7 @@ export function SurftripsVideoSection() {
           <iframe
             className="absolute inset-0 h-full w-full border-0"
             src={`https://www.youtube.com/embed/${SURFTRIPS_YOUTUBE_ID}?rel=0`}
-            title="Video Surftrips SP Surf Coach"
+            title="Video Surfcamps SP Surf Coach"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             loading="lazy"

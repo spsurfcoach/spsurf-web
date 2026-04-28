@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const surftrip = defineType({
   name: "surftrip",
-  title: "Surftrip",
+  title: "Surfcamp",
   type: "document",
   fields: [
     defineField({
@@ -98,7 +98,7 @@ export const surftrip = defineType({
       name: "heroKicker",
       title: "Hero Kicker",
       type: "string",
-      initialValue: "SURFTRIP",
+      initialValue: "SURFCAMP",
     }),
     defineField({
       name: "heroSubtitle",
@@ -198,7 +198,7 @@ export const surftrip = defineType({
       name: "itineraryTitle",
       title: "Itinerary Section Title",
       type: "string",
-      initialValue: "Como se vive este surftrip",
+      initialValue: "Como se vive este surfcamp",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -256,7 +256,7 @@ export const surftrip = defineType({
       name: "isActive",
       title: "Sellable",
       type: "boolean",
-      description: "Controla si el surftrip debe aparecer como comprable cuando esté publicado.",
+      description: "Controla si el surfcamp debe aparecer como comprable cuando esté publicado.",
       initialValue: true,
     }),
     defineField({

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s | SP Surf Coach",
   },
   description:
-    "Entrenamiento de surf personalizado, surftrips, videocoaching y comunidad para progresar dentro y fuera del agua.",
+    "Entrenamiento de surf personalizado, surfcamps, videocoaching y comunidad para progresar dentro y fuera del agua.",
   icons: {
     icon: [
       {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { RevealGroup } from "@/components/animations/Reveal";
 
 const HERO_SLIDES = [
-  { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family compartiendo un surftrip" },
+  { src: "/photos/surftrips/gallery_spfamily_1.jpg", alt: "SP Family compartiendo un surfcamp" },
   { src: "/photos/IMG_1401.jpg", alt: "Momento de surf con SP Family" },
   { src: "/photos/hero.jpg", alt: "Surfista entrando al mar" },
 ] as const;
@@ -77,7 +77,7 @@ export function HomeHero() {
               </h1>
               <div className="ds-section-lead-gap">
                 <Link
-                  href="/servicios"
+                  href="/clases?tab=comprar"
                   className="ds-btn ds-btn-lg inline-flex border border-white bg-white/10 text-white hover:bg-white/20"
                 >
                   Comprar Clases

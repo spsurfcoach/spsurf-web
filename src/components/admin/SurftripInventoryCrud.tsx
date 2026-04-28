@@ -41,7 +41,7 @@ export function SurftripInventoryCrud({ items, isLoading, onSync, onSyncAll, onT
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold">Inventario de Surftrips</h2>
+          <h2 className="text-xl font-bold">Inventario de Surfcamps</h2>
           <p className="text-sm text-black/50 mt-1">
             Este inventario se sincroniza desde Sanity. Aquí solo revisas estado operativo y puedes activar,
             desactivar o resincronizar filas ya enlazadas.
@@ -70,14 +70,14 @@ export function SurftripInventoryCrud({ items, isLoading, onSync, onSyncAll, onT
       ) : items.length === 0 ? (
         <div className="rounded-xl border border-dashed border-black/20 p-10 text-center">
           <p className="text-sm font-medium text-black/50 uppercase tracking-wider">
-            No hay surftrips en el inventario
+            No hay surfcamps en el inventario
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {/* Header — desktop */}
           <div className="hidden md:grid grid-cols-[1fr_90px_120px_130px_130px_190px] gap-4 px-5 pb-2 border-b border-black/10">
-            <p className="text-xs font-medium text-black/40">Surftrip</p>
+            <p className="text-xs font-medium text-black/40">Surfcamp</p>
             <p className="text-xs font-medium text-black/40">Precio</p>
             <p className="text-xs font-medium text-black/40">Cupos</p>
             <p className="text-xs font-medium text-black/40">Fechas</p>
@@ -162,7 +162,7 @@ export function SurftripInventoryCrud({ items, isLoading, onSync, onSyncAll, onT
           })}
 
           <p className="text-xs text-black/40 font-medium pt-2 text-right">
-            {items.length} {items.length === 1 ? "surftrip" : "surftrips"}
+            {items.length} {items.length === 1 ? "surfcamp" : "surfcamps"}
           </p>
         </div>
       )}

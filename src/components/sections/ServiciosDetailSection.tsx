@@ -61,6 +61,9 @@ export function ServiciosDetailSection() {
                               </span>
                             </span>
                             <span className="flex w-full min-w-0 items-center justify-start gap-2.5 sm:w-auto sm:shrink-0 sm:justify-end sm:gap-3 sm:pl-2">
+                              <span className="ds-body-s min-w-0 text-left font-semibold text-black sm:whitespace-nowrap">
+                                {item.coach.name}
+                              </span>
                               <span
                                 className="relative size-12 shrink-0 overflow-hidden rounded-full bg-zinc-200 sm:size-16"
                                 aria-hidden
@@ -79,11 +82,7 @@ export function ServiciosDetailSection() {
                                   </span>
                                 )}
                               </span>
-                              <span className="ds-body-s min-w-0 text-left font-semibold text-black sm:whitespace-nowrap sm:pl-1 sm:text-right">
-                                {item.coach.name}
-                              </span>
-                            </span>
-                          </>
+                            </span>                          </>
                         ) : (
                           <span className="flex min-w-0 w-full items-center justify-start gap-3">
                             <span
@@ -125,8 +124,8 @@ export function ServiciosDetailSection() {
         <Reveal className="mt-12">
           <div className="relative h-[240px] w-full overflow-hidden rounded-[40px] border-2 border-white sm:h-[280px] lg:h-[335px]">
             <Image
-              src="/photos/DSC_5325 1 (1).jpg"
-              alt="Clase de surf"
+              src="/photos/DSC_5325 copia.jpg"
+              alt="Videoanálisis"
               fill
               className="object-cover"
             />

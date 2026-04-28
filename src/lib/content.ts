@@ -10,6 +10,101 @@ export type PackageItem = {
   validity: string;
 };
 
+/** Paquetes de clases (tarjetas con imagen: home, checkout marketing). */
+export type PackageOfferCard = {
+  id: string;
+  name: string;
+  price: string;
+  classes: string;
+  validity: string;
+  description: string;
+  image: string;
+  featured: boolean;
+};
+
+/** Membresías (bloque marketing en home CTA y página servicios). */
+export type MembershipPlanItem = {
+  id: string;
+  duration: string;
+  price: string;
+  unit: string;
+  featured: boolean;
+  description: string;
+  image: string;
+  badge?: string;
+};
+
+export const packageOfferCards: PackageOfferCard[] = [
+  {
+    id: "starter",
+    name: "Starter",
+    price: "S/560",
+    classes: "4 clases",
+    validity: "Vigencia: 1 mes",
+    description: "Ideal para volver al agua con constancia y feedback claro en cada sesión.",
+    image: "/photos/servicios_paquete_starter.jpg",
+    featured: false,
+  },
+  {
+    id: "standard",
+    name: "Standard",
+    price: "S/960",
+    classes: "8 clases",
+    validity: "Vigencia: 1 mes",
+    description: "Más sesiones para consolidar técnica y lectura de olas con acompañamiento continuo.",
+    image: "/photos/servicios_paquete_standard.jpg",
+    featured: true,
+  },
+  {
+    id: "premium",
+    name: "Premium",
+    price: "S/1,400",
+    classes: "10 clases",
+    validity: "Vigencia: 1 mes",
+    description: "Máxima dedicación para acelerar tu progreso con plan personalizado y seguimiento cercano.",
+    image: "/photos/servicios_paquete_premium.jpg",
+    featured: false,
+  },
+];
+
+export const membershipPlans: MembershipPlanItem[] = [
+  {
+    id: "3m",
+    duration: "3 meses",
+    price: "S/1,590",
+    unit: "/ mes",
+    featured: false,
+    description: "Ideal para arrancar tu progreso con compromiso real.",
+    image: "/photos/servicios_paquete_starter.jpg",
+  },
+  {
+    id: "12m",
+    duration: "12 meses",
+    badge: "Anual",
+    price: "S/1,290",
+    unit: "/ mes",
+    featured: true,
+    description: "El mejor valor. Progreso sostenido durante todo el año.",
+    image: "/photos/servicios_paquete_premium.jpg",
+  },
+  {
+    id: "6m",
+    duration: "6 meses",
+    price: "S/1,450",
+    unit: "/ mes",
+    featured: false,
+    description: "Seis meses de entrenamiento continuo y resultados visibles.",
+    image: "/photos/servicios_paquete_standard.jpg",
+  },
+];
+
+export const homePackages: PackageItem[] = packageOfferCards.map((p) => ({
+  name: p.name,
+  price: p.price.replace(/^S\//, "s/"),
+  classes: p.classes,
+  validity: p.validity,
+}));
+
 export type SurfTripItem = {
   name: string;
   country: string;
@@ -52,7 +147,7 @@ export type SpFamilyPhotoItem = {
 
 export const navItems: NavItem[] = [
   { href: "/", label: "Inicio" },
-  { href: "/surftrips", label: "Surftrips" },
+  { href: "/surftrips", label: "Surfcamps" },
   { href: "/servicios", label: "Servicios" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/blog", label: "Blog" },
@@ -68,7 +163,7 @@ export const footerColumns: FooterColumn[] = [
     ],
   },
   {
-    title: "Surftrips",
+    title: "Surfcamps",
     links: [
       { href: "/surftrips", label: "Proximos viajes" },
       { href: "/surftrips", label: "Calendario" },
@@ -83,12 +178,6 @@ export const footerColumns: FooterColumn[] = [
       { href: "/", label: "SP Family" },
     ],
   },
-];
-
-export const homePackages: PackageItem[] = [
-  { name: "Starter",  price: "s/560",  classes: "4 clases",  validity: "Vigencia: 1 mes" },
-  { name: "Standard", price: "s/960",  classes: "8 clases",  validity: "Vigencia: 1 mes" },
-  { name: "Premium",  price: "s/1400", classes: "10 clases", validity: "Vigencia: 1 mes" },
 ];
 
 export const surfTrips: SurfTripItem[] = [
@@ -190,13 +279,13 @@ export const faqs: FaqItem[] = [
 export const testimonials: TestimonialItem[] = [
   {
     quote:
-      "Ha sido increíble este surftrip con Sebas, el grupo se ha vuelto super unido y poder conocer sobre todo a mas mujeres que corren es lo mejor, el coaching me ha servido inmensamente, creo que no podría estar corriendo hoy en día si no fuera por Sebas me ha ayudado tanto técnicamente como en lo mental y en tener la cabeza en el lugar correcto para poder entrar al agua",
+      "Ha sido increíble este surfcamp con Sebas, el grupo se ha vuelto super unido y poder conocer sobre todo a mas mujeres que corren es lo mejor, el coaching me ha servido inmensamente, creo que no podría estar corriendo hoy en día si no fuera por Sebas me ha ayudado tanto técnicamente como en lo mental y en tener la cabeza en el lugar correcto para poder entrar al agua",
     author: "Jimena",
     image: "/photos/testimony_jimena.jpg",
   },
   {
     quote:
-      "Este surftrip me ha parecido increíble, he podido conocer otras playas y el coaching que da Sebas es super preciso, bien detallista en las cosas que puedes corregir y en verdad me sirvió mucho para surfing, todos nos volvimos bien unidos dentro y fuera del agua y lo recomiendo un montón",
+      "Este surfcamp me ha parecido increíble, he podido conocer otras playas y el coaching que da Sebas es super preciso, bien detallista en las cosas que puedes corregir y en verdad me sirvió mucho para surfing, todos nos volvimos bien unidos dentro y fuera del agua y lo recomiendo un montón",
     author: "Gino",
     image: "/photos/testimony_2.jpg",
   },
@@ -305,19 +394,19 @@ export const blogPosts: BlogPostItem[] = [
     category: "Entrenamiento",
   },
   {
-    title: "Surftrip checklist: que llevar",
+    title: "Surfcamp checklist: que llevar",
     excerpt: "Checklist practico para viajar con todo listo y surfear con tranquilidad.",
     category: "Lifestyle",
   },
 ];
 
 export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
-  { src: "/photos/DSC_5512.jpg", alt: "SP Family surftrip" },
-  { src: "/photos/surftrips/gallery_spfamily_2.jpg", alt: "SP Family Surftrips 2" },
-  { src: "/photos/DSC_4280%201.jpg", alt: "SP Family Surftrips 3" },
-  { src: "/photos/surftrips/gallery_spfamily_4.jpg", alt: "SP Family Surftrips 4" },
-  { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "SP Family Surftrips 5" },
-  { src: "/photos/surftrips/gallery_spfamily_6.jpg", alt: "SP Family Surftrips 6" },
+  { src: "/photos/DSC_5512.jpg", alt: "SP Family surfcamp" },
+  { src: "/photos/surftrips/gallery_spfamily_2.jpg", alt: "SP Family Surfcamps 2" },
+  { src: "/photos/DSC_4280%201.jpg", alt: "SP Family Surfcamps 3" },
+  { src: "/photos/surftrips/gallery_spfamily_4.jpg", alt: "SP Family Surfcamps 4" },
+  { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "SP Family Surfcamps 5" },
+  { src: "/photos/surftrips/gallery_spfamily_6.jpg", alt: "SP Family Surfcamps 6" },
 ];
 
 

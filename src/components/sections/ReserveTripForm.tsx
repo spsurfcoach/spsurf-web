@@ -19,7 +19,7 @@ export function ReserveTripForm() {
     <section id="reserva" className="section-space bg-zinc-900">
       <div className="container-site grid gap-10 lg:grid-cols-2">
         <div className="space-y-4">
-          <h2 className="ds-h2 text-white">Reserva tu surftrip</h2>
+          <h2 className="ds-h2 text-white">Reserva tu surfcamp</h2>
           <p className="ds-body-s text-zinc-300">
             Completa tus datos para separar tu cupo. Para clases regulares y paquetes, usa la nueva plataforma de
             reservas.

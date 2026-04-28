@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     if (product.fulfillmentType === "surftrip_booking" && product.capacity != null && product.enrolledCount != null) {
       if (product.enrolledCount >= product.capacity) {
-        return NextResponse.json({ error: "Surftrip is full" }, { status: 409 });
+        return NextResponse.json({ error: "Surfcamp is full" }, { status: 409 });
       }
     }
 

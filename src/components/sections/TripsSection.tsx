@@ -8,7 +8,7 @@ type TripsSectionProps = {
 };
 
 export function TripsSection({
-  title = "Conoce nuestros surftrips",
+  title = "Conoce nuestros surfcamps",
   description = "Explora destinos, mejora tu surfing y vive experiencias unicas junto a una comunidad apasionada.",
   trips,
 }: TripsSectionProps) {

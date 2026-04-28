@@ -13,18 +13,12 @@ export function BrandStatement() {
         <RevealGroup>
           <p className="ds-label leading-[1.85] text-[var(--color-label-muted)]">SP SURF COACH</p>
           <p className="ds-h2 ds-section-lead-gap max-w-[724px] leading-[1.5] tracking-[-0.04em] lg:leading-[56px]">
-            SP Surf Coach es un espacio para surfistas que quieren mejorar de verdad junto a una comunidad.
+            SP Surf Coach es una comunidad para surfistas que quieren mejorar de verdad. Entrenamos con intención,
+            compartimos procesos y avanzamos juntos.
           </p>
           <p className="ds-body-m ds-section-lead-gap max-w-[724px] text-[var(--color-text-default)]">
-            Más allá de solo tomar clases, se trata de compartir procesos, entrenar con intención y avanzar con personas
-            que están en el mismo camino.
-          </p>
-          <p className="ds-body-m mt-5 max-w-[724px] text-[var(--color-text-default)]">
-            Trabajamos con una metodología basada en técnica, lectura de mar y conexión con tu cuerpo.
-          </p>
-          <p className="ds-body-m mt-5 max-w-[724px] text-[var(--color-text-default)]">
-            El objetivo es claro: progresar con consistencia, sesión tras sesión, y llevar ese proceso más allá de las
-            olas a través de experiencias como nuestros SurfCamps y Sesiones.
+            Nuestra metodología une técnica, lectura de mar y conexión con tu cuerpo para progresar con consistencia,
+            dentro y fuera del agua, a través de sesiones y SurfCamps.
           </p>
           <button className="ds-btn ds-btn-primary ds-btn-lg mt-8">Conoce más</button>
         </RevealGroup>

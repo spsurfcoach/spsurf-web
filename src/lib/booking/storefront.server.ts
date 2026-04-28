@@ -178,7 +178,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         slug: surftrip.sanitySlug,
         name: surftrip.title,
         shortDescription:
-          surftrip.shortDescription ?? "Reserva tu cupo para el siguiente surftrip desde tu area de clases.",
+          surftrip.shortDescription ?? "Reserva tu cupo para el siguiente surfcamp desde tu area de clases.",
         description: surftrip.country
           ? `${surftrip.country} · ${availableSpots} cupos disponibles actualmente.`
           : `${availableSpots} cupos disponibles actualmente.`,
@@ -188,7 +188,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         currency: surftrip.currency,
         isActive: surftrip.isActive,
         image: surftrip.cardImageUrl ?? surftrip.heroImageUrl ?? DEFAULT_PRODUCT_IMAGES.surftrip,
-        badge: surftrip.country ? `Surftrip ${surftrip.country}` : "Viajes SP",
+        badge: surftrip.country ? `Surfcamp ${surftrip.country}` : "Viajes SP",
         features: [
           dateRange,
           surftrip.level ? `Nivel ${surftrip.level}` : null,

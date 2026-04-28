@@ -57,7 +57,7 @@ export function SurftripDetailVideoSection({
             <div className="aspect-video w-full">
               <iframe
                 src={embedUrl}
-                title={title || "Surftrip video"}
+                title={title || "Surfcamp video"}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
                 className="h-full w-full"
@@ -69,9 +69,9 @@ export function SurftripDetailVideoSection({
             type="button"
             onClick={() => setIsPlaying(true)}
             className="group relative block aspect-video w-full overflow-hidden"
-            aria-label="Reproducir video del surftrip"
+            aria-label="Reproducir video del surfcamp"
           >
-            <Image src={posterSrc} alt={title || "Video del surftrip"} fill className="object-cover" />
+            <Image src={posterSrc} alt={title || "Video del surfcamp"} fill className="object-cover" />
             <div className="absolute inset-0 bg-black/20 transition-colors duration-200 group-hover:bg-black/26" />
             <span className="absolute left-1/2 top-1/2 flex size-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 shadow-lg">
               <svg className="ml-1 h-8 w-8 text-[var(--color-primary-900)]" viewBox="0 0 24 24" fill="currentColor">

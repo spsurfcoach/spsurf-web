@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const surftripFaqItem = defineType({
   name: "surftripFaqItem",
-  title: "Surftrip FAQ Item",
+  title: "Surfcamp FAQ Item",
   type: "object",
   fields: [
     defineField({

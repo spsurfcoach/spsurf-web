@@ -17,10 +17,10 @@ export async function POST(request: NextRequest) {
     const productId = buildSurftripProductId(body.surftripId);
     const product = await getStorefrontProductById(productId);
     if (!product || !product.isActive) {
-      return NextResponse.json({ error: "Surftrip not found or inactive" }, { status: 404 });
+      return NextResponse.json({ error: "Surfcamp not found or inactive" }, { status: 404 });
     }
     if ((product.enrolledCount ?? 0) >= (product.capacity ?? 0)) {
-      return NextResponse.json({ error: "Surftrip is full" }, { status: 409 });
+      return NextResponse.json({ error: "Surfcamp is full" }, { status: 409 });
     }
 
     const preference = getPreferenceClient();

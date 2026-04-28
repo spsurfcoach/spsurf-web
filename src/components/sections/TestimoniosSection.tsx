@@ -30,11 +30,15 @@ export function TestimoniosSection({ items = testimonials }: TestimoniosSectionP
           ariaLabel="Carrusel de testimonios"
           darkControls={false}
           slideClassName="basis-[92%] lg:basis-[50%]"
+          options={{ align: "start", loop: items.length > 1 }}
           slides={items.map((item, i) => {
             const style = BLOCK_STYLES[i % BLOCK_STYLES.length];
             const photoSrc = item.image ?? style.photo;
             return (
-              <article key={i} className={`relative min-h-[360px] overflow-hidden rounded-[30px] lg:min-h-[520px] ${style.bg}`}>
+              <article
+                key={`${item.author}-${i}`}
+                className={`relative min-h-[360px] overflow-hidden rounded-[30px] lg:min-h-[520px] ${style.bg}`}
+              >
                 <div className="absolute inset-0">
                   <Image src={photoSrc} alt="" fill className="object-cover" aria-hidden="true" />
                   <div className="absolute inset-0 bg-black/40" />

@@ -35,7 +35,7 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
-    return NextResponse.json({ error: "Failed to fetch surftrip inventory" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch surfcamp inventory" }, { status: 500 });
   }
 }
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
-    return NextResponse.json({ error: "Failed to sync surftrip" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to sync surfcamp" }, { status: 500 });
   }
 }
 
@@ -70,7 +70,7 @@ export async function PUT() {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
     console.error("[admin/surftrip-inventory] Bulk sync failed:", error);
-    return NextResponse.json({ error: "Failed to sync surftrips from Sanity" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to sync surfcamps from Sanity" }, { status: 500 });
   }
 }
 
@@ -91,6 +91,6 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorizedResponse();
     if (error instanceof Error && error.message === "FORBIDDEN") return forbiddenResponse();
-    return NextResponse.json({ error: "Failed to update surftrip" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update surfcamp" }, { status: 500 });
   }
 }

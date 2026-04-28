@@ -25,7 +25,7 @@ type Props = {
   cancelLabel?: string;
 };
 
-const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = [
+export const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = [
   { value: "cardiaco", label: "Problemas cardiacos" },
   { value: "asma", label: "Asma / problemas respiratorios" },
   { value: "lesiones", label: "Lesiones recientes" },
@@ -34,7 +34,7 @@ const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = [
   { value: "ninguna", label: "Ninguna" },
 ];
 
-const SURF_GOALS: { value: SurfGoal; label: string }[] = [
+export const SURF_GOALS: { value: SurfGoal; label: string }[] = [
   { value: "pararse", label: "Pararte en la tabla" },
   { value: "remada", label: "Tecnica de remada" },
   { value: "takeoff", label: "Take off (puesta de pie)" },

@@ -5,8 +5,8 @@ export const PRODUCT_COLLECTION = "products";
 export const DEFAULT_PRODUCT_IMAGES = {
   package: "/photos/servicios_paquete_starter.jpg",
   membership: "/photos/servicios_paquete_premium.jpg",
-  videoanalysis: "/photos/servicios_1.jpg",
-  surfskate: "/photos/home1.jpg",
+  videoanalysis: "/photos/DSC_5325 copia.jpg",
+  surfskate: "/photos/DSC08741.JPG",
   surftrip: "/photos/surftrips/surftrips_hero.jpg",
 } satisfies Record<ProductCategory, string>;
 
@@ -76,7 +76,7 @@ export function productCategoryLabel(category: ProductCategory) {
     case "surfskate":
       return "Surfskate";
     case "surftrip":
-      return "Surftrip";
+      return "Surfcamps";
     default:
       return "Producto";
   }

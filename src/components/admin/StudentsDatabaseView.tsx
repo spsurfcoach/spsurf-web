@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
@@ -101,8 +102,19 @@ export function StudentsDatabaseView({ items, onAdjustCredits }: Props) {
             >
               {/* Email / UID */}
               <div className="min-w-0">
-                <p className="font-bold text-sm truncate">{student.email ?? "—"}</p>
+                <Link
+                  href={`/admin/estudiante/${encodeURIComponent(student.uid)}`}
+                  className="font-bold text-sm text-[var(--color-primary-900)] truncate hover:underline"
+                >
+                  {student.email ?? "—"}
+                </Link>
                 <p className="text-[10px] font-mono text-black/30 truncate mt-0.5">{student.uid}</p>
+                <Link
+                  href={`/admin/estudiante/${encodeURIComponent(student.uid)}`}
+                  className="mt-1 inline-block text-xs font-semibold text-[var(--color-primary-700)] hover:underline"
+                >
+                  Ver perfil
+                </Link>
               </div>
 
               {/* Package type */}

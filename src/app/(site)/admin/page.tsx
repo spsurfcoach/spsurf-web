@@ -146,7 +146,7 @@ export default function AdminPage() {
             { label: "Horarios activos", value: activeSlotsCount },
             { label: "Inscritos (próximas)", value: totalEnrolled },
             { label: "Estudiantes", value: students.length },
-            { label: "Surftrips activos", value: activeSurftripsCount },
+            { label: "Surfcamps activos", value: activeSurftripsCount },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -226,9 +226,9 @@ export default function AdminPage() {
                   body: JSON.stringify({ sanityDocumentId }),
                 });
                 await loadAdminData();
-                setMessage({ type: "success", text: "Surftrip resincronizado desde Sanity." });
+                setMessage({ type: "success", text: "Surfcamp resincronizado desde Sanity." });
               } catch {
-                setMessage({ type: "error", text: "No se pudo resincronizar el surftrip." });
+                setMessage({ type: "error", text: "No se pudo resincronizar el surfcamp." });
               }
             }}
             onSyncAll={async () => {
@@ -237,9 +237,9 @@ export default function AdminPage() {
                   method: "PUT",
                 });
                 await loadAdminData();
-                setMessage({ type: "success", text: `${result.synced} surftrips sincronizados desde Sanity.` });
+                setMessage({ type: "success", text: `${result.synced} surfcamps sincronizados desde Sanity.` });
               } catch {
-                setMessage({ type: "error", text: "No se pudo sincronizar los surftrips desde Sanity." });
+                setMessage({ type: "error", text: "No se pudo sincronizar los surfcamps desde Sanity." });
               }
             }}
             onToggle={async (id, current) => {
@@ -249,9 +249,9 @@ export default function AdminPage() {
                   body: JSON.stringify({ id, patch: { isActive: !current } }),
                 });
                 await loadAdminData();
-                setMessage({ type: "success", text: "Estado del surftrip actualizado." });
+                setMessage({ type: "success", text: "Estado del surfcamp actualizado." });
               } catch {
-                setMessage({ type: "error", text: "No se pudo actualizar el surftrip." });
+                setMessage({ type: "error", text: "No se pudo actualizar el surfcamp." });
               }
             }}
           />

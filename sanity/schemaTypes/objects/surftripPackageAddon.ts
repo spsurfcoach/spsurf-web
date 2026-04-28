@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const surftripPackageAddon = defineType({
   name: "surftripPackageAddon",
-  title: "Surftrip Package Add-on",
+  title: "Surfcamp Package Add-on",
   type: "object",
   fields: [
     defineField({
