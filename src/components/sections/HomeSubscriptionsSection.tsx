@@ -91,7 +91,7 @@ export function HomeSubscriptionsSection() {
               Conoce nuestras membresías de clases ilimitadas
             </h2>
             <p className="ds-body-m mt-4 text-white/85">
-              3 meses - 6 meses - 12 meses
+              3, 6 o 12 meses
             </p>
             <Link
               href="/servicios#membresias"
