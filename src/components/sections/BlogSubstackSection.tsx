@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { type SubstackPostItem, SUBSTACK_PUBLIC_URL, formatPostDate } from "@/lib/substack-feed";
 
 type BlogSubstackSectionProps = {
@@ -30,34 +31,40 @@ export function BlogSubstackSection({ posts }: BlogSubstackSectionProps) {
             </a>
           </div>
         ) : (
-          <ul className="mt-10 divide-y divide-zinc-200/90 border-t border-zinc-200/90">
+          <ul className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {posts.map((post) => {
               const dateLine = formatPostDate(post.pubDate);
               return (
-                <li key={post.link} className="py-8 first:pt-0">
-                  <p className="ds-label text-[var(--color-label-muted)]">
-                    {dateLine || "Substack"}
-                  </p>
-                  <h3 className="ds-h3 mt-1 max-w-3xl text-black">
-                    <a
-                      href={post.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-black/80"
-                    >
-                      {post.title}
-                    </a>
-                  </h3>
-                  {post.excerpt ? (
-                    <p className="ds-body-s mt-3 max-w-3xl leading-[1.75] text-black/75">{post.excerpt}</p>
-                  ) : null}
+                <li key={post.link} className="min-h-0">
                   <a
                     href={post.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ds-link mt-4 inline-block"
+                    className="group flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] bg-white shadow-sm ring-1 ring-zinc-200/80 transition-transform duration-200 hover:-translate-y-1 hover:shadow-md"
                   >
-                    Leer en Substack
+                    <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-zinc-100">
+                      {post.imageUrl ? (
+                        <Image
+                          src={post.imageUrl}
+                          alt={post.title}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                          sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200">
+                          <span className="ds-label text-zinc-400">SP surfcoach</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex min-h-0 flex-1 flex-col p-5 sm:p-6">
+                      <p className="ds-label text-[var(--color-label-muted)]">{dateLine || "Substack"}</p>
+                      <h3 className="ds-h3 mt-2 line-clamp-2 text-black group-hover:text-black/80">{post.title}</h3>
+                      {post.excerpt ? (
+                        <p className="ds-body-s mt-3 line-clamp-3 flex-1 leading-[1.75] text-black/75">{post.excerpt}</p>
+                      ) : null}
+                      <span className="ds-link mt-4 inline-block self-start">Leer en Substack</span>
+                    </div>
                   </a>
                 </li>
               );

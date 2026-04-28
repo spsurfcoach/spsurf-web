@@ -5,11 +5,17 @@ export type SubstackPostItem = {
   link: string;
   pubDate?: string;
   excerpt: string;
+  /** Featured image from RSS enclosure or first img in post HTML */
+  imageUrl?: string;
 };
 
 const DEFAULT_RSS = "https://spsurfcoach.substack.com/feed";
 
-const parser = new Parser();
+const parser = new Parser({
+  customFields: {
+    item: ["content:encoded"],
+  },
+});
 
 function stripToExcerpt(raw: string, max = 200) {
   const text = raw
@@ -18,6 +24,27 @@ function stripToExcerpt(raw: string, max = 200) {
     .trim();
   if (text.length <= max) return text;
   return `${text.slice(0, max).trimEnd()}…`;
+}
+
+function decodeBasicEntities(url: string) {
+  return url.replace(/&amp;/g, "&").replace(/&#38;/g, "&").trim();
+}
+
+function firstImgSrcFromHtml(html: string): string | undefined {
+  const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return m?.[1] ? decodeBasicEntities(m[1]) : undefined;
+}
+
+function pickPostImageUrl(item: Parser.Item): string | undefined {
+  const enc = item.enclosure;
+  if (enc && typeof enc === "object" && "url" in enc && typeof enc.url === "string") {
+    const type = "type" in enc && typeof enc.type === "string" ? enc.type : "";
+    if (!type || type.startsWith("image/")) return decodeBasicEntities(enc.url);
+  }
+  const extended = item as Parser.Item & { "content:encoded"?: string };
+  const html = item.content ?? extended["content:encoded"] ?? "";
+  if (html) return firstImgSrcFromHtml(html);
+  return undefined;
 }
 
 export const SUBSTACK_PUBLIC_URL =
@@ -33,13 +60,16 @@ export async function getSubstackPosts(limit = 12): Promise<SubstackPostItem[]> 
     const items = (feed.items ?? []).slice(0, limit);
     return items.map((item) => {
       const snippet = item.contentSnippet as string | undefined;
-      const content = item.content as string | undefined;
+      const extended = item as Parser.Item & { "content:encoded"?: string };
+      const content = (item.content as string | undefined) ?? extended["content:encoded"];
       const base = (snippet && snippet.length > 0 ? snippet : content) ?? "";
+      const imageUrl = pickPostImageUrl(item);
       return {
         title: String(item.title ?? "Artículo"),
         link: String(item.link ?? SUBSTACK_PUBLIC_URL),
         pubDate: item.pubDate ?? item.isoDate,
         excerpt: stripToExcerpt(base),
+        imageUrl,
       };
     });
   } catch {
