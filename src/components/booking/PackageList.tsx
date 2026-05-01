@@ -125,7 +125,7 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
 
   function ctaLabel(product: PackageItem, soldOut: boolean) {
     if (soldOut) return "Sin cupos";
-    if (product.fulfillmentType === "surftrip_booking") return "Comprar surfcamp";
+    if (product.fulfillmentType === "surftrip_booking") return "Comprar";
     return "Comprar";
   }
 
@@ -231,22 +231,22 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                   </div>
                 ) : null}
 
-                <div className="flex items-center justify-between gap-3">
-                  <div>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="shrink-0">
                     <p className="text-xs uppercase tracking-[0.14em] text-black/40">Precio</p>
                     <p className="text-2xl font-bold text-black">{toCurrencyPEN(product.price)}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2">
                     {product.category === "surftrip" && product.slug ? (
                       <Link
                         href={`/surftrips/${product.slug}`}
-                        className="h-11 inline-flex items-center rounded-full border border-black/15 px-5 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
+                        className="inline-flex h-10 items-center whitespace-nowrap rounded-full border border-black/15 px-4 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
                       >
-                        Conoce mas
+                        Conoce más
                       </Link>
                     ) : null}
                     <Button
-                      className="h-11 rounded-full bg-[var(--color-primary-900)] px-5 font-semibold text-white hover:bg-[var(--color-primary-700)]"
+                      className="h-10 whitespace-nowrap rounded-full bg-black px-4 text-sm font-semibold text-white hover:bg-zinc-800"
                       disabled={loadingId === product.id || soldOut}
                       onClick={async () => {
                         setLoadingId(product.id);

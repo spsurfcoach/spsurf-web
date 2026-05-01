@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 import { serviciosDetailTabs } from "@/lib/content";
@@ -108,13 +109,21 @@ export function ServiciosDetailSection() {
                 </div>
               </div>
 
-              <div className="relative z-10">
+              <div className="relative z-10 flex min-h-0 flex-col">
                 <div id="servicio-tab-panel" role="tabpanel" aria-labelledby={`servicio-tab-${active.id}`}>
                   {active.paragraphs.map((p, i) => (
                     <p key={i} className="ds-body-s mt-6 leading-[1.8] text-black/90 first:mt-0">
                       {p}
                     </p>
                   ))}
+                </div>
+                <div className="mt-8 flex shrink-0 justify-end">
+                  <Link
+                    href={active.comprarHref}
+                    className="inline-flex max-w-full items-center justify-center rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  >
+                    <span className="truncate">Comprar {active.title}</span>
+                  </Link>
                 </div>
               </div>
             </div>

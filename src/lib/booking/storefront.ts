@@ -40,7 +40,7 @@ export const DEFAULT_STANDALONE_PRODUCTS: Record<string, SeedProduct> = {
     isActive: true,
     image: DEFAULT_PRODUCT_IMAGES.surfskate,
     badge: "Entrenamiento complementario",
-    features: ["Compra directa", "Sin calendario de reservas", "Coordinacion posterior"],
+    features: ["Sin calendario de reservas", "Coordinacion posterior"],
     sortOrder: 40,
   },
 };

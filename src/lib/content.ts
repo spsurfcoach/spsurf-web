@@ -319,6 +319,8 @@ export type ServicioDetailTab = {
   paragraphs: string[];
   /** Instructor asociado al servicio. */
   coach?: ServicioDetailCoach;
+  /** Destino del CTA «Comprar …» en /servicios. */
+  comprarHref: string;
 };
 
 const SEBASTIAN_PORTRAIT = "/photos/95B6F509-89D2-41CC-8CBA-AC87E4D45ABA.JPG.jpeg";
@@ -342,6 +344,7 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
       role: "Imparte clases de surf",
       imageSrc: SEBASTIAN_PORTRAIT,
     },
+    comprarHref: "/clases?tab=comprar",
   },
   {
     id: "video",
@@ -356,6 +359,7 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
       role: "Imparte videoanálisis",
       imageSrc: SEBASTIAN_PORTRAIT,
     },
+    comprarHref: "/clases?tab=comprar&product=videoanalysis",
   },
   {
     id: "surfskate",
@@ -370,6 +374,7 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
       role: "Imparte clases de surfskate",
       imageSrc: IVO_PORTRAIT,
     },
+    comprarHref: "/clases?tab=comprar&product=surfskate",
   },
 ];
 

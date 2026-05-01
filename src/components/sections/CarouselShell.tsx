@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { EmblaOptionsType } from "embla-carousel";
 import type { ReactNode } from "react";
@@ -11,6 +11,8 @@ type CarouselShellProps = {
   options?: EmblaOptionsType;
   ariaLabel: string;
   darkControls?: boolean;
+  /** Avanza automáticamente cada N ms. Se pausa al pasar el cursor y cuando la pestaña no está visible. */
+  autoPlayMs?: number;
 };
 
 export function CarouselShell({
@@ -19,11 +21,13 @@ export function CarouselShell({
   options = { align: "start", loop: false },
   ariaLabel,
   darkControls = true,
+  autoPlayMs,
 }: CarouselShellProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const hoverPausedRef = useRef(false);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) {
@@ -55,6 +59,30 @@ export function CarouselShell({
     };
   }, [emblaApi, onSelect]);
 
+  useEffect(() => {
+    if (!emblaApi || autoPlayMs == null || autoPlayMs < 1 || slides.length < 2) {
+      return;
+    }
+
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const tick = () => {
+      if (!emblaApi || document.visibilityState !== "visible" || hoverPausedRef.current) {
+        return;
+      }
+      if (emblaApi.canScrollNext()) {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollTo(0);
+      }
+    };
+
+    const id = window.setInterval(tick, autoPlayMs);
+    return () => window.clearInterval(id);
+  }, [emblaApi, autoPlayMs, slides.length]);
+
   const activeDotClass = darkControls ? "bg-white/95" : "bg-[var(--color-text-default)]";
   const inactiveDotClass = darkControls ? "bg-white/45" : "bg-black/25";
   const controlClass = darkControls
@@ -62,7 +90,14 @@ export function CarouselShell({
     : "border-black/35 text-[var(--color-text-default)]";
 
   return (
-    <div>
+    <div
+      onPointerEnter={() => {
+        hoverPausedRef.current = true;
+      }}
+      onPointerLeave={() => {
+        hoverPausedRef.current = false;
+      }}
+    >
       <div className="overflow-hidden" ref={emblaRef} aria-label={ariaLabel}>
         <div className="-ml-4 flex touch-pan-y">
           {slides.map((slide, index) => (

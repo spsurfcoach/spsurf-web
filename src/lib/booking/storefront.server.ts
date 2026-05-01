@@ -169,10 +169,6 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
       }
 
       const availableSpots = getSurftripAvailableSpots(surftrip.capacity, surftrip.enrolledCount);
-      const dateRange =
-        surftrip.startDate && surftrip.endDate
-          ? `Del ${new Date(surftrip.startDate).toLocaleDateString("es-PE")} al ${new Date(surftrip.endDate).toLocaleDateString("es-PE")}`
-          : null;
 
       const base: ProductDoc = {
         slug: surftrip.sanitySlug,
@@ -190,7 +186,6 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         image: surftrip.cardImageUrl ?? surftrip.heroImageUrl ?? DEFAULT_PRODUCT_IMAGES.surftrip,
         badge: surftrip.country ? `Surfcamp ${surftrip.country}` : "Viajes SP",
         features: [
-          dateRange,
           surftrip.level ? `Nivel ${surftrip.level}` : null,
           `${surftrip.capacity} cupos totales`,
           `${availableSpots} cupos disponibles`,

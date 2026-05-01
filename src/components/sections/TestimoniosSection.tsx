@@ -30,6 +30,7 @@ export function TestimoniosSection({ items = testimonials }: TestimoniosSectionP
           ariaLabel="Carrusel de testimonios"
           darkControls={false}
           slideClassName="basis-[92%] lg:basis-[50%]"
+          autoPlayMs={3000}
           options={{ align: "start", loop: items.length > 1 }}
           slides={items.map((item, i) => {
             const style = BLOCK_STYLES[i % BLOCK_STYLES.length];
