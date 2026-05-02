@@ -72,10 +72,11 @@ export async function POST(request: NextRequest) {
       preapprovalId: String(result.id),
     });
 
+    const resultAny = result as unknown as Record<string, unknown>;
     return NextResponse.json({
       preapprovalId: result.id,
       initPoint: result.init_point,
-      sandboxInitPoint: result.sandbox_init_point ?? null,
+      sandboxInitPoint: (resultAny.sandbox_init_point as string | undefined) ?? null,
       purchaseId,
     });
   } catch (error) {
