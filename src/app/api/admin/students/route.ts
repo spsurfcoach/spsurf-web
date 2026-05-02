@@ -16,9 +16,11 @@ async function requireAdmin() {
 export type StudentItem = {
   uid: string;
   email: string | null;
-  packageType: "credits" | "unlimited" | null;
+  packageType: "credits" | "unlimited" | "subscription" | null;
   remainingCredits: number | null;
   expiresAt: string | null;
+  subscriptionStatus: string | null;
+  lastPaymentDate: string | null;
   status: string | null;
   purchaseId: string | null;
   createdAt: string | null;
@@ -74,6 +76,8 @@ export async function GET() {
         packageType: purchase.packageType ?? null,
         remainingCredits: purchase.remainingCredits ?? null,
         expiresAt: purchase.expiresAt ?? null,
+        subscriptionStatus: purchase.subscriptionStatus ?? null,
+        lastPaymentDate: purchase.lastPaymentDate ?? null,
         status: purchase.status ?? null,
         purchaseId: purchase.id,
         createdAt: purchase.createdAt ?? null,

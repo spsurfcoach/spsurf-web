@@ -34,16 +34,24 @@ export async function POST(request: NextRequest) {
     await requireAdmin();
     const body = (await request.json()) as {
       name: string;
-      type: "credits" | "unlimited";
+      type: "credits" | "unlimited" | "subscription";
+      billingModel?: "one_time" | "subscription";
+      billingCycleDays?: number;
       classCount?: number;
       durationDays?: number;
       price: number;
       isActive?: boolean;
     };
 
+    if (body.type === "subscription" && !body.durationDays) {
+      return NextResponse.json({ error: "durationDays is required for subscription packages" }, { status: 400 });
+    }
+
     const now = new Date().toISOString();
     const ref = await adminDb.collection("packages").add({
       ...body,
+      billingModel: body.billingModel ?? (body.type === "subscription" ? "subscription" : "one_time"),
+      billingCycleDays: body.billingCycleDays ?? (body.type === "subscription" ? 30 : undefined),
       currency: "PEN",
       isActive: body.isActive ?? true,
       createdAt: now,

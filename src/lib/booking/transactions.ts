@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
+import { getPaymentClient, getPreApprovalClient } from "@/lib/mercadopago/client";
 import { purchaseIsActive, sortPurchasesForConsumption } from "./guards";
 import { buildPackageProductId, buildSurftripProductId } from "./storefront";
 import {
@@ -7,6 +8,7 @@ import {
   PackageDoc,
   ProductDoc,
   PurchaseDoc,
+  SubscriptionStatus,
   SurftripBookingDoc,
   SurftripInventoryDoc,
 } from "./types";
@@ -303,4 +305,139 @@ export async function createPurchaseFromPayment(input: {
   preferenceId: string;
 }) {
   return createPackagePurchaseFromPayment(input);
+}
+
+export async function createSubscriptionPurchase(input: {
+  userId: string;
+  packageId: string;
+  productId?: string;
+  preapprovalId: string;
+}) {
+  const packageSnapshot = await adminDb.collection(PACKAGES_COLLECTION).doc(input.packageId).get();
+  if (!packageSnapshot.exists) throw new Error("PACKAGE_NOT_FOUND");
+
+  const packageData = packageSnapshot.data() as PackageDoc;
+
+  const duplicateQuery = await adminDb
+    .collection(PURCHASES_COLLECTION)
+    .where("subscriptionId", "==", input.preapprovalId)
+    .limit(1)
+    .get();
+
+  if (!duplicateQuery.empty) {
+    return { idempotent: true, purchaseId: duplicateQuery.docs[0].id };
+  }
+
+  const now = new Date();
+  const createdAt = now.toISOString();
+  const expiresAt =
+    packageData.durationDays
+      ? new Date(now.getTime() + packageData.durationDays * 24 * 60 * 60 * 1000).toISOString()
+      : null;
+
+  const purchaseRef = adminDb.collection(PURCHASES_COLLECTION).doc();
+  await purchaseRef.set({
+    userId: input.userId,
+    productId: input.productId ?? buildPackageProductId(input.packageId),
+    productName: packageData.name,
+    productCategory: "membership",
+    fulfillmentType: "class_booking",
+    sourceCollection: "packages",
+    sourceId: input.packageId,
+    packageId: input.packageId,
+    packageType: "subscription",
+    remainingCredits: null,
+    expiresAt,
+    subscriptionId: input.preapprovalId,
+    subscriptionStatus: "pending",
+    lastPaymentDate: null,
+    mercadopagoPaymentId: "",
+    mercadopagoPreferenceId: input.preapprovalId,
+    status: "pending",
+    createdAt,
+    updatedAt: createdAt,
+  });
+
+  return { idempotent: false, purchaseId: purchaseRef.id };
+}
+
+export async function handlePreapprovalWebhook(preapprovalId: string) {
+  const preapprovalClient = getPreApprovalClient();
+  const preapproval = await preapprovalClient.get({ id: preapprovalId });
+
+  const mpStatus = preapproval.status as string | undefined;
+  const subscriptionStatus: SubscriptionStatus =
+    mpStatus === "authorized" ? "authorized"
+    : mpStatus === "paused" ? "paused"
+    : mpStatus === "cancelled" ? "cancelled"
+    : "pending";
+
+  const query = await adminDb
+    .collection(PURCHASES_COLLECTION)
+    .where("subscriptionId", "==", preapprovalId)
+    .limit(1)
+    .get();
+
+  if (query.empty) {
+    console.warn("[transactions] handlePreapprovalWebhook: no purchase found for preapprovalId", preapprovalId);
+    return { updated: false };
+  }
+
+  const docRef = query.docs[0].ref;
+  const now = new Date().toISOString();
+
+  await docRef.set(
+    {
+      subscriptionStatus,
+      status: subscriptionStatus === "authorized" ? "approved" : subscriptionStatus === "cancelled" ? "cancelled" : "pending",
+      updatedAt: now,
+    },
+    { merge: true },
+  );
+
+  return { updated: true, subscriptionStatus };
+}
+
+export async function handleSubscriptionPayment(paymentId: string) {
+  const paymentClient = getPaymentClient();
+  const payment = await paymentClient.get({ id: paymentId });
+
+  if (payment.status !== "approved") {
+    return { updated: false, paymentStatus: payment.status };
+  }
+
+  const preapprovalId =
+    (payment as unknown as Record<string, unknown>).preapproval_id as string | undefined;
+
+  if (!preapprovalId) {
+    return { updated: false, reason: "no-preapproval-id" };
+  }
+
+  const query = await adminDb
+    .collection(PURCHASES_COLLECTION)
+    .where("subscriptionId", "==", preapprovalId)
+    .limit(1)
+    .get();
+
+  if (query.empty) {
+    console.warn("[transactions] handleSubscriptionPayment: no purchase for preapprovalId", preapprovalId);
+    return { updated: false };
+  }
+
+  const docRef = query.docs[0].ref;
+  const now = new Date().toISOString();
+  const paymentDate = payment.date_approved ? new Date(payment.date_approved).toISOString() : now;
+
+  await docRef.set(
+    {
+      lastPaymentDate: paymentDate,
+      mercadopagoPaymentId: String(payment.id),
+      status: "approved",
+      subscriptionStatus: "authorized",
+      updatedAt: now,
+    },
+    { merge: true },
+  );
+
+  return { updated: true, purchaseId: query.docs[0].id };
 }

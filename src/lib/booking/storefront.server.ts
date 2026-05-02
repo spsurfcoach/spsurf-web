@@ -110,29 +110,47 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
       const packageData = doc.data() as PackageDoc;
       if (packageData.isActive === false) return null;
 
-      const category = packageData.type === "unlimited" ? "membership" : "package";
+      const isSubscription = packageData.type === "subscription";
+      const isMembership = packageData.type === "unlimited" || isSubscription;
+      const category = isMembership ? "membership" : "package";
+
+      const subscriptionDesc = packageData.durationDays
+        ? `Membresía mensual por ${packageData.durationDays} días. Se renueva automáticamente cada 30 días.`
+        : "Membresía mensual con renovación automática.";
+
       const base: ProductDoc = {
         slug: `package-${sourceId}`,
         name: packageData.name,
         shortDescription:
           packageData.type === "credits"
             ? `${packageData.classCount ?? 0} clases para reservar cuando quieras.`
-            : `Acceso ilimitado por ${packageData.durationDays ?? 30} dias.`,
+            : isSubscription
+              ? subscriptionDesc
+              : `Acceso ilimitado por ${packageData.durationDays ?? 30} dias.`,
         description:
           packageData.type === "credits"
             ? "Compra tus clases y reserva tus sesiones desde el calendario."
-            : "Activa tu membership y reserva tus clases dentro de la vigencia del plan.",
+            : isSubscription
+              ? "Activa tu suscripción y reserva clases ilimitadas mientras esté activa."
+              : "Activa tu membership y reserva tus clases dentro de la vigencia del plan.",
         category,
         fulfillmentType: "class_booking",
         price: packageData.price,
         currency: packageData.currency,
         isActive: packageData.isActive,
         image: DEFAULT_PRODUCT_IMAGES[category],
-        badge: category === "membership" ? "Clases ilimitadas" : "Reserva por creditos",
+        badge: isSubscription ? "Suscripción mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por creditos",
         features:
           packageData.type === "credits"
             ? [`${packageData.classCount ?? 0} clases`, "Reserva flexible", "Acceso al calendario"]
-            : [`${packageData.durationDays ?? 30} dias`, "Reservas ilimitadas", "Acceso al calendario"],
+            : isSubscription
+              ? [
+                  `${packageData.durationDays ?? 30} días de vigencia`,
+                  "Renovación automática cada 30 días",
+                  "Clases ilimitadas",
+                  "Cancela cuando quieras",
+                ]
+              : [`${packageData.durationDays ?? 30} dias`, "Reservas ilimitadas", "Acceso al calendario"],
         sortOrder: category === "membership" ? 0 : 10,
         sourceCollection: "packages",
         sourceId,

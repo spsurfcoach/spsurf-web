@@ -1,4 +1,4 @@
-import { MercadoPagoConfig, Payment, Preference } from "mercadopago";
+import { MercadoPagoConfig, Payment, PreApproval, Preference } from "mercadopago";
 
 let _client: MercadoPagoConfig | null = null;
 
@@ -25,4 +25,8 @@ export function getPreferenceClient() {
 
 export function getPaymentClient() {
   return new Payment(getClient());
+}
+
+export function getPreApprovalClient() {
+  return new PreApproval(getClient());
 }

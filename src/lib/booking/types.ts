@@ -1,4 +1,5 @@
-export type PackageType = "credits" | "unlimited";
+export type PackageType = "credits" | "unlimited" | "subscription";
+export type SubscriptionStatus = "authorized" | "paused" | "cancelled" | "pending" | "expired";
 export type PurchaseStatus = "approved" | "pending" | "rejected" | "cancelled";
 export type BookingStatus = "booked" | "cancelled";
 export type ProductCategory = "package" | "membership" | "videoanalysis" | "surfskate" | "surftrip";
@@ -8,6 +9,8 @@ export type ProductSourceCollection = "packages" | "products" | "surftripInvento
 export type PackageDoc = {
   name: string;
   type: PackageType;
+  billingModel?: "one_time" | "subscription";
+  billingCycleDays?: number;
   classCount?: number;
   durationDays?: number;
   price: number;
@@ -71,6 +74,9 @@ export type PurchaseDoc = {
   status: PurchaseStatus;
   itemType?: "package" | "surftrip" | "product";
   surftripId?: string | null;
+  subscriptionId?: string | null;
+  subscriptionStatus?: SubscriptionStatus | null;
+  lastPaymentDate?: string | null;
   createdAt: string;
   updatedAt?: string;
 };

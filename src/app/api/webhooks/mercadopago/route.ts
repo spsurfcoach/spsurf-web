@@ -6,6 +6,8 @@ import {
   createDirectPurchaseFromPayment,
   createPackagePurchaseFromPayment,
   createSurftripBookingFromPayment,
+  handlePreapprovalWebhook,
+  handleSubscriptionPayment,
 } from "@/lib/booking/transactions";
 import { getPaymentClient } from "@/lib/mercadopago/client";
 
@@ -90,6 +92,22 @@ export async function POST(request: NextRequest) {
   const paymentId = queryDataId || payload.data?.id || String(payload.id ?? "");
   const notificationType = payload.type ?? payload.action;
 
+  // Handle subscription preapproval status updates
+  if (notificationType === "subscription_preapproval") {
+    const preapprovalId = queryDataId || payload.data?.id || String(payload.id ?? "");
+    if (!preapprovalId) {
+      return NextResponse.json({ ok: true, skipped: true });
+    }
+    try {
+      const result = await handlePreapprovalWebhook(preapprovalId);
+      console.log(`${LOG} subscription preapproval updated`, { preapprovalId, requestId, ...result });
+      return NextResponse.json({ ok: true, ...result });
+    } catch (error) {
+      console.error(`${LOG} preapproval webhook failed`, { preapprovalId, requestId, error });
+      return NextResponse.json({ error: "Preapproval webhook failed" }, { status: 500 });
+    }
+  }
+
   if (!paymentId || !notificationType?.includes("payment")) {
     return NextResponse.json({ ok: true, skipped: true });
   }
@@ -105,6 +123,14 @@ export async function POST(request: NextRequest) {
 
     if (payment.status !== "approved") {
       return NextResponse.json({ ok: true, paymentStatus: payment.status });
+    }
+
+    // Subscription recurring payment — update lastPaymentDate and return early
+    const operationType = (payment as unknown as Record<string, unknown>).operation_type as string | undefined;
+    if (operationType === "recurring_payment" || operationType === "subscription_payment") {
+      const result = await handleSubscriptionPayment(String(payment.id));
+      console.log(`${LOG} subscription payment processed`, { paymentId: String(payment.id), requestId, ...result });
+      return NextResponse.json({ ok: true, ...result });
     }
 
     const meta = (payment.metadata ?? {}) as Record<string, unknown>;

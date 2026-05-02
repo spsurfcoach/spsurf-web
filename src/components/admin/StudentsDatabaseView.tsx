@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input";
 export type StudentItem = {
   uid: string;
   email: string | null;
-  packageType: "credits" | "unlimited" | null;
+  packageType: "credits" | "unlimited" | "subscription" | null;
   remainingCredits: number | null;
   expiresAt: string | null;
+  subscriptionStatus: string | null;
+  lastPaymentDate: string | null;
   status: string | null;
   purchaseId: string | null;
   createdAt: string | null;
@@ -34,6 +36,25 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-zinc-100 text-zinc-600",
 };
 
+const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
+  authorized: "Activa",
+  paused: "Pausada",
+  cancelled: "Cancelada",
+  pending: "Pendiente",
+  expired: "Vencida",
+};
+
+const SUBSCRIPTION_STATUS_COLORS: Record<string, string> = {
+  authorized: "bg-emerald-100 text-emerald-800",
+  paused: "bg-amber-100 text-amber-800",
+  cancelled: "bg-red-100 text-red-800",
+  pending: "bg-amber-100 text-amber-800",
+  expired: "bg-zinc-100 text-zinc-600",
+};
+
+const SUBSCRIPTION_BILLING_CYCLE_MS = 30 * 24 * 60 * 60 * 1000;
+const SUBSCRIPTION_GRACE_PERIOD_MS = 5 * 24 * 60 * 60 * 1000;
+
 function formatDate(isoString: string | null) {
   if (!isoString) return "—";
   return new Date(isoString).toLocaleDateString("es-PE", {
@@ -41,6 +62,42 @@ function formatDate(isoString: string | null) {
     month: "short",
     year: "numeric",
   });
+}
+
+function SubscriptionBalance({ student }: { student: StudentItem }) {
+  const now = Date.now();
+  const isExpired = student.expiresAt ? new Date(student.expiresAt).getTime() <= now : true;
+  const isPaymentStale = student.lastPaymentDate
+    ? now - new Date(student.lastPaymentDate).getTime() > SUBSCRIPTION_BILLING_CYCLE_MS + SUBSCRIPTION_GRACE_PERIOD_MS
+    : true;
+  const isActive =
+    student.subscriptionStatus === "authorized" && !isExpired && !isPaymentStale;
+
+  return (
+    <span className="inline-flex flex-col gap-0.5">
+      <span className="font-bold text-[var(--color-primary-900)]">
+        ∞ · hasta {formatDate(student.expiresAt)}
+      </span>
+      <span className="inline-flex items-center gap-1.5 flex-wrap">
+        <span
+          className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+            isActive
+              ? "bg-emerald-100 text-emerald-800"
+              : SUBSCRIPTION_STATUS_COLORS[student.subscriptionStatus ?? ""] ?? "bg-zinc-100 text-zinc-600"
+          }`}
+        >
+          {isActive
+            ? "Activa"
+            : SUBSCRIPTION_STATUS_LABELS[student.subscriptionStatus ?? ""] ?? student.subscriptionStatus ?? "—"}
+        </span>
+        {student.lastPaymentDate && (
+          <span className="text-[10px] text-black/40">
+            Último pago: {formatDate(student.lastPaymentDate)}
+          </span>
+        )}
+      </span>
+    </span>
+  );
 }
 
 export function StudentsDatabaseView({ items, onAdjustCredits }: Props) {
@@ -121,7 +178,13 @@ export function StudentsDatabaseView({ items, onAdjustCredits }: Props) {
               <div>
                 <span className="md:hidden text-xs font-medium text-black/40 mr-2">Plan:</span>
                 <span className="text-sm font-medium text-black/70">
-                  {student.packageType === "credits" ? "Créditos" : student.packageType === "unlimited" ? "Ilimitado" : "—"}
+                  {student.packageType === "credits"
+                    ? "Créditos"
+                    : student.packageType === "unlimited"
+                      ? "Ilimitado"
+                      : student.packageType === "subscription"
+                        ? "Membresía"
+                        : "—"}
                 </span>
               </div>
 
@@ -159,6 +222,8 @@ export function StudentsDatabaseView({ items, onAdjustCredits }: Props) {
                     <span className="font-bold text-[var(--color-primary-900)]">
                       ∞ · hasta {formatDate(student.expiresAt)}
                     </span>
+                  ) : student.packageType === "subscription" ? (
+                    <SubscriptionBalance student={student} />
                   ) : "—"}
                 </span>
               </div>
