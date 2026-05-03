@@ -666,12 +666,28 @@ export function ProfileForm({
             Revisa las autorizaciones y declaraciones necesarias para mantener activo tu perfil de alumno.
           </p>
           <div className="space-y-3">
-            {([
-              ["declaresGoodHealth", "Declaro que me encuentro en condiciones fisicas adecuadas para la practica del surf"],
-              ["understandsRisk", "Entiendo que el surf es un deporte de riesgo y asumo la responsabilidad de mi participacion"],
-              ["acceptsTerms", "He leido y acepto los Terminos y Condiciones"],
-              ["authorizesImageUse", "Autorizo el uso de mi imagen para fines promocionales"],
-            ] as [keyof UserProfileDoc, string][]).map(([field, label]) => (
+            {(
+              [
+                ["declaresGoodHealth", "Declaro que me encuentro en condiciones fisicas adecuadas para la practica del surf"],
+                ["understandsRisk", "Entiendo que el surf es un deporte de riesgo y asumo la responsabilidad de mi participacion"],
+                [
+                  "acceptsTerms",
+                  <>
+                    He leido y acepto los{" "}
+                    <a
+                      href="/tyc-spsurfcoach.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-[var(--color-primary-900)] underline underline-offset-2 hover:text-[var(--color-primary-700)]"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      Terminos y Condiciones
+                    </a>
+                  </>,
+                ],
+                ["authorizesImageUse", "Autorizo el uso de mi imagen para fines promocionales"],
+              ] as [keyof UserProfileDoc, ReactNode][]
+            ).map(([field, label]) => (
               <label key={field} className="flex cursor-pointer items-start gap-3 text-sm">
                 <input
                   type="checkbox"

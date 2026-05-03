@@ -13,6 +13,8 @@ type PackageItem = {
   name: string;
   category: "package" | "membership" | "videoanalysis" | "surfskate" | "surftrip";
   fulfillmentType: "class_booking" | "direct_purchase" | "surftrip_booking";
+  /** From Firestore packages; when `subscription`, price is the monthly fee. */
+  packageType?: "credits" | "unlimited" | "subscription";
   shortDescription: string;
   description?: string;
   classCount?: number;
@@ -234,7 +236,12 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="shrink-0">
                     <p className="text-xs uppercase tracking-[0.14em] text-black/40">Precio</p>
-                    <p className="text-2xl font-bold text-black">{toCurrencyPEN(product.price)}</p>
+                    <p className="flex flex-wrap items-baseline gap-x-1.5 text-2xl font-bold text-black">
+                      <span>{toCurrencyPEN(product.price)}</span>
+                      {product.packageType === "subscription" ? (
+                        <span className="text-base font-semibold text-black/55">/ mes</span>
+                      ) : null}
+                    </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     {product.category === "surftrip" && product.slug ? (
