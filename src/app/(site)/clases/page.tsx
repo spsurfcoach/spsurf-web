@@ -182,7 +182,7 @@ function ClasesPageContent() {
   if (!loading && !hasAuth) {
     return (
       <div className="relative min-h-screen flex items-center justify-center px-4">
-        <Image src="/photos/servicios_hero.jpg" alt="Clases de Surf" fill className="object-cover" priority />
+        <Image src="/photos/servicios_hero.jpg" alt="Coaching de surf" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-10 w-full max-w-sm">

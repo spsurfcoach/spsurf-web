@@ -59,7 +59,7 @@ export const packageOfferCards: PackageOfferCard[] = [
     id: "premium",
     name: "Premium",
     price: "S/1,400",
-    classes: "10 clases",
+    classes: "12 clases",
     validity: "Vigencia: 1 mes",
     description: "Máxima dedicación para acelerar tu progreso con plan personalizado y seguimiento cercano.",
     image: "/photos/servicios_paquete_premium.jpg",
@@ -157,7 +157,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Servicios",
     links: [
-      { href: "/servicios", label: "Clases de Surf" },
+      { href: "/servicios", label: "Coaching de surf" },
       { href: "/servicios", label: "Videoanalisis" },
       { href: "/servicios", label: "Preparacion fisica" },
     ],
@@ -231,7 +231,7 @@ export const products: ProductItem[] = [
 
 export const services: ServiceItem[] = [
   {
-    title: "Clases de surf",
+    title: "Coaching de surf",
     body: "Entrena dentro del agua con sesiones individuales o grupales segun tu nivel y objetivos.",
   },
   {
@@ -330,9 +330,9 @@ const IVO_PORTRAIT = "/photos/DSC09031.JPG";
 export const serviciosDetailTabs: ServicioDetailTab[] = [
   {
     id: "clases",
-    title: "Clases de surf",
+    title: "Coaching de surf",
     paragraphs: [
-      "Nuestras clases de surf están pensadas para adaptarse a tu nivel, tus objetivos y tu momento como surfista. Trabajamos tanto en formato individual como grupal, siempre con coaching en el agua y video análisis incluido.",
+      "Nuestro coaching de surf está pensado para adaptarse a tu nivel, tus objetivos y tu momento como surfista. Trabajamos tanto en formato individual como grupal, siempre con coaching en el agua y video análisis incluido.",
       "Las clases individuales permiten un trabajo totalmente personalizado, ideal para corregir detalles técnicos, acelerar el progreso y enfocarse en objetivos concretos.",
       "Las clases grupales combinan aprendizaje y motivación en un entorno de comunidad, manteniendo grupos reducidos para asegurar atención real.",
       "En cada sesión grabamos tus olas y las analizamos, revisando postura, línea, timing, velocidad y toma de decisiones. La idea es que entiendas claramente qué estás haciendo y qué ajustar para mejorar.",
@@ -341,7 +341,7 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     ],
     coach: {
       name: "Sebastián Portocarrero",
-      role: "Imparte clases de surf",
+      role: "Imparte coaching de surf",
       imageSrc: SEBASTIAN_PORTRAIT,
     },
     comprarHref: "/clases?tab=comprar",

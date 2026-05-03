@@ -76,26 +76,31 @@ export function HomeSubscriptionsSection() {
       </section>
 
       <section className="bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
-        <div className="relative min-h-[420px] overflow-hidden rounded-[30px] sm:min-h-[420px] lg:min-h-[460px]">
+        <div className="relative min-h-[min(520px,62svh)] overflow-hidden rounded-[30px] shadow-[0_28px_64px_-16px_rgba(7,82,98,0.5)] sm:min-h-[min(560px,56svh)] lg:min-h-[min(600px,50svh)] lg:rounded-[var(--radius-media-lg)]">
           <Image
             src="/photos/el_salvador_membresias.JPG"
-            alt=""
+            alt="Ola y surfista en El Salvador"
             fill
-            className="origin-center scale-110 object-cover object-[56%_50%]"
+            className="object-cover object-[48%_34%] sm:object-[50%_38%] lg:object-[52%_42%]"
             sizes="100vw"
             priority={false}
           />
-          <div className="absolute inset-0 bg-[var(--color-primary-900)]/60" aria-hidden />
-          <div className="relative z-10 flex min-h-[340px] flex-col items-center justify-center px-6 py-16 text-center sm:min-h-[400px] sm:py-20 lg:min-h-[460px] lg:py-24">
-            <h2 className="ds-h2 max-w-[52rem] text-balance text-white">
+          <div className="absolute inset-0 bg-[var(--color-primary-900)]/50" aria-hidden />
+          <div className="hero-overlay-gradient absolute inset-0" aria-hidden />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-[var(--color-primary-900)]/35"
+            aria-hidden
+          />
+          <div className="absolute inset-0 z-10 flex w-full max-w-[42rem] flex-col items-start justify-center px-8 py-16 text-left sm:px-12 sm:py-20 lg:px-16 lg:py-24">
+            <h2 className="ds-display-title max-w-[52rem] text-balance text-white">
               Conoce nuestras membresías de clases ilimitadas
             </h2>
-            <p className="ds-body-m mt-4 text-white/85">
+            <p className="ds-body-s mt-5 max-w-md text-pretty text-white/85">
               3, 6 o 12 meses
             </p>
             <Link
               href="/servicios#membresias"
-              className="ds-btn ds-btn-lg mt-8 inline-flex border border-white bg-white/10 text-white hover:bg-white/20"
+              className="ds-btn ds-btn-lg ds-btn-primary mt-10 ring-2 ring-white/20 transition-[box-shadow,transform] hover:-translate-y-0.5 hover:ring-white/35"
             >
               Ver membresías
             </Link>

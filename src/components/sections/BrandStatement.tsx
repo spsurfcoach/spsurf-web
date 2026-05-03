@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 export function BrandStatement() {
@@ -20,7 +21,9 @@ export function BrandStatement() {
             Nuestra metodología une técnica, lectura de mar y conexión con tu cuerpo para progresar con consistencia,
             dentro y fuera del agua, a través de sesiones y SurfCamps.
           </p>
-          <button className="ds-btn ds-btn-primary ds-btn-lg mt-8">Conoce más</button>
+          <Link href="/servicios" className="ds-btn ds-btn-primary ds-btn-lg mt-8">
+            Conoce más
+          </Link>
         </RevealGroup>
         <Reveal>
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] sm:aspect-[3/2] lg:aspect-[2/1] lg:rounded-[40px]">
