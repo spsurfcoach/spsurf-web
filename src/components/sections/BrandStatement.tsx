@@ -28,7 +28,6 @@ export function BrandStatement() {
         <Reveal>
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] sm:aspect-[3/2] lg:aspect-[2/1] lg:rounded-[40px]">
             <Image src="/photos/DSC_4360.jpg" alt="Comunidad y sesiones SP Surf Coach" fill className="object-cover" />
-            <div className="absolute inset-0 rounded-[24px] bg-[rgba(0,17,22,0.4)] lg:rounded-[40px]" />
           </div>
         </Reveal>
       </div>

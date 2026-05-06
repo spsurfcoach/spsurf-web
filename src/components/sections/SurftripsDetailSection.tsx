@@ -60,7 +60,10 @@ function formatDateRange(startDate: string, endDate: string) {
 export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
   if (!trips.length) {
     return (
-      <section className="bg-[var(--color-background-default)] px-4 py-12 text-black sm:px-6 md:px-10 lg:px-16">
+      <section
+        id="viajes"
+        className="scroll-mt-28 bg-[var(--color-background-default)] px-4 py-12 text-black sm:px-6 md:px-10 lg:px-16"
+      >
         <p className="ds-body-m">
           Aún no hay surfcamps publicados en Sanity. Agrega uno en <code>/studio</code> para mostrarlo aquí.
         </p>
@@ -69,7 +72,7 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
   }
 
   return (
-    <div>
+    <section id="viajes" className="scroll-mt-28">
       {trips.map((trip, index) => {
         const isDark = index % 2 === 1;
         const imageSrc = trip.cardImage
@@ -194,6 +197,6 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
           </section>
         );
       })}
-    </div>
+    </section>
   );
 }

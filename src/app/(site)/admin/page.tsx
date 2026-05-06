@@ -36,6 +36,7 @@ export default function AdminPage() {
   const [surftripInventory, setSurftripInventory] = useState<SurftripInventoryItem[]>([]);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [activeTab, setActiveTab] = useState<"resumen" | "agenda" | "estudiantes" | "surfcamps">("resumen");
 
   async function loadAdminData() {
     setIsLoadingData(true);
@@ -107,20 +108,27 @@ export default function AdminPage() {
     );
   }
 
+  const TABS = [
+    { id: "resumen", label: "Resumen y Próximas clases" },
+    { id: "agenda", label: "Agenda del Coach" },
+    { id: "estudiantes", label: "Estudiantes" },
+    { id: "surfcamps", label: "Surfcamps" },
+  ] as const;
+
   // --- Logged in ---
   return (
-    <div className="min-h-screen bg-[var(--color-background-default)] pb-20 pt-10">
-      <div className="container-site space-y-10">
+    <div className="min-h-screen bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
+      <div className="mx-auto max-w-[1400px] space-y-8">
 
         {/* Top bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-[var(--color-primary-900)] text-white rounded-2xl px-6 py-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-[var(--color-primary-900)] text-white rounded-2xl px-6 py-5">
           <div>
-            <p className="text-sm text-white/50 mb-0.5">Sesión iniciada</p>
-            <p className="font-semibold truncate">{user.email ?? user.uid}</p>
+            <p className="text-sm text-white/50 mb-0.5">Sesión iniciada como administrador</p>
+            <p className="text-xl font-bold truncate">{user.email ?? user.uid}</p>
           </div>
           <Button
             variant="outline"
-            className="h-10 text-sm border-white/20 hover:bg-white/10 text-[var(--color-primary-900)] bg-white"
+            className="h-10 text-sm border-white/20 hover:bg-white/10 text-[var(--color-primary-900)] bg-white rounded-full px-5"
             onClick={() => void logout()}
           >
             Cerrar sesión
@@ -139,122 +147,155 @@ export default function AdminPage() {
           </div>
         ) : null}
 
-        {/* Stat cards */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {[
-            { label: "Próximas clases", value: upcomingSlotsCount },
-            { label: "Horarios activos", value: activeSlotsCount },
-            { label: "Inscritos (próximas)", value: totalEnrolled },
-            { label: "Estudiantes", value: students.length },
-            { label: "Surfcamps activos", value: activeSurftripsCount },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-black/10 border-t-[3px] border-t-[var(--color-primary-500)] bg-white p-6 shadow-sm"
-            >
-              <p className="text-sm text-black/40 mb-2">{stat.label}</p>
-              <p className="text-5xl font-bold tracking-tighter text-[var(--color-primary-900)]">
-                {stat.value}
-              </p>
+        <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+          {/* Sidebar */}
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
+              <div className="mb-2 px-3 py-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menu Admin</p>
+              </div>
+              <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors shrink-0 lg:w-full ${
+                      activeTab === tab.id
+                        ? "bg-[var(--color-primary-900)] text-white"
+                        : "text-black/55 hover:bg-black/[0.04] hover:text-black"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          </aside>
 
-        {/* Sections */}
-        <div className="space-y-10">
-          {/* Classes grid — upcoming classes with enrolled students */}
-          <ClassesGridView
-            items={slots}
-            onFetchStudents={async (slotId) => {
-              const res = await apiFetch<{ items: EnrolledStudent[] }>(
-                `/api/admin/class-slots/${slotId}/bookings`,
-              );
-              return res.items ?? [];
-            }}
-          />
+          {/* Main content */}
+          <main>
+            {activeTab === "resumen" ? (
+              <div className="space-y-10">
+                {/* Stat cards */}
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                  {[
+                    { label: "Próximas clases", value: upcomingSlotsCount },
+                    { label: "Horarios activos", value: activeSlotsCount },
+                    { label: "Inscritos (próximas)", value: totalEnrolled },
+                    { label: "Estudiantes", value: students.length },
+                    { label: "Surfcamps activos", value: activeSurftripsCount },
+                  ].map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="rounded-2xl border border-black/10 border-t-[3px] border-t-[var(--color-primary-500)] bg-white p-6 shadow-sm"
+                    >
+                      <p className="text-sm text-black/40 mb-2">{stat.label}</p>
+                      <p className="text-5xl font-bold tracking-tighter text-[var(--color-primary-900)]">
+                        {stat.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
 
-          {/* Coach agenda — create + calendar */}
-          <ClassSlotsCrud
-            items={slots}
-            isLoading={isLoadingData}
-            onCreate={async (payload) => {
-              try {
-                await apiFetch("/api/admin/class-slots", {
-                  method: "POST",
-                  body: JSON.stringify(payload),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Horario creado correctamente." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo crear el horario." });
-              }
-            }}
-            onToggle={async (id, current) => {
-              try {
-                await apiFetch("/api/admin/class-slots", {
-                  method: "PATCH",
-                  body: JSON.stringify({ id, patch: { isActive: !current } }),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Estado del horario actualizado." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo actualizar el horario." });
-              }
-            }}
-          />
-
-          {/* Students database */}
-          <StudentsDatabaseView
-            items={students}
-            onAdjustCredits={async (purchaseId, delta) => {
-              await apiFetch("/api/admin/students", {
-                method: "PATCH",
-                body: JSON.stringify({ purchaseId, delta }),
-              });
-              await loadAdminData();
-              setMessage({ type: "success", text: "Créditos actualizados." });
-            }}
-          />
-
-          <SurftripInventoryCrud
-            items={surftripInventory}
-            isLoading={isLoadingData}
-            onSync={async (sanityDocumentId) => {
-              try {
-                await apiFetch("/api/admin/surftrip-inventory", {
-                  method: "POST",
-                  body: JSON.stringify({ sanityDocumentId }),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Surfcamp resincronizado desde Sanity." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo resincronizar el surfcamp." });
-              }
-            }}
-            onSyncAll={async () => {
-              try {
-                const result = await apiFetch<{ synced: number }>("/api/admin/surftrip-inventory", {
-                  method: "PUT",
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: `${result.synced} surfcamps sincronizados desde Sanity.` });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo sincronizar los surfcamps desde Sanity." });
-              }
-            }}
-            onToggle={async (id, current) => {
-              try {
-                await apiFetch("/api/admin/surftrip-inventory", {
-                  method: "PATCH",
-                  body: JSON.stringify({ id, patch: { isActive: !current } }),
-                });
-                await loadAdminData();
-                setMessage({ type: "success", text: "Estado del surfcamp actualizado." });
-              } catch {
-                setMessage({ type: "error", text: "No se pudo actualizar el surfcamp." });
-              }
-            }}
-          />
+                {/* Classes grid — upcoming classes with enrolled students */}
+                <ClassesGridView
+                  items={slots}
+                  onFetchStudents={async (slotId) => {
+                    const res = await apiFetch<{ items: EnrolledStudent[] }>(
+                      `/api/admin/class-slots/${slotId}/bookings`,
+                    );
+                    return res.items ?? [];
+                  }}
+                />
+              </div>
+            ) : activeTab === "agenda" ? (
+              <ClassSlotsCrud
+                items={slots}
+                isLoading={isLoadingData}
+                onCreate={async (payloads) => {
+                  try {
+                    await Promise.all(
+                      payloads.map((payload) =>
+                        apiFetch("/api/admin/class-slots", {
+                          method: "POST",
+                          body: JSON.stringify(payload),
+                        })
+                      )
+                    );
+                    await loadAdminData();
+                    setMessage({ type: "success", text: "Horario(s) creado(s) correctamente." });
+                  } catch {
+                    setMessage({ type: "error", text: "No se pudo crear el horario." });
+                  }
+                }}
+                onToggle={async (id, current) => {
+                  try {
+                    await apiFetch("/api/admin/class-slots", {
+                      method: "PATCH",
+                      body: JSON.stringify({ id, patch: { isActive: !current } }),
+                    });
+                    await loadAdminData();
+                    setMessage({ type: "success", text: "Estado del horario actualizado." });
+                  } catch {
+                    setMessage({ type: "error", text: "No se pudo actualizar el horario." });
+                  }
+                }}
+              />
+            ) : activeTab === "estudiantes" ? (
+              <StudentsDatabaseView
+                items={students}
+                onAdjustCredits={async (purchaseId, delta) => {
+                  await apiFetch("/api/admin/students", {
+                    method: "PATCH",
+                    body: JSON.stringify({ purchaseId, delta }),
+                  });
+                  await loadAdminData();
+                  setMessage({ type: "success", text: "Créditos actualizados." });
+                }}
+              />
+            ) : activeTab === "surfcamps" ? (
+              <SurftripInventoryCrud
+                items={surftripInventory}
+                isLoading={isLoadingData}
+                onSync={async (sanityDocumentId) => {
+                  try {
+                    await apiFetch("/api/admin/surftrip-inventory", {
+                      method: "POST",
+                      body: JSON.stringify({ sanityDocumentId }),
+                    });
+                    await loadAdminData();
+                    setMessage({ type: "success", text: "Surfcamp resincronizado desde Sanity." });
+                  } catch {
+                    setMessage({ type: "error", text: "No se pudo resincronizar el surfcamp." });
+                  }
+                }}
+                onSyncAll={async () => {
+                  try {
+                    const result = await apiFetch<{ synced: number }>("/api/admin/surftrip-inventory", {
+                      method: "PUT",
+                    });
+                    await loadAdminData();
+                    setMessage({ type: "success", text: `${result.synced} surfcamps sincronizados desde Sanity.` });
+                  } catch {
+                    setMessage({ type: "error", text: "No se pudo sincronizar los surfcamps desde Sanity." });
+                  }
+                }}
+                onToggle={async (id, current) => {
+                  try {
+                    await apiFetch("/api/admin/surftrip-inventory", {
+                      method: "PATCH",
+                      body: JSON.stringify({ id, patch: { isActive: !current } }),
+                    });
+                    await loadAdminData();
+                    setMessage({ type: "success", text: "Estado del surfcamp actualizado." });
+                  } catch {
+                    setMessage({ type: "error", text: "No se pudo actualizar el surfcamp." });
+                  }
+                }}
+              />
+            ) : null}
+          </main>
         </div>
       </div>
     </div>

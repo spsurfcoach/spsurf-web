@@ -16,7 +16,7 @@ type SlotItem = {
 type Props = {
   items: SlotItem[];
   isLoading?: boolean;
-  onCreate: (payload: { startsAt: string; capacity: number; location: string }) => Promise<void>;
+  onCreate: (payloads: Array<{ startsAt: string; capacity: number; location: string }>) => Promise<void>;
   onToggle: (id: string, current: boolean) => Promise<void>;
   onSelectSlot?: (id: string) => void;
 };
@@ -51,6 +51,7 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
   const [startsAt, setStartsAt] = useState("");
   const [capacity, setCapacity] = useState("");
   const [location, setLocation] = useState("Lima");
+  const [weeksToRepeat, setWeeksToRepeat] = useState("0");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pendingToggleId, setPendingToggleId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(() => toMonthKey(new Date()));
@@ -102,9 +103,28 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
     event.preventDefault();
     setIsSubmitting(true);
     try {
-      await onCreate({ startsAt, capacity: Number(capacity), location });
+      const payloads = [];
+      const baseDate = new Date(startsAt);
+      const iterations = Number(weeksToRepeat) + 1;
+
+      for (let i = 0; i < iterations; i++) {
+        const nextDate = new Date(baseDate);
+        nextDate.setDate(nextDate.getDate() + (i * 7));
+
+        const yy = nextDate.getFullYear();
+        const mm = String(nextDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(nextDate.getDate()).padStart(2, "0");
+        const hh = String(nextDate.getHours()).padStart(2, "0");
+        const min = String(nextDate.getMinutes()).padStart(2, "0");
+        const payloadDate = `${yy}-${mm}-${dd}T${hh}:${min}`;
+
+        payloads.push({ startsAt: payloadDate, capacity: Number(capacity), location });
+      }
+
+      await onCreate(payloads);
       setStartsAt("");
       setCapacity("");
+      setWeeksToRepeat("0");
     } finally {
       setIsSubmitting(false);
     }
@@ -118,36 +138,54 @@ export function ClassSlotsCrud({ items, isLoading = false, onCreate, onToggle, o
       </div>
 
       <div className="space-y-8">
-        <form className="grid gap-5 md:grid-cols-[1fr_1fr_1fr_auto] rounded-xl bg-black/[0.02] p-6 border border-black/5" onSubmit={submit}>
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-black/50">Fecha y hora</p>
-            <Input className="h-12 bg-white" type="datetime-local" value={startsAt} onChange={(event) => setStartsAt(event.target.value)} required />
+        <form className="flex flex-col gap-5 rounded-xl bg-black/[0.02] p-6 border border-black/5" onSubmit={submit}>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-black/50">Fecha y hora</p>
+              <Input className="h-12 bg-white" type="datetime-local" value={startsAt} onChange={(event) => setStartsAt(event.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-black/50">Capacidad</p>
+              <Input
+                className="h-12 bg-white"
+                type="number"
+                min={1}
+                placeholder="Ej: 8"
+                value={capacity}
+                onChange={(event) => setCapacity(event.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-black/50">Ubicación</p>
+              <select
+                className="h-12 w-full rounded-md border border-input bg-white px-3 text-sm"
+                value={location}
+                onChange={(event) => setLocation(event.target.value)}
+              >
+                <option value="Lima">Lima</option>
+                <option value="Sur Chico">Sur Chico</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-black/50">Repetir semanalmente</p>
+              <select
+                className="h-12 w-full rounded-md border border-input bg-white px-3 text-sm"
+                value={weeksToRepeat}
+                onChange={(event) => setWeeksToRepeat(event.target.value)}
+              >
+                <option value="0">Solo esta clase</option>
+                <option value="1">Por 1 semana</option>
+                <option value="2">Por 2 semanas</option>
+                <option value="3">Por 3 semanas</option>
+                <option value="4">Por 4 semanas</option>
+                <option value="8">Por 8 semanas</option>
+                <option value="12">Por 12 semanas</option>
+              </select>
+            </div>
           </div>
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-black/50">Capacidad</p>
-            <Input
-              className="h-12 bg-white"
-              type="number"
-              min={1}
-              placeholder="Ej: 8"
-              value={capacity}
-              onChange={(event) => setCapacity(event.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-black/50">Ubicación</p>
-            <select
-              className="h-12 w-full rounded-md border border-input bg-white px-3 text-sm"
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            >
-              <option value="Lima">Lima</option>
-              <option value="Sur Chico">Sur Chico</option>
-            </select>
-          </div>
-          <div className="flex items-end">
-            <Button type="submit" disabled={isSubmitting} className="h-12 px-8 font-bold w-full">
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isSubmitting} className="h-12 px-8 font-bold w-full sm:w-auto">
               {isSubmitting ? "Creando..." : "Crear"}
             </Button>
           </div>

@@ -100,7 +100,7 @@ export function HomeSubscriptionsSection() {
             </p>
             <Link
               href="/servicios#membresias"
-              className="ds-btn ds-btn-lg ds-btn-primary mt-10 ring-2 ring-white/20 transition-[box-shadow,transform] hover:-translate-y-0.5 hover:ring-white/35"
+              className="ds-btn ds-btn-lg ds-btn-secondary mt-10 inline-flex"
             >
               Ver membresías
             </Link>

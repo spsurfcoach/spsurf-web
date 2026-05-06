@@ -30,7 +30,7 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
   const rightPhotos = normalizedPhotos.slice(3, 6);
 
   return (
-    <section className="bg-[#03313b] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+    <section id="sp-family" className="scroll-mt-28 bg-[#03313b] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
       {/* Header */}
       <RevealGroup>
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">

@@ -97,7 +97,10 @@ export function SurftripsCalendarSection({ trips }: SurftripsCalendarSectionProp
 
   if (!items.length) {
     return (
-      <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+      <section
+        id="calendario"
+        className="scroll-mt-28 bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20"
+      >
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">CALENDARIO</p>
         <p className="ds-body-m mt-6 text-black">
           Publica surfcamps en <code>/studio</code> para ver disponibilidad y calendario aquí.
@@ -107,7 +110,10 @@ export function SurftripsCalendarSection({ trips }: SurftripsCalendarSectionProp
   }
 
   return (
-    <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+    <section
+      id="calendario"
+      className="scroll-mt-28 bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20"
+    >
       <RevealGroup>
         <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">
           CALENDARIO

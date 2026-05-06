@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 import { serviciosDetailTabs } from "@/lib/content";
 
@@ -17,8 +17,21 @@ export function ServiciosDetailSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = serviciosDetailTabs[activeIndex]!;
 
+  useEffect(() => {
+    const applyHash = () => {
+      const raw = window.location.hash.slice(1);
+      if (!raw.startsWith("servicio-tab-")) return;
+      const tabId = raw.slice("servicio-tab-".length);
+      const idx = serviciosDetailTabs.findIndex((t) => t.id === tabId);
+      if (idx >= 0) setActiveIndex(idx);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
   return (
-    <section id="clases" className="bg-[var(--color-background-default)] py-14 lg:py-20">
+    <section id="clases" className="scroll-mt-28 bg-[var(--color-background-default)] py-14 lg:py-20">
       <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16">
         <RevealGroup>
           <div>
@@ -42,7 +55,7 @@ export function ServiciosDetailSection() {
                         aria-controls="servicio-tab-panel"
                         tabIndex={selected ? 0 : -1}
                         onClick={() => setActiveIndex(index)}
-                        className={`group flex w-full min-w-0 py-7 text-left transition-colors sm:py-8 ${
+                        className={`scroll-mt-28 group flex w-full min-w-0 py-7 text-left transition-colors sm:py-8 ${
                           selected && item.coach
                             ? "flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
                             : "flex items-center justify-start"

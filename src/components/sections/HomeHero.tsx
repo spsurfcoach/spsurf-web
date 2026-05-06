@@ -78,7 +78,7 @@ export function HomeHero() {
               <div className="ds-section-lead-gap">
                 <Link
                   href="/clases?tab=comprar"
-                  className="ds-btn ds-btn-lg inline-flex border border-white bg-white/10 text-white hover:bg-white/20"
+                  className="ds-btn ds-btn-lg ds-btn-secondary inline-flex shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_14px_44px_-6px_rgba(0,0,0,0.5)] motion-reduce:hover:translate-y-0"
                 >
                   Comprar Clases
                 </Link>

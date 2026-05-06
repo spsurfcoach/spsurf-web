@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_PRODUCT_IMAGES, productCategoryLabel } from "@/lib/booking/storefront";
-import { toCurrencyPEN } from "@/lib/utils";
+import { toCurrencyPEN, toCurrencyUSD } from "@/lib/utils";
 
 type PackageItem = {
   id: string;
@@ -134,13 +134,13 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
+        <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setFilter(tab.key)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 filter === tab.key
                   ? "bg-white shadow-sm text-black"
                   : "text-black/50 hover:text-black"
@@ -233,39 +233,56 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                   </div>
                 ) : null}
 
-                <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-3 mt-1">
                   <div className="shrink-0">
                     <p className="text-xs uppercase tracking-[0.14em] text-black/40">Precio</p>
                     <p className="flex flex-wrap items-baseline gap-x-1.5 text-2xl font-bold text-black">
-                      <span>{toCurrencyPEN(product.price)}</span>
+                      <span>{product.category === "surftrip" ? toCurrencyUSD(product.price) : toCurrencyPEN(product.price)}</span>
                       {product.packageType === "subscription" ? (
                         <span className="text-base font-semibold text-black/55">/ mes</span>
                       ) : null}
                     </p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex flex-col sm:flex-row shrink-0 gap-2 sm:items-center w-full sm:w-auto">
                     {product.category === "surftrip" && product.slug ? (
                       <Link
                         href={`/surftrips/${product.slug}`}
-                        className="inline-flex h-10 items-center whitespace-nowrap rounded-full border border-black/15 px-4 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
+                        className="inline-flex h-11 sm:h-10 w-full sm:w-auto justify-center items-center whitespace-nowrap rounded-full border border-black/15 px-6 sm:px-4 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
                       >
                         Conoce más
                       </Link>
                     ) : null}
-                    <Button
-                      className="h-10 whitespace-nowrap rounded-full bg-black px-4 text-sm font-semibold text-white hover:bg-zinc-800"
-                      disabled={loadingId === product.id || soldOut}
-                      onClick={async () => {
-                        setLoadingId(product.id);
-                        try {
-                          await onCheckout(product.id);
-                        } finally {
-                          setLoadingId(null);
-                        }
-                      }}
-                    >
-                      {loadingId === product.id ? "Cargando..." : ctaLabel(product, soldOut)}
-                    </Button>
+                    {product.category === "surftrip" ? (
+                      <a
+                        href={(() => {
+                          const formattedDates = product.startDate && product.endDate
+                            ? `${new Date(product.startDate).toLocaleDateString("es-PE")} - ${new Date(product.endDate).toLocaleDateString("es-PE")}`
+                            : "por definir";
+                          const message = `Hola! Estoy interesado en el Surfcamp ${product.name} con fechas ${formattedDates}`;
+                          return `https://wa.me/51998153542?text=${encodeURIComponent(message)}`;
+                        })()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex h-11 sm:h-10 w-full sm:w-auto justify-center items-center whitespace-nowrap rounded-full bg-black px-6 sm:px-4 text-sm font-semibold text-white hover:bg-zinc-800 ${soldOut ? "opacity-50 pointer-events-none" : ""}`}
+                      >
+                        {ctaLabel(product, soldOut)}
+                      </a>
+                    ) : (
+                      <Button
+                        className="h-11 sm:h-10 w-full sm:w-auto whitespace-nowrap rounded-full bg-black px-6 sm:px-4 text-sm font-semibold text-white hover:bg-zinc-800"
+                        disabled={loadingId === product.id || soldOut}
+                        onClick={async () => {
+                          setLoadingId(product.id);
+                          try {
+                            await onCheckout(product.id);
+                          } finally {
+                            setLoadingId(null);
+                          }
+                        }}
+                      >
+                        {loadingId === product.id ? "Cargando..." : ctaLabel(product, soldOut)}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -3,7 +3,10 @@ import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 export function SurftripsForMeSection() {
   return (
-    <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
+    <section
+      id="para-quien"
+      className="scroll-mt-28 bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20"
+    >
       <div className="grid gap-10 lg:grid-cols-[1fr_min(480px,46vw)] lg:items-start lg:gap-12">
         <RevealGroup>
           <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">

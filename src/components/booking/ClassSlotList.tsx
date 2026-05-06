@@ -194,16 +194,16 @@ export function ClassSlotList({ items, onBook }: Props) {
               const timeString = dateObj.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
               
               return (
-                <div key={slot.id} className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-black/[0.02] p-4 sm:p-5 transition hover:bg-black/[0.04]">
-                  <div className="flex items-center gap-5">
-                    <div className="flex flex-col items-center justify-center border-r border-black/10 pr-5">
-                      <span className="text-xl font-bold">{timeString}</span>
+                <div key={slot.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 rounded-xl bg-black/[0.02] p-4 sm:p-5 transition hover:bg-black/[0.04]">
+                  <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+                    <div className="flex flex-col items-start justify-center border-r border-black/10 pr-4 sm:pr-5 shrink-0">
+                      <span className="text-lg sm:text-xl font-bold whitespace-nowrap">{timeString}</span>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-lg">Clase de Surf</p>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-bold text-base sm:text-lg">Clase de Surf</p>
                         {slot.location && (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-900)]/10 text-[var(--color-primary-900)]">
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-900)]/10 text-[var(--color-primary-900)] shrink-0">
                             {slot.location}
                           </span>
                         )}
@@ -219,7 +219,7 @@ export function ClassSlotList({ items, onBook }: Props) {
                   </div>
                   <Button
                     variant={isFull ? "outline" : "primary"}
-                    className={isFull ? "opacity-50" : "bg-[var(--color-primary-900)] hover:bg-[var(--color-primary-700)] text-white font-bold px-6 h-11"}
+                    className={`w-full sm:w-auto shrink-0 ${isFull ? "opacity-50" : "bg-[var(--color-primary-900)] hover:bg-[var(--color-primary-700)] text-white font-bold px-6 h-11"}`}
                     disabled={isFull || loadingId === slot.id}
                     onClick={async () => {
                       setLoadingId(slot.id);

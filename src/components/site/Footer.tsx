@@ -40,14 +40,27 @@ export function Footer() {
           </div>
 
           <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 sm:justify-start">
               {quickLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="ds-chip text-white/70 hover:text-white">
                   {item.label}
                 </Link>
               ))}
             </div>
-            <p className="text-sm text-white/80">&copy; 2026 SP Surf Coach</p>
+            <p className="flex flex-wrap items-center justify-center gap-x-3 text-sm text-white/80 sm:justify-end">
+              <Link
+                href="/tyc-spsurfcoach.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/80 underline underline-offset-2 transition-colors hover:text-white"
+              >
+                Términos y Condiciones
+              </Link>
+              <span className="text-white/40" aria-hidden="true">
+                |
+              </span>
+              <span>&copy; 2026 SP Surf Coach</span>
+            </p>
           </div>
         </div>
       </div>

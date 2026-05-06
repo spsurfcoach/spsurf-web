@@ -13,6 +13,14 @@ export function toCurrencyPEN(value: number) {
   }).format(value);
 }
 
+export function toCurrencyUSD(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 export function formatDateTime(dateIso: string) {
   return new Intl.DateTimeFormat("es-PE", {
     dateStyle: "medium",

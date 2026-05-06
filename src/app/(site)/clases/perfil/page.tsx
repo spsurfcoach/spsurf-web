@@ -1,22 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, LogOut } from "lucide-react";
 import { ProfileForm } from "@/components/booking/ProfileForm";
 import { PROFILE_SECTIONS, type ProfileSectionId } from "@/components/booking/profileSections";
+import { UpcomingBookingsList } from "@/components/booking/UpcomingBookingsList";
+import { MisComprasList } from "@/components/booking/MisComprasList";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
-import type { UserProfileDoc } from "@/lib/booking/types";
+import { getActiveClassPurchase } from "@/lib/booking/guards";
+import type { UserProfileDoc, PurchaseDoc } from "@/lib/booking/types";
+
+type BookingItem = {
+  id: string;
+  status: string;
+  classSlot?: { startsAt?: string; location?: string } | null;
+};
+
+type ActiveTab = "reservas" | "datos" | "mis-compras";
+
+const TABS: { id: ActiveTab; label: string }[] = [
+  { id: "reservas", label: "Reservas" },
+  { id: "datos", label: "Datos" },
+  { id: "mis-compras", label: "Mis Compras" },
+];
 
 function ClasesProfilePageContent() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
+  const [bookings, setBookings] = useState<BookingItem[]>([]);
+  const [purchases, setPurchases] = useState<PurchaseDoc[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ActiveTab>("reservas");
   const [activeSection, setActiveSection] = useState<ProfileSectionId>("datos-personales");
 
   const returnTo = useMemo(() => {
@@ -26,36 +47,36 @@ function ClasesProfilePageContent() {
 
   const context = searchParams.get("context");
 
+  const loadData = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      const [profileRes, bookingsRes, purchasesRes] = await Promise.all([
+        apiFetch<{ profile: Partial<UserProfileDoc> | null }>("/api/me/profile"),
+        apiFetch<{ items: BookingItem[] }>("/api/me/bookings"),
+        apiFetch<{ items: PurchaseDoc[] }>("/api/me/purchases"),
+      ]);
+      setProfile(profileRes.profile ?? null);
+      setBookings(bookingsRes.items ?? []);
+      setPurchases(purchasesRes.items ?? []);
+    } catch {
+      setProfile(null);
+      setMessage("No se pudo cargar tu perfil. Puedes volver a guardarlo desde aqui.");
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/clases");
       return;
     }
-
     if (!user) return;
+    void loadData();
+  }, [loading, router, user, loadData]);
 
-    let cancelled = false;
-
-    void apiFetch<{ profile: Partial<UserProfileDoc> | null }>("/api/me/profile")
-      .then((response) => {
-        if (!cancelled) {
-          setProfile(response.profile ?? null);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setProfile(null);
-          setMessage("No se pudo cargar tu perfil. Puedes volver a guardarlo desde aqui.");
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loading, router, user]);
-
+  // Intersection observer for scroll-linked section nav (only active on "datos" tab)
   useEffect(() => {
-    if (profile === undefined) return;
+    if (activeTab !== "datos" || profile === undefined) return;
 
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-profile-section]"));
     if (!sections.length) return;
@@ -73,10 +94,7 @@ function ClasesProfilePageContent() {
           setActiveSection(nextSection as ProfileSectionId);
         }
       },
-      {
-        rootMargin: "-18% 0px -55% 0px",
-        threshold: [0.2, 0.45, 0.7],
-      },
+      { rootMargin: "-18% 0px -55% 0px", threshold: [0.2, 0.45, 0.7] },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -85,19 +103,19 @@ function ClasesProfilePageContent() {
       sections.forEach((section) => observer.unobserve(section));
       observer.disconnect();
     };
-  }, [profile]);
+  }, [activeTab, profile]);
 
   const contextMessage = useMemo(() => {
     if (context === "reservar") {
       return "Para reservar una clase necesitas completar tu perfil de alumno primero.";
     }
-
     if (context === "post-payment") {
       return "Tu compra fue registrada. Completa tu perfil para poder seguir con tus reservas.";
     }
-
     return undefined;
   }, [context]);
+
+  const activePurchase = useMemo(() => getActiveClassPurchase(purchases), [purchases]);
 
   if (loading || !user || profile === undefined) {
     return (
@@ -112,6 +130,7 @@ function ClasesProfilePageContent() {
   return (
     <div className="min-h-screen bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
       <div className="mx-auto max-w-7xl space-y-8">
+        {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.18em] text-black/40">Area de clases</p>
@@ -140,56 +159,126 @@ function ClasesProfilePageContent() {
         ) : null}
 
         <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+          {/* Sidebar */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
+              {/* Main tabs */}
               <div className="mb-2 px-3 py-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Secciones</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menu</p>
               </div>
               <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
-                {PROFILE_SECTIONS.map((section) => (
+                {TABS.map((tab) => (
                   <button
-                    key={section.id}
+                    key={tab.id}
                     type="button"
-                    onClick={() => {
-                      setActiveSection(section.id);
-                      document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors lg:w-full ${
-                      activeSection === section.id
+                      activeTab === tab.id
                         ? "bg-[var(--color-primary-900)] text-white"
                         : "text-black/55 hover:bg-black/[0.04] hover:text-black"
                     }`}
                   >
-                    {section.label}
+                    {tab.label}
                   </button>
                 ))}
               </div>
+
+              {/* Datos sub-nav: only shown when on the Datos tab */}
+              {activeTab === "datos" ? (
+                <div className="mt-3 border-t border-black/8 pt-3">
+                  <div className="mb-1 px-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.15em] text-black/25">Secciones</p>
+                  </div>
+                  <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+                    {PROFILE_SECTIONS.map((section) => (
+                      <button
+                        key={section.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSection(section.id);
+                          document
+                            .getElementById(section.id)
+                            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }}
+                        className={`whitespace-nowrap rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors lg:w-full ${
+                          activeSection === section.id
+                            ? "bg-black/[0.07] text-black"
+                            : "text-black/45 hover:bg-black/[0.04] hover:text-black/70"
+                        }`}
+                      >
+                        {section.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </aside>
 
-          <ProfileForm
-            initialData={profile}
-            userEmail={user.email ?? ""}
-            onSave={async (data) => {
-              await apiFetch("/api/me/profile", {
-                method: "PATCH",
-                body: JSON.stringify(data),
-              });
+          {/* Tab content */}
+          <main>
+            {activeTab === "reservas" ? (
+              <div className="space-y-5">
+                {/* Credits card */}
+                <div className="rounded-2xl border border-black/10 bg-white px-6 py-5 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">
+                    Creditos disponibles
+                  </p>
+                  <div className="mt-2 flex items-end gap-2">
+                    <p className="text-4xl font-bold leading-none text-black">
+                      {activePurchase
+                        ? activePurchase.packageType === "credits"
+                          ? (activePurchase.remainingCredits ?? 0)
+                          : "∞"
+                        : "0"}
+                    </p>
+                    <p className="pb-1 text-sm text-black/45">
+                      {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : activePurchase?.packageType === "subscription" ? "membresía activa" : "creditos"}
+                    </p>
+                  </div>
+                </div>
 
-              setProfile(data);
-
-              if (context && returnTo) {
-                router.replace(returnTo);
-                return;
-              }
-
-              setMessage("Perfil guardado correctamente.");
-            }}
-            contextMessage={contextMessage}
-            title="Completa tu perfil"
-            description="Tu informacion de alumno se usa para reservas, seguimiento y seguridad."
-            submitLabel={context ? "Guardar y continuar" : "Guardar perfil"}
-          />
+                {/* Bookings */}
+                <UpcomingBookingsList
+                  bookings={bookings}
+                  onCancel={async (bookingId) => {
+                    await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
+                    setMessage("Reserva cancelada. Tu credito ha sido devuelto.");
+                    void loadData();
+                  }}
+                />
+              </div>
+            ) : activeTab === "datos" ? (
+              <ProfileForm
+                initialData={profile}
+                userEmail={user.email ?? ""}
+                onSave={async (data) => {
+                  await apiFetch("/api/me/profile", {
+                    method: "PATCH",
+                    body: JSON.stringify(data),
+                  });
+                  setProfile(data);
+                  if (context && returnTo) {
+                    router.replace(returnTo);
+                    return;
+                  }
+                  setMessage("Perfil guardado correctamente.");
+                }}
+                contextMessage={contextMessage}
+                title="Completa tu perfil"
+                description="Tu informacion de alumno se usa para reservas, seguimiento y seguridad."
+                submitLabel={context ? "Guardar y continuar" : "Guardar perfil"}
+              />
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <h2 className="text-xl font-bold text-black">Mis Compras</h2>
+                  <p className="mt-1 text-sm text-black/50">Historial de tus paquetes y membresías adquiridas.</p>
+                </div>
+                <MisComprasList purchases={purchases} />
+              </div>
+            )}
+          </main>
         </div>
       </div>
     </div>

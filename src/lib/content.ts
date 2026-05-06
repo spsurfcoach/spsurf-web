@@ -157,17 +157,17 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Servicios",
     links: [
-      { href: "/servicios", label: "Coaching de surf" },
-      { href: "/servicios", label: "Videoanalisis" },
-      { href: "/servicios", label: "Preparacion fisica" },
+      { href: "/servicios#servicio-tab-clases", label: "Coaching de surf" },
+      { href: "/servicios#servicio-tab-video", label: "Videoanalisis" },
+      { href: "/servicios#servicio-tab-surfskate", label: "Preparacion fisica" },
     ],
   },
   {
     title: "Surfcamps",
     links: [
-      { href: "/surftrips", label: "Proximos viajes" },
-      { href: "/surftrips", label: "Calendario" },
-      { href: "/surftrips", label: "Para quien es" },
+      { href: "/surftrips#viajes", label: "Proximos viajes" },
+      { href: "/surftrips#calendario", label: "Calendario" },
+      { href: "/surftrips#para-quien", label: "Para quien es" },
     ],
   },
   {
@@ -175,7 +175,7 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { href: "/nosotros", label: "Nosotros" },
       { href: "/blog", label: "Blog" },
-      { href: "/", label: "SP Family" },
+      { href: "/surftrips#sp-family", label: "SP Family" },
     ],
   },
 ];

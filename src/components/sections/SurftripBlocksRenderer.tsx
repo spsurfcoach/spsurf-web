@@ -14,7 +14,7 @@ import { SurftripDetailHero } from "@/components/sections/SurftripDetailHero";
 import { SurftripDetailPackageSection } from "@/components/sections/SurftripDetailPackageSection";
 import { SurftripDetailSummarySection } from "@/components/sections/SurftripDetailSummarySection";
 import { SurftripDetailVideoSection } from "@/components/sections/SurftripDetailVideoSection";
-import { toCurrencyPEN } from "@/lib/utils";
+import { toCurrencyUSD } from "@/lib/utils";
 
 type SurftripBlocksRendererProps = {
   trip: SurftripDetail;
@@ -70,7 +70,16 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
       : "/photos/chicama.jpg";
   const summaryDescription = trip.heroLongDescription || trip.heroSubtitle || trip.shortDescription || "";
   const primaryCtaLabel = trip.primaryCtaLabel || "Reservar ahora";
-  const defaultStoreHref = trip.storeHref || "#reserva";
+  
+  const formattedDates = trip.startDate && trip.endDate 
+    ? `${new Date(trip.startDate).toLocaleDateString("es-PE")} - ${new Date(trip.endDate).toLocaleDateString("es-PE")}`
+    : "por definir";
+  const whatsappMessage = `Hola! Estoy interesado en el Surfcamp ${trip.title} con fechas ${formattedDates}`;
+  const whatsappUrl = `https://wa.me/51998153542?text=${encodeURIComponent(whatsappMessage)}`;
+  
+  // const defaultStoreHref = trip.storeHref || "#reserva";
+  const defaultStoreHref = whatsappUrl;
+  
   const primaryCtaHref =
     !trip.primaryCtaHref || trip.primaryCtaHref === "#reserva"
       ? defaultStoreHref
@@ -96,7 +105,7 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
     trip.packageSection
       ? {
           ...trip.packageSection,
-          priceLabel: trip.packageSection.priceLabel || toCurrencyPEN(trip.price),
+          priceLabel: trip.packageSection.priceLabel || toCurrencyUSD(trip.price),
           ctaHref:
             !trip.packageSection.ctaHref || trip.packageSection.ctaHref === "#reserva"
               ? defaultStoreHref
@@ -105,7 +114,7 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
       : {
           title: "Paquete",
           subtitle: `Surfcamp de ${trip.duracion} en ${trip.title}`,
-          priceLabel: toCurrencyPEN(trip.price),
+          priceLabel: toCurrencyUSD(trip.price),
           priceSuffix: "Precio por persona",
           depositNote:
             trip.availableSpots > 0
