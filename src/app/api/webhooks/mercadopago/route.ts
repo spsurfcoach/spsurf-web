@@ -24,10 +24,10 @@ export const dynamic = "force-dynamic";
 
 function revalidateSurftripPaths(slug?: string) {
   revalidatePath("/");
-  revalidatePath("/surftrips");
+  revalidatePath("/surfcamps");
   revalidatePath("/clases");
   if (slug) {
-    revalidatePath(`/surftrips/${slug}`);
+    revalidatePath(`/surfcamps/${slug}`);
   }
 }
 

@@ -246,7 +246,7 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                   <div className="flex flex-col sm:flex-row shrink-0 gap-2 sm:items-center w-full sm:w-auto">
                     {product.category === "surftrip" && product.slug ? (
                       <Link
-                        href={`/surftrips/${product.slug}`}
+                        href={`/surfcamps/${product.slug}`}
                         className="inline-flex h-11 sm:h-10 w-full sm:w-auto justify-center items-center whitespace-nowrap rounded-full border border-black/15 px-6 sm:px-4 text-sm font-semibold text-black/70 transition-colors hover:bg-black/[0.04] hover:text-black"
                       >
                         Conoce más

@@ -157,7 +157,7 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
             {/* CTA */}
             <div className="mt-8">
               <Link
-                href={`/surftrips/${trip.slug}`}
+                href={`/surfcamps/${trip.slug}`}
                 className={`inline-flex items-center justify-center rounded-[50px] px-8 py-4 text-[18px] font-medium transition ${
                   isDark
                     ? "bg-white text-[#011a1f] hover:bg-white/90"

@@ -8,8 +8,8 @@ import { User, LogOut } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { navItems } from "@/lib/content";
 
-const NAV_ORDER = ["/", "/servicios", "/surftrips", "/blog", "/nosotros"];
-const HERO_ROUTES = ["/", "/surftrips", "/servicios", "/nosotros"];
+const NAV_ORDER = ["/", "/servicios", "/surfcamps", "/blog", "/nosotros"];
+const HERO_ROUTES = ["/", "/surfcamps", "/servicios", "/nosotros"];
 
 export function Header() {
   const pathname = usePathname();

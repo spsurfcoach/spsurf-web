@@ -38,7 +38,7 @@ export function TripsSection({
                 <p className="mb-4 inline-block rounded-full bg-white px-4 py-1 ds-body-s text-zinc-900">{trip.level}</p>
                 <h3 className="ds-h2">{trip.title}</h3>
                 <p className="ds-body-s mt-3 text-zinc-100">{trip.shortDescription}</p>
-                <Link href={`/surftrips/${trip.slug}`} className="ds-btn ds-btn-secondary mt-6 inline-flex">
+                <Link href={`/surfcamps/${trip.slug}`} className="ds-btn ds-btn-secondary mt-6 inline-flex">
                   Ver detalle
                 </Link>
               </article>

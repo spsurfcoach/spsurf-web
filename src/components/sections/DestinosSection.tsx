@@ -51,7 +51,7 @@ export function DestinosSection({ trips }: DestinosSectionProps) {
             ariaLabel="Carrusel de destinos"
             slideClassName="basis-[82%] sm:basis-[52%] lg:basis-[38%]"
             slides={destinos.map((item) => (
-              <Link key={item._id} href={`/surftrips/${item.slug}`} className="group block">
+              <Link key={item._id} href={`/surfcamps/${item.slug}`} className="group block">
                 <article>
                   <ResponsiveMediaFrame
                     src={urlForImage(item.cardImage!).width(1200).height(900).fit("crop").url()}

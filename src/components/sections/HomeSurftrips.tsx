@@ -50,7 +50,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
           <h2 className="ds-section-title ds-section-lead-gap max-w-[540px]">
             Mejora tu surfing en los mejores destinos y vive experiencias únicas junto a una comunidad que comparte tu misma pasión por el mar.
           </h2>
-          <Link href="/surftrips" className="ds-btn ds-btn-primary ds-btn-lg mt-8 inline-flex">
+          <Link href="/surfcamps" className="ds-btn ds-btn-primary ds-btn-lg mt-8 inline-flex">
             Conoce más
           </Link>
         </RevealGroup>
@@ -64,7 +64,7 @@ export function HomeSurftrips({ trips }: HomeSurftripsProps) {
               return (
                 <Link
                   key={trip._id}
-                  href={`/surftrips/${trip.slug}`}
+                  href={`/surfcamps/${trip.slug}`}
                   className="group block rounded-[24px] transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">

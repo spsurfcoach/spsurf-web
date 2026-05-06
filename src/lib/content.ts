@@ -147,7 +147,7 @@ export type SpFamilyPhotoItem = {
 
 export const navItems: NavItem[] = [
   { href: "/", label: "Inicio" },
-  { href: "/surftrips", label: "Surfcamps" },
+  { href: "/surfcamps", label: "Surfcamps" },
   { href: "/servicios", label: "Servicios" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/blog", label: "Blog" },
@@ -165,9 +165,9 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Surfcamps",
     links: [
-      { href: "/surftrips#viajes", label: "Proximos viajes" },
-      { href: "/surftrips#calendario", label: "Calendario" },
-      { href: "/surftrips#para-quien", label: "Para quien es" },
+      { href: "/surfcamps#viajes", label: "Proximos viajes" },
+      { href: "/surfcamps#calendario", label: "Calendario" },
+      { href: "/surfcamps#para-quien", label: "Para quien es" },
     ],
   },
   {
@@ -175,7 +175,7 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { href: "/nosotros", label: "Nosotros" },
       { href: "/blog", label: "Blog" },
-      { href: "/surftrips#sp-family", label: "SP Family" },
+      { href: "/surfcamps#sp-family", label: "SP Family" },
     ],
   },
 ];

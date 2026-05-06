@@ -12,11 +12,11 @@ type SanitySurftripWebhookBody = {
 export const dynamic = "force-dynamic";
 
 function revalidateSurftripPaths(slugs: Array<string | null | undefined>) {
-  const paths = new Set<string>(["/", "/surftrips", "/clases"]);
+  const paths = new Set<string>(["/", "/surfcamps", "/clases"]);
 
   slugs.forEach((slug) => {
     if (slug) {
-      paths.add(`/surftrips/${slug}`);
+      paths.add(`/surfcamps/${slug}`);
     }
   });
 
