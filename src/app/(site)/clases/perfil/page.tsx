@@ -35,7 +35,7 @@ function ClasesProfilePageContent() {
 
   const [profile, setProfile] = useState<Partial<UserProfileDoc> | null | undefined>(undefined);
   const [bookings, setBookings] = useState<BookingItem[]>([]);
-  const [purchases, setPurchases] = useState<PurchaseDoc[]>([]);
+  const [purchases, setPurchases] = useState<(PurchaseDoc & { id: string })[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("reservas");
   const [activeSection, setActiveSection] = useState<ProfileSectionId>("datos-personales");
@@ -54,7 +54,7 @@ function ClasesProfilePageContent() {
       const [profileRes, bookingsRes, purchasesRes] = await Promise.all([
         apiFetch<{ profile: Partial<UserProfileDoc> | null }>("/api/me/profile"),
         apiFetch<{ items: BookingItem[] }>("/api/me/bookings"),
-        apiFetch<{ items: PurchaseDoc[] }>("/api/me/purchases"),
+        apiFetch<{ items: (PurchaseDoc & { id: string })[] }>("/api/me/purchases"),
       ]);
       setProfile(profileRes.profile ?? null);
       setBookings(bookingsRes.items ?? []);
