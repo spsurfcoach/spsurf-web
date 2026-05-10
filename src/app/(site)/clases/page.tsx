@@ -111,6 +111,10 @@ function ClasesPageContent() {
   const activeTab = getTab(searchParams.get("tab"));
   const paymentStatus = searchParams.get("payment");
   const highlightProductId = searchParams.get("product");
+  const [isLogin, setIsLogin] = useState(false);
+  const [registerStep, setRegisterStep] = useState<1 | 2>(1);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -179,6 +183,39 @@ function ClasesPageContent() {
     router.replace(`/clases?${params.toString()}`);
   }
 
+  function getAuthErrorMessage(code: string): string {
+    switch (code) {
+      case "auth/email-already-in-use": return "Este correo ya tiene una cuenta. Inicia sesión.";
+      case "auth/invalid-email": return "El correo electrónico no es válido.";
+      case "auth/weak-password": return "La contraseña debe tener al menos 6 caracteres.";
+      case "auth/user-not-found": return "No hay ninguna cuenta con este correo.";
+      case "auth/wrong-password": return "Contraseña incorrecta.";
+      case "auth/invalid-credential": return "Correo o contraseña incorrectos.";
+      case "auth/too-many-requests": return "Demasiados intentos. Espera un momento e inténtalo de nuevo.";
+      default: return "Algo salió mal. Inténtalo de nuevo.";
+    }
+  }
+
+  async function handleLogin() {
+    setAuthError(null);
+    try {
+      await loginWithEmail(email, password);
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code ?? "";
+      setAuthError(getAuthErrorMessage(code));
+    }
+  }
+
+  async function handleRegister() {
+    setAuthError(null);
+    try {
+      await signupWithEmail(email, password, name);
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code ?? "";
+      setAuthError(getAuthErrorMessage(code));
+    }
+  }
+
   if (!loading && !hasAuth) {
     return (
       <div className="relative min-h-screen flex items-center justify-center px-4">
@@ -186,63 +223,142 @@ function ClasesPageContent() {
         <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-10 w-full max-w-sm">
-          <div className="space-y-6 rounded-2xl bg-white p-8 shadow-2xl">
-            <div>
-              <h1 className="text-2xl font-bold">Accede a tu cuenta</h1>
-              <p className="mt-1 text-sm text-black/50">Reserva clases y gestiona tus compras.</p>
+          <div className="rounded-2xl bg-white p-8 shadow-2xl">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold">
+                {isLogin ? "Accede a tu cuenta" : registerStep === 1 ? "Crea tu cuenta" : "Últimos detalles"}
+              </h1>
+              <p className="mt-1 text-sm text-black/50">
+                {isLogin
+                  ? "Reserva clases y gestiona tus compras."
+                  : registerStep === 1
+                    ? "Empieza reservando tu primera clase de surf."
+                    : email}
+              </p>
             </div>
 
-            <div className="space-y-3">
-              <Input
-                className="h-12 rounded-xl border-transparent bg-black/[0.03] px-4 transition-colors focus-visible:bg-white focus-visible:ring-black/20"
-                placeholder="Correo electronico"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-              <Input
-                className="h-12 rounded-xl border-transparent bg-black/[0.03] px-4 transition-colors focus-visible:bg-white focus-visible:ring-black/20"
-                placeholder="Contrasena"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
+            {isLogin ? (
+              <div className="space-y-3">
+                <Button
+                  className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-black/15 font-semibold transition-colors hover:bg-black/[0.03]"
+                  variant="outline"
+                  onClick={() => void loginWithGoogle()}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                  </svg>
+                  Continuar con Google
+                </Button>
 
-            <div className="flex gap-3">
-              <Button
-                className="h-12 flex-1 rounded-xl bg-[var(--color-primary-900)] font-semibold text-white transition-colors hover:bg-[var(--color-primary-700)]"
-                onClick={() => void loginWithEmail(email, password)}
+                <div className="space-y-2 pt-1">
+                  <p className="text-xs font-medium text-black/50">Correo electrónico</p>
+                  <Input
+                    className="h-12 rounded-xl border border-black/10 bg-transparent px-4 transition-colors focus-visible:ring-black/20"
+                    placeholder="Correo electrónico"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                  <Input
+                    className="h-12 rounded-xl border border-black/10 bg-transparent px-4 transition-colors focus-visible:ring-black/20"
+                    placeholder="Contraseña"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                </div>
+
+                {authError && (
+                  <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{authError}</p>
+                )}
+                <Button
+                  className="h-12 w-full rounded-xl bg-[var(--color-primary-900)] font-semibold text-white transition-colors hover:bg-[var(--color-primary-700)]"
+                  onClick={() => void handleLogin()}
+                >
+                  Entrar
+                </Button>
+              </div>
+            ) : registerStep === 1 ? (
+              <div className="space-y-3">
+                <Button
+                  className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-black/15 font-semibold transition-colors hover:bg-black/[0.03]"
+                  variant="outline"
+                  onClick={() => void loginWithGoogle()}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                  </svg>
+                  Continuar con Google
+                </Button>
+
+                <div className="space-y-2 pt-1">
+                  <p className="text-xs font-medium text-black/50">O regístrate con correo electrónico</p>
+                  <Input
+                    className="h-12 rounded-xl border border-black/10 bg-transparent px-4 transition-colors focus-visible:ring-black/20"
+                    placeholder="Correo electrónico"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                </div>
+
+                <Button
+                  className="h-12 w-full rounded-xl bg-[var(--color-primary-900)] font-semibold text-white transition-colors hover:bg-[var(--color-primary-700)]"
+                  onClick={() => { setAuthError(null); setRegisterStep(2); }}
+                >
+                  Continuar
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <Input
+                  className="h-12 rounded-xl border border-black/10 bg-transparent px-4 transition-colors focus-visible:ring-black/20"
+                  placeholder="Nombre"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+                <Input
+                  className="h-12 rounded-xl border border-black/10 bg-transparent px-4 transition-colors focus-visible:ring-black/20"
+                  placeholder="Contraseña"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+                {authError && (
+                  <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{authError}</p>
+                )}
+                <Button
+                  className="h-12 w-full rounded-xl bg-[var(--color-primary-900)] font-semibold text-white transition-colors hover:bg-[var(--color-primary-700)]"
+                  onClick={() => void handleRegister()}
+                >
+                  Crear cuenta
+                </Button>
+                <button
+                  type="button"
+                  className="w-full text-center text-xs text-black/40 hover:text-black/60"
+                  onClick={() => { setRegisterStep(1); setAuthError(null); }}
+                >
+                  ← Volver
+                </button>
+              </div>
+            )}
+
+            <p className="mt-5 text-center text-xs text-black/40">
+              {isLogin ? "¿No tienes una cuenta? " : "¿Ya tienes una cuenta? "}
+              <button
+                type="button"
+                className="font-semibold text-black/60 underline underline-offset-2 hover:text-black"
+                onClick={() => { setIsLogin((prev) => !prev); setRegisterStep(1); setAuthError(null); }}
               >
-                Entrar
-              </Button>
-              <Button
-                className="h-12 flex-1 rounded-xl border border-black/15 font-semibold transition-colors hover:bg-black/[0.03]"
-                variant="outline"
-                onClick={() => void signupWithEmail(email, password)}
-              >
-                Registrarse
-              </Button>
-            </div>
-
-            <div className="relative flex items-center">
-              <div className="grow border-t border-black/10" />
-              <span className="shrink-0 px-4 text-xs text-black/40">o</span>
-              <div className="grow border-t border-black/10" />
-            </div>
-
-            <Button
-              className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-black/15 font-semibold transition-colors hover:bg-black/[0.03]"
-              variant="outline"
-              onClick={() => void loginWithGoogle()}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-              </svg>
-              Continuar con Google
-            </Button>
+                {isLogin ? "Crea una cuenta" : "Inicia sesión"}
+              </button>
+            </p>
           </div>
         </div>
       </div>

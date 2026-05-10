@@ -134,7 +134,9 @@ function ClasesProfilePageContent() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.18em] text-black/40">Area de clases</p>
-            <h1 className="mt-2 text-3xl font-bold text-black">Mi perfil</h1>
+            <h1 className="mt-2 text-3xl font-bold text-black">
+              {user.displayName ? `Hola, ${user.displayName.split(" ")[0]}` : "Mi perfil"}
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-black/55">
               Organiza tu ficha en secciones para actualizar tus datos rapidamente.
             </p>

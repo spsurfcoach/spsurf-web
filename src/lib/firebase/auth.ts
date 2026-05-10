@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { firebaseAuth } from "./client";
 
@@ -25,8 +26,12 @@ export async function signInWithEmail(email: string, password: string) {
   return signInWithEmailAndPassword(firebaseAuth, email, password);
 }
 
-export async function registerWithEmail(email: string, password: string) {
-  return createUserWithEmailAndPassword(firebaseAuth, email, password);
+export async function registerWithEmail(email: string, password: string, name?: string) {
+  const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+  if (name) {
+    await updateProfile(credential.user, { displayName: name });
+  }
+  return credential;
 }
 
 export async function signOutUser() {
