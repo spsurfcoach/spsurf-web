@@ -253,6 +253,14 @@ export const surftrip = defineType({
       validation: (rule) => rule.required().min(1),
     }),
     defineField({
+      name: "bookedCount",
+      title: "Cupos vendidos manualmente",
+      type: "number",
+      initialValue: 0,
+      description: "Número de cupos ya vendidos fuera del checkout online (ventas manuales). Se suma a las compras automáticas para calcular los cupos disponibles.",
+      validation: (rule) => rule.min(0),
+    }),
+    defineField({
       name: "isActive",
       title: "Sellable",
       type: "boolean",
@@ -273,13 +281,15 @@ export const surftrip = defineType({
       media: "cardImage",
       price: "price",
       capacity: "capacity",
+      bookedCount: "bookedCount",
       isActive: "isActive",
     },
-    prepare({ title, subtitle, media, price, capacity, isActive }) {
+    prepare({ title, subtitle, media, price, capacity, bookedCount, isActive }) {
       const stateLabel = isActive === false ? "Inactivo" : "Activo";
+      const available = Math.max(0, (capacity ?? 0) - (bookedCount ?? 0));
       return {
         title,
-        subtitle: `${subtitle || "No country"} - ${stateLabel} - S/. ${price ?? 0} - ${capacity ?? 0} cupos`,
+        subtitle: `${subtitle || "No country"} - ${stateLabel} - S/. ${price ?? 0} - ${available}/${capacity ?? 0} cupos`,
         media,
       };
     },

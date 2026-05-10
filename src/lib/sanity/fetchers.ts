@@ -76,7 +76,7 @@ const getInventoryIndex = cache(async (): Promise<InventoryIndex> => {
   }
 });
 
-function mergeSurftripOperationalState<T extends { _id: string; slug: string; price: number; capacity: number; isActive: boolean }>(
+function mergeSurftripOperationalState<T extends { _id: string; slug: string; price: number; capacity: number; isActive: boolean; bookedCount?: number }>(
   trip: T,
   inventoryIndex: InventoryIndex,
 ) {
@@ -85,7 +85,9 @@ function mergeSurftripOperationalState<T extends { _id: string; slug: string; pr
     inventoryIndex.bySlug.get(trip.slug);
 
   const capacity = Number.isFinite(inventory?.capacity) ? Number(inventory?.capacity) : trip.capacity;
-  const enrolledCount = inventory?.enrolledCount ?? 0;
+  const firebaseEnrolledCount = inventory?.enrolledCount ?? 0;
+  const manualBookedCount = trip.bookedCount ?? 0;
+  const enrolledCount = firebaseEnrolledCount + manualBookedCount;
   const availableSpots = getSurftripAvailableSpots(capacity, enrolledCount);
   const price = Number.isFinite(inventory?.price) ? Number(inventory?.price) : trip.price;
   const isActive = inventory?.isActive ?? trip.isActive;

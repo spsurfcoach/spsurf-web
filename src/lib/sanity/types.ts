@@ -112,6 +112,7 @@ export type SurftripListItem = {
   aeropuerto: string;
   price: number;
   capacity: number;
+  bookedCount?: number;
   featured: boolean;
   isActive: boolean;
   enrolledCount: number;
