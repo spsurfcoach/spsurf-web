@@ -318,7 +318,7 @@ export function ProfileForm({
                 value={form.birthDate ?? ""}
                 onChange={(event) => set("birthDate", event.target.value)}
               />
-              {age !== null ? <p className="pl-1 text-xs text-black/50">Edad: {age} anos</p> : null}
+              {age !== null ? <p className="pl-1 text-xs text-black/50">Edad: {age} años</p> : null}
             </div>
           </Field>
           <Field label="Telefono" required>
@@ -507,10 +507,10 @@ export function ProfileForm({
               options={[
                 { value: "nunca", label: "Nunca" },
                 { value: "menos_6m", label: "Menos de 6 meses" },
-                { value: "6m_1y", label: "6 meses - 1 ano" },
-                { value: "1_3y", label: "1 - 3 anos" },
-                { value: "mas_3y", label: "Mas de 3 anos" },
-                { value: "mas_10y", label: "Mas de 10 anos" },
+                { value: "6m_1y", label: "6 meses - 1 año" },
+                { value: "1_3y", label: "1 - 3 años" },
+                { value: "mas_3y", label: "Más de 3 años" },
+                { value: "mas_10y", label: "Más de 10 años" },
               ]}
             />
           </Field>
@@ -596,7 +596,7 @@ export function ProfileForm({
                   className={inputClassName}
                   value={form.coachingDuration ?? ""}
                   onChange={(event) => set("coachingDuration", event.target.value)}
-                  placeholder="Ej: 3 meses, 1 ano..."
+                  placeholder="Ej: 3 meses, 1 año..."
                 />
               </Field>
             </div>

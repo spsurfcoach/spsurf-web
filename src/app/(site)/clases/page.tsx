@@ -402,7 +402,8 @@ function ClasesPageContent() {
               <div>
                 <h2 className="text-2xl font-bold">Tu tienda de surf</h2>
                 <p className="mt-1 text-sm text-black/50">
-                  Elige tu plan, asegura tu cupo en el proximo surfcamp o suma clases sueltas. Todo en un solo lugar.
+                  Elige tu suscripción, inscríbete en un programa, asegura tu cupo en el próximo surfcamp, toma clases de
+                  surfskate o agenda tu videoanálisis. Todo en un solo lugar.
                 </p>
               </div>
               <a

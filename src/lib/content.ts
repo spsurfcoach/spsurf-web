@@ -313,10 +313,19 @@ export type ServicioDetailCoach = {
   imageSrc?: string;
 };
 
+export type ServicioDetailBenefits = {
+  title: string;
+  items: string[];
+};
+
 export type ServicioDetailTab = {
   id: string;
   title: string;
   paragraphs: string[];
+  /** Lista opcional entre párrafos y `closingParagraphs` (p. ej. beneficios extras). */
+  benefitsBullets?: ServicioDetailBenefits;
+  /** Párrafos finales tras `benefitsBullets`, si aplica. */
+  closingParagraphs?: string[];
   /** Instructor asociado al servicio. */
   coach?: ServicioDetailCoach;
   /** Destino del CTA «Comprar …» en /servicios. */
@@ -332,10 +341,10 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     id: "clases",
     title: "Coaching de surf",
     paragraphs: [
-      "Nuestro coaching de surf está pensado para adaptarse a tu nivel, tus objetivos y tu momento como surfista. Trabajamos tanto en formato individual como grupal, siempre con coaching en el agua y video análisis incluido.",
-      "Las clases individuales permiten un trabajo totalmente personalizado, ideal para corregir detalles técnicos, acelerar el progreso y enfocarse en objetivos concretos.",
-      "Las clases grupales combinan aprendizaje y motivación en un entorno de comunidad, manteniendo grupos reducidos para asegurar atención real.",
-      "En cada sesión grabamos tus olas y las analizamos, revisando postura, línea, timing, velocidad y toma de decisiones. La idea es que entiendas claramente qué estás haciendo y qué ajustar para mejorar.",
+      "Nuestro coaching de surf está diseñado para adaptarse a tu nivel, objetivos y momento como surfista. Buscamos que entiendas tu surfing y progreses de manera consciente dentro del agua.",
+      "Cada sesión dura entre 90 y 120 minutos y se realiza según las mejores condiciones del mar para el entrenamiento. Dependiendo de la sesión, trabajamos con coaching dentro y fuera del agua para acompañar tu progreso de forma más completa.",
+      "Todas las clases son grabadas para realizar videoanálisis, revisando aspectos como postura, línea, timing, velocidad y toma de decisiones, ayudándote a entender qué ajustar y cómo seguir evolucionando.",
+      "Las clases pueden agendarse directamente desde la web.",
       "Aquí no solo surfeas más.",
       "Surfeas mejor.",
     ],
@@ -350,9 +359,10 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     id: "video",
     title: "Videoanálisis",
     paragraphs: [
-      "Este servicio está pensado para surfistas que quieren recibir feedback técnico sin necesidad de estar presentes en una sesión de coaching.",
-      "Envía tus clips de surfing y realizaremos un análisis detallado de cada ola, evaluando aspectos como posicionamiento en la ola, timing, selección de maniobras, línea de surfing y uso del cuerpo. A partir de este análisis se entrega un feedback claro con correcciones específicas y recomendaciones técnicas para mejorar el rendimiento en el agua.",
-      "Este proceso permite identificar errores que muchas veces pasan desapercibidos durante la sesión y enfocar el entrenamiento de manera más consciente y eficiente.",
+      "Este servicio está pensado para surfistas que quieren recibir feedback técnico y entender mejor su surfing, sin necesidad de asistir a una sesión presencial.",
+      "Una vez realizado el pago, coordinamos una videollamada personalizada de aproximadamente una hora para analizar juntos tus clips de surfing. Durante la sesión revisamos distintos aspectos técnicos como timing, postura, línea, velocidad, selección de olas y toma de decisiones dentro de la ola.",
+      "La idea es que puedas entender claramente qué estás haciendo, qué necesitas ajustar y cómo seguir evolucionando en tu surfing desde cualquier lugar.",
+      "El progreso está en los detalles que normalmente no ves.",
     ],
     coach: {
       name: "Sebastián Portocarrero",
@@ -365,9 +375,10 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     id: "surfskate",
     title: "Clases de Surfskate",
     paragraphs: [
-      "El surfskate se utiliza como herramienta de entrenamiento fuera del agua para trabajar técnica, postura y mecánica de movimientos que utilizas en tu surfing.",
-      "Practicamos giros, compresión y extensión, transferencia de peso y generación de velocidad, replicando las sensaciones del surfing en la ola.",
-      "Esto permite interiorizar patrones de movimiento correctos y mejorar el control y fluidez cuando vuelves al agua.",
+      "Las clases de surfskate están pensadas como una herramienta de entrenamiento fuera del agua para mejorar técnica, postura, mecánica de movimiento y comprensión del surfing de manera más consciente y eficiente.",
+      "Las sesiones son presenciales, tienen una duración aproximada de una hora y se coordinan directamente una vez realizado el pago. Durante la clase trabajamos distintos aspectos técnicos como generación de velocidad, compresión y extensión, postura, transferencia de peso y simulación de maniobras frontside y backside.",
+      "A diferencia del surf en el agua, donde el tiempo efectivo sobre la ola es limitado, el surfskate permite entrenar movimientos de manera constante durante toda la sesión, acelerando el aprendizaje y ayudando a interiorizar patrones técnicos con mayor claridad.",
+      "La idea es que puedas mejorar tu surfing no solo dentro del agua, sino también fuera de ella.",
     ],
     coach: {
       name: "Ivo Escuza",
@@ -375,6 +386,32 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
       imageSrc: IVO_PORTRAIT,
     },
     comprarHref: "/clases?tab=comprar&product=surfskate",
+  },
+  {
+    id: "suscripcion",
+    title: "Suscripción",
+    paragraphs: [
+      "Esta membresía está pensada para surfistas que quieren entrenar de manera constante, progresar más rápido y formar parte activa de la comunidad de SP Surf Coach.",
+      "La suscripción está disponible en planes de 3, 6 y 12 meses, permitiéndote acceder a clases ilimitadas de surf durante todo el periodo de tu plan. Todas las sesiones se agendan directamente desde la web, de manera flexible y organizada.",
+      "El programa incluye los mismos beneficios del coaching de surf: sesiones grabadas, videoanálisis, coaching dentro y fuera del agua y entrenamientos adaptados según las condiciones del mar y los objetivos del alumno.",
+    ],
+    benefitsBullets: {
+      title: "Beneficios extras:",
+      items: [
+        "Videoanálisis personalizado mensual",
+        "Licra oficial personalizada",
+        "Merch exclusivo de SP Surf Coach.",
+      ],
+    },
+    closingParagraphs: [
+      "Más que una suscripción, es una forma de vivir el surfing con mayor constancia, intención y evolución.",
+    ],
+    coach: {
+      name: "Sebastián Portocarrero",
+      role: "Programa de suscripción",
+      imageSrc: SEBASTIAN_PORTRAIT,
+    },
+    comprarHref: "/clases?tab=comprar",
   },
 ];
 

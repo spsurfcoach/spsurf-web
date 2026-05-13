@@ -1,7 +1,6 @@
 import { NosotrosHero } from "@/components/sections/NosotrosHero";
 import { NosotrosIntroSection } from "@/components/sections/NosotrosIntroSection";
 import { NosotrosCertSection } from "@/components/sections/NosotrosCertSection";
-import { NosotrosQuoteSection } from "@/components/sections/NosotrosQuoteSection";
 import { VisionMisionSection } from "@/components/sections/VisionMisionSection";
 import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { SurfTalksSection } from "@/components/sections/SurfTalksSection";
@@ -15,9 +14,8 @@ export default function NosotrosPage() {
     <>
       <NosotrosHero />
       <NosotrosIntroSection />
-      <NosotrosCertSection />
-      <NosotrosQuoteSection />
       <NosotrosTestimoniosVideosSection />
+      <NosotrosCertSection />
       <PartnersSection />
       <VisionMisionSection />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />

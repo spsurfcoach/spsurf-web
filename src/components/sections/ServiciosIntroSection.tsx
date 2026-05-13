@@ -15,9 +15,6 @@ export function ServiciosIntroSection() {
           <p className="ds-section-title text-black">
             Cada servicio ha sido creado para acompañarte en tu proceso de crecimiento como surfista. A través de una metodología integral que combina técnica, análisis, cuerpo y mente, te ayudamos a progresar dentro y fuera del agua.
           </p>
-          <p className="ds-section-title mt-6 text-black">
-            Elige la experiencia que mejor se adapte a ti y da el siguiente paso hacia tu mejor versión en el mar.
-          </p>
         </div>
 
         {/* Full-width photo */}

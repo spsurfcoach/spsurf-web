@@ -13,6 +13,8 @@ type CarouselShellProps = {
   darkControls?: boolean;
   /** Avanza automáticamente cada N ms. Se pausa al pasar el cursor y cuando la pestaña no está visible. */
   autoPlayMs?: number;
+  /** Oculta los botones de anterior/siguiente. Los dots y el drag siguen activos. */
+  hideArrows?: boolean;
 };
 
 export function CarouselShell({
@@ -22,6 +24,7 @@ export function CarouselShell({
   ariaLabel,
   darkControls = true,
   autoPlayMs,
+  hideArrows = false,
 }: CarouselShellProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -108,7 +111,7 @@ export function CarouselShell({
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
+      <div className={`mt-5 flex items-center ${hideArrows ? "justify-center" : "justify-between"}`}>
         <div className="flex items-center gap-2">
           {slides.map((_, index) => (
             <button
@@ -121,26 +124,28 @@ export function CarouselShell({
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={scrollPrev}
-            disabled={!canScrollPrev}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border ${controlClass} disabled:cursor-not-allowed disabled:opacity-50`}
-            aria-label="Slide anterior"
-          >
-            <span aria-hidden="true">{"<"}</span>
-          </button>
-          <button
-            type="button"
-            onClick={scrollNext}
-            disabled={!canScrollNext}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border ${controlClass} disabled:cursor-not-allowed disabled:opacity-50`}
-            aria-label="Slide siguiente"
-          >
-            <span aria-hidden="true">{">"}</span>
-          </button>
-        </div>
+        {!hideArrows && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={scrollPrev}
+              disabled={!canScrollPrev}
+              className={`flex h-10 w-10 items-center justify-center rounded-full border ${controlClass} disabled:cursor-not-allowed disabled:opacity-50`}
+              aria-label="Slide anterior"
+            >
+              <span aria-hidden="true">{"<"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={scrollNext}
+              disabled={!canScrollNext}
+              className={`flex h-10 w-10 items-center justify-center rounded-full border ${controlClass} disabled:cursor-not-allowed disabled:opacity-50`}
+              aria-label="Slide siguiente"
+            >
+              <span aria-hidden="true">{">"}</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

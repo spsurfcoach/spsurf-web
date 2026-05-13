@@ -129,6 +129,23 @@ export function ServiciosDetailSection() {
                       {p}
                     </p>
                   ))}
+                  {active.benefitsBullets ? (
+                    <div className="mt-6">
+                      <p className="ds-body-s font-semibold leading-[1.8] text-black/90">
+                        {active.benefitsBullets.title}
+                      </p>
+                      <ul className="ds-body-s mt-2 list-disc space-y-1 pl-5 leading-[1.8] text-black/90">
+                        {active.benefitsBullets.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {(active.closingParagraphs ?? []).map((p, i) => (
+                    <p key={`c-${i}`} className="ds-body-s mt-6 leading-[1.8] text-black/90">
+                      {p}
+                    </p>
+                  ))}
                 </div>
                 <div className="mt-8 flex shrink-0 justify-end">
                   <Link
