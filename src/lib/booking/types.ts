@@ -167,6 +167,8 @@ export type UserProfileDoc = {
   declaresGoodHealth: boolean;
   understandsRisk: boolean;
   acceptsTerms: boolean;
+  /** Tratamiento de datos para información, promociones y comunicaciones comerciales. */
+  consentsMarketingCommunications?: boolean;
   authorizesImageUse: boolean;
   createdAt: string;
   updatedAt: string;

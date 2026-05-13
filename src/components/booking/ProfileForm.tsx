@@ -12,6 +12,7 @@ import type {
   SurfTime,
   UserProfileDoc,
 } from "@/lib/booking/types";
+import { TERMS_PDF_HREF } from "@/lib/terms-pdf";
 
 type Props = {
   initialData: Partial<UserProfileDoc> | null;
@@ -184,6 +185,7 @@ const defaultForm = (): Partial<UserProfileDoc> => ({
   declaresGoodHealth: false,
   understandsRisk: false,
   acceptsTerms: false,
+  consentsMarketingCommunications: false,
   authorizesImageUse: false,
 });
 
@@ -257,8 +259,8 @@ export function ProfileForm({
       return;
     }
 
-    if (!form.declaresGoodHealth || !form.understandsRisk || !form.acceptsTerms) {
-      setError("Debes aceptar todas las declaraciones obligatorias.");
+    if (!form.acceptsTerms) {
+      setError("Debes leer y aceptar los Términos y Condiciones de SP Surf Coach.");
       return;
     }
 
@@ -663,41 +665,42 @@ export function ProfileForm({
       <ProfileSectionBlock id={SETTINGS_SECTION.id} title={SETTINGS_SECTION.title}>
         <div className="space-y-5">
           <p className="text-sm text-black/50">
-            Revisa las autorizaciones y declaraciones necesarias para mantener activo tu perfil de alumno.
+            Marca las opciones que correspondan. Los términos y condiciones son obligatorios para completar tu perfil.
           </p>
           <div className="space-y-3">
-            {(
-              [
-                ["declaresGoodHealth", "Declaro que me encuentro en condiciones fisicas adecuadas para la practica del surf"],
-                ["understandsRisk", "Entiendo que el surf es un deporte de riesgo y asumo la responsabilidad de mi participacion"],
-                [
-                  "acceptsTerms",
-                  <>
-                    He leido y acepto los{" "}
-                    <a
-                      href="/tyc-spsurfcoach.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-[var(--color-primary-900)] underline underline-offset-2 hover:text-[var(--color-primary-700)]"
-                      onClick={(event) => event.stopPropagation()}
-                    >
-                      Terminos y Condiciones
-                    </a>
-                  </>,
-                ],
-                ["authorizesImageUse", "Autorizo el uso de mi imagen para fines promocionales"],
-              ] as [keyof UserProfileDoc, ReactNode][]
-            ).map(([field, label]) => (
-              <label key={field} className="flex cursor-pointer items-start gap-3 text-sm">
-                <input
-                  type="checkbox"
-                  checked={!!form[field]}
-                  onChange={(event) => set(field, event.target.checked as UserProfileDoc[typeof field])}
-                  className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
-                />
-                <span className="leading-relaxed text-black/70">{label}</span>
-              </label>
-            ))}
+            <label className="flex cursor-pointer items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={!!form.acceptsTerms}
+                onChange={(event) => set("acceptsTerms", event.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
+              />
+              <span className="leading-relaxed text-black/70">
+                He leído y acepto los{" "}
+                <a
+                  href={TERMS_PDF_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[var(--color-primary-900)] underline underline-offset-2 hover:text-[var(--color-primary-700)]"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  Términos y Condiciones
+                </a>{" "}
+                de SP Surf Coach.
+              </span>
+            </label>
+            <label className="flex cursor-pointer items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={!!form.consentsMarketingCommunications}
+                onChange={(event) => set("consentsMarketingCommunications", event.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
+              />
+              <span className="leading-relaxed text-black/70">
+                Autorizo el tratamiento de mis datos personales para recibir información, promociones y comunicaciones
+                relacionadas con SP Surf Coach.
+              </span>
+            </label>
           </div>
         </div>
       </ProfileSectionBlock>

@@ -22,7 +22,7 @@ export function VisionMisionSection() {
           </div>
           <div className="md:w-1/2">
             <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">MISIÓN</p>
-            <p className="ds-display-title mt-4 text-black">
+            <p className="ds-h2-lg mt-4 text-pretty leading-snug text-black sm:leading-relaxed">
               Acompañar a surfistas en su proceso de evolución dentro y fuera del agua, combinando coaching técnico, análisis, conciencia corporal y conexión con el océano para ayudarlos a surfear con más confianza, fluidez y disfrute.
             </p>
           </div>
@@ -40,7 +40,7 @@ export function VisionMisionSection() {
           </div>
           <div className="md:w-1/2">
             <p className="ds-label text-[var(--color-label-muted)] tracking-[2.73px]">VISIÓN</p>
-            <p className="ds-display-title mt-4 text-black">
+            <p className="ds-h2-lg mt-4 text-pretty leading-snug text-black sm:leading-relaxed">
               Construir una comunidad de surfistas que vean el surf como una herramienta de crecimiento personal, creando experiencias, entrenamientos y viajes que transformen la manera en la que viven el mar y su progreso.
             </p>
           </div>

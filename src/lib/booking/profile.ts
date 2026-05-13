@@ -14,8 +14,6 @@ export function isProfileComplete(profile: Partial<UserProfileDoc> | null | unde
     profile.emergencyPhone &&
     (profile.medicalConditions ?? []).length > 0 &&
     (profile.goals ?? []).length > 0 &&
-    profile.declaresGoodHealth &&
-    profile.understandsRisk &&
     profile.acceptsTerms
   );
 }

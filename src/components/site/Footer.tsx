@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { footerColumns, navItems } from "@/lib/content";
+import { TERMS_PDF_HREF } from "@/lib/terms-pdf";
 
 export function Footer() {
   const quickLinks = navItems.filter((item) => item.href !== "/");
@@ -49,7 +50,7 @@ export function Footer() {
             </div>
             <p className="flex flex-wrap items-center justify-center gap-x-3 text-sm text-white/80 sm:justify-end">
               <Link
-                href="/tyc-spsurfcoach.pdf"
+                href={TERMS_PDF_HREF}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-white/80 underline underline-offset-2 transition-colors hover:text-white"

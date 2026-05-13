@@ -7,7 +7,7 @@ export function NosotrosIntroSection() {
       <div className="deco-ellipse -left-[123px] top-[16px] hidden h-[700px] w-[700px] bg-[radial-gradient(circle,rgba(24,212,213,0.15),transparent)] lg:block" />
 
       <RevealGroup className="relative">
-        <p className="ds-section-title w-full max-w-none text-pretty leading-[1.25] text-black sm:leading-[1.3]">
+        <p className="ds-h2-lg w-full max-w-none text-pretty leading-snug text-black sm:leading-relaxed">
           SP Surf Coach nace como una extensión de una filosofía que entiende el surf como práctica, lenguaje y forma de
           crecimiento. Detrás está Sebastián Portocarrero, surfista con más de 15 años de experiencia y trayectoria
           competitiva, quien ha construido un enfoque de progresión basado en metodologías como MAP Técnica Surf y lo ha

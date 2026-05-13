@@ -7,7 +7,7 @@ export const PROFILE_SECTIONS = [
   { id: "coaching", label: "Experiencia de coaching", title: "Experiencia de coaching" },
   { id: "equipamiento", label: "Equipamiento", title: "Equipamiento" },
   { id: "otros", label: "Otros", title: "Otros" },
-  { id: "ajustes", label: "Ajustes", title: "Ajustes" },
+  { id: "ajustes", label: "Consentimientos", title: "Consentimientos" },
 ] as const;
 
 export type ProfileSectionId = (typeof PROFILE_SECTIONS)[number]["id"];
