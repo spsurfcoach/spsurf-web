@@ -3,10 +3,11 @@
 import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 const NOSOTROS_TESTIMONIO_VIDEOS = [
-  { id: "tRZspEXWW1A", title: "Testimonio de Mario" },
   { id: "7si1AQQkf88", title: "Testimonio SP Surf Coach" },
   { id: "xrYMNWPCdug", title: "Testimonio SP Surf Coach 2" },
   { id: "JjRbYA9EnbM", title: "Testimonio SP Surf Coach 3" },
+  { id: "IbyGVd4zb_I", title: "Testimonio SP Surf Coach 4" },
+  { id: "B1ym6xHDook", title: "Testimonio SP Surf Coach 5" },
 ] as const;
 
 export function NosotrosTestimoniosVideosSection() {
@@ -37,7 +38,7 @@ export function NosotrosTestimoniosVideosSection() {
         </div>
 
         {/* Desktop: all videos centered in a row */}
-        <div className="hidden lg:flex lg:justify-center lg:gap-5 lg:px-16">
+        <div className="hidden lg:flex lg:flex-wrap lg:justify-center lg:gap-x-5 lg:gap-y-5 lg:px-16">
           {NOSOTROS_TESTIMONIO_VIDEOS.map(({ id, title }) => (
             <div
               key={id}
