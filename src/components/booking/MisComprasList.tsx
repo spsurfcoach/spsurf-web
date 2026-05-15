@@ -47,7 +47,7 @@ function packageTypeLabel(type?: string | null) {
   const map: Record<string, string> = {
     credits: "Paquete de clases",
     unlimited: "Plan ilimitado",
-    subscription: "Membresía",
+    subscription: "Membresía Premium",
   };
   return map[type] ?? type;
 }

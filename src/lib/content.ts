@@ -389,10 +389,10 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
   },
   {
     id: "suscripcion",
-    title: "Suscripción",
+    title: "Membresías Premium",
     paragraphs: [
-      "Esta membresía está pensada para surfistas que quieren entrenar de manera constante, progresar más rápido y formar parte activa de la comunidad de SP Surf Coach.",
-      "La suscripción está disponible en planes de 3, 6 y 12 meses, permitiéndote acceder a clases ilimitadas de surf durante todo el periodo de tu plan. Todas las sesiones se agendan directamente desde la web, de manera flexible y organizada.",
+      "Esta membresía premium está pensada para surfistas que quieren entrenar de manera constante, progresar más rápido y formar parte activa de la comunidad de SP Surf Coach.",
+      "Las membresías premium están disponibles en planes de 3, 6 y 12 meses, permitiéndote acceder a clases ilimitadas de surf durante todo el periodo de tu plan. Todas las sesiones se agendan directamente desde la web, de manera flexible y organizada.",
       "El programa incluye los mismos beneficios del coaching de surf: sesiones grabadas, videoanálisis, coaching dentro y fuera del agua y entrenamientos adaptados según las condiciones del mar y los objetivos del alumno.",
     ],
     benefitsBullets: {
@@ -404,11 +404,11 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
       ],
     },
     closingParagraphs: [
-      "Más que una suscripción, es una forma de vivir el surfing con mayor constancia, intención y evolución.",
+      "Más que una membresía premium, es una forma de vivir el surfing con mayor constancia, intención y evolución.",
     ],
     coach: {
       name: "Sebastián Portocarrero",
-      role: "Programa de suscripción",
+      role: "Programa Membresías Premium",
       imageSrc: SEBASTIAN_PORTRAIT,
     },
     comprarHref: "/clases?tab=comprar",

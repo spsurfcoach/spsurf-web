@@ -131,7 +131,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
           packageData.type === "credits"
             ? "Compra tus clases y reserva tus sesiones desde el calendario."
             : isSubscription
-              ? "Activa tu suscripción y reserva clases ilimitadas mientras esté activa."
+              ? "Activa tu membresía premium y reserva clases ilimitadas mientras esté activa."
               : "Activa tu membership y reserva tus clases dentro de la vigencia del plan.",
         category,
         fulfillmentType: "class_booking",
@@ -139,7 +139,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         currency: packageData.currency,
         isActive: packageData.isActive,
         image: DEFAULT_PRODUCT_IMAGES[category],
-        badge: isSubscription ? "Suscripción mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por creditos",
+        badge: isSubscription ? "Membresía Premium mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por creditos",
         features:
           packageData.type === "credits"
             ? [`${packageData.classCount ?? 0} clases`, "Reserva flexible", "Acceso al calendario"]

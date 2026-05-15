@@ -4,10 +4,10 @@ import { Reveal, RevealGroup } from "@/components/animations/Reveal";
 
 const NOSOTROS_TESTIMONIO_VIDEOS = [
   { id: "7si1AQQkf88", title: "Testimonio SP Surf Coach" },
-  { id: "xrYMNWPCdug", title: "Testimonio SP Surf Coach 2" },
+  { id: "B1ym6xHDook", title: "Testimonio SP Surf Coach 2" },
   { id: "JjRbYA9EnbM", title: "Testimonio SP Surf Coach 3" },
   { id: "IbyGVd4zb_I", title: "Testimonio SP Surf Coach 4" },
-  { id: "B1ym6xHDook", title: "Testimonio SP Surf Coach 5" },
+  { id: "xrYMNWPCdug", title: "Testimonio SP Surf Coach 5" },
 ] as const;
 
 export function NosotrosTestimoniosVideosSection() {

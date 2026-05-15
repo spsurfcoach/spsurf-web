@@ -93,7 +93,7 @@ export function HomeSubscriptionsSection() {
           />
           <div className="absolute inset-0 z-10 flex w-full max-w-[42rem] flex-col items-start justify-center px-8 py-16 text-left sm:px-12 sm:py-20 lg:px-16 lg:py-24">
             <h2 className="ds-display-title max-w-[52rem] text-balance text-white">
-              Conoce nuestras membresías de clases ilimitadas
+              Conoce nuestras Membresías Premium
             </h2>
             <p className="ds-body-s mt-5 max-w-md text-pretty text-white/85">
               3, 6 o 12 meses
