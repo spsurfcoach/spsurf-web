@@ -32,6 +32,16 @@ function hasValidCommerceFields(trip: { price: number; capacity: number }) {
   return Number.isFinite(trip.price) && trip.price > 0 && Number.isFinite(trip.capacity) && trip.capacity > 0;
 }
 
+function applyGroupSizeCap<T extends { groupSize?: string; capacity: number; availableSpots: number }>(trip: T): T {
+  const parsed = parseInt(trip.groupSize ?? "", 10);
+  if (!Number.isFinite(parsed) || parsed <= 0 || parsed >= trip.capacity) return trip;
+  return {
+    ...trip,
+    capacity: parsed,
+    availableSpots: Math.min(trip.availableSpots, parsed),
+  };
+}
+
 function preferInventoryCandidate(
   current: SurftripInventoryRecord | undefined,
   next: SurftripInventoryRecord,
@@ -115,7 +125,8 @@ export const getSurftrips = cache(async (): Promise<SurftripListItem[]> => {
 
   return trips
     .map((trip) => mergeSurftripOperationalState(trip, inventoryIndex))
-    .filter((trip) => trip.isActive !== false && hasValidCommerceFields(trip));
+    .filter((trip) => trip.isActive !== false && hasValidCommerceFields(trip))
+    .map(applyGroupSizeCap);
 });
 
 export const getSurftripBySlug = cache(async (slug: string): Promise<SurftripDetail | null> => {
@@ -129,7 +140,8 @@ export const getSurftripBySlug = cache(async (slug: string): Promise<SurftripDet
   if (!trip) return null;
 
   const merged = mergeSurftripOperationalState(trip, inventoryIndex);
-  return merged.isActive === false || !hasValidCommerceFields(merged) ? null : merged;
+  if (merged.isActive === false || !hasValidCommerceFields(merged)) return null;
+  return applyGroupSizeCap(merged);
 });
 
 export const getSurftripSlugs = cache(async (): Promise<string[]> => {
