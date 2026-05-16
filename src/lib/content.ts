@@ -282,6 +282,31 @@ Dependiendo de la sesión, trabajamos con coaches dentro y fuera del agua, adem�
   },
 ];
 
+export const surfcampsFaqs: FaqItem[] = [
+  {
+    question: "¿Cómo sé si el surfcamp es para mi nivel?",
+    answer: `Antes del viaje, todos los participantes completan un perfil inicial donde recopilamos información sobre experiencia, objetivos, equipamiento, nivel de surf y relación con el mar. Esto nos permite entender mejor tu surfing y asegurarnos de que el surfcamp sea adecuado para ti.
+
+Además, si cuentas con fotos o videos surfeando, puedes enviárnoslos para tener una referencia más clara de tu nivel. En caso no tengas material audiovisual, también podemos orientarnos a través de una conversación previa para ayudarte y resolver cualquier duda antes del viaje.`,
+  },
+  {
+    question: "¿Debo llevar mi propio equipo o me pueden prestar uno?",
+    answer: `Recomendamos que viajes con tu propia tabla y wetsuit para entrenar con el equipo que ya conoces y utilizas normalmente. Esto también nos permite analizar mejor tu surfing y entender cómo responde tu material dentro del agua.
+
+Si consideramos que tu equipamiento no es el más adecuado para tu nivel, objetivos o condiciones del viaje, los coaches podrán asesorarte y recomendarte alternativas.
+
+En caso no cuentes con equipo, puedes avisarnos previamente y organizaremos el material que utilizarás durante el surfcamp.`,
+  },
+  {
+    question: "¿Qué entrenamientos fuera del agua realizan?",
+    answer: `Complementamos las sesiones de surf con distintos entrenamientos fuera del agua enfocados en mejorar tu rendimiento, movilidad y comprensión del surfing.
+
+Dependiendo del viaje y la planificación del surfcamp, trabajamos movilidad, fuerza funcional, surfskate, respiración, yoga, prevención de lesiones y preparación mental aplicada al surf. Todo está pensado para ayudarte a moverte mejor, recuperarte correctamente y transferir ese trabajo directamente al agua.
+
+La idea es que el progreso no ocurra solamente durante las sesiones de surf, sino también en todo lo que haces fuera del mar.`,
+  },
+];
+
 export const testimonials: TestimonialItem[] = [
   {
     quote:

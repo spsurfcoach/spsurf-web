@@ -7,7 +7,7 @@ import { SurftripsForMeSection } from "@/components/sections/SurftripsForMeSecti
 import { SpFamilySection } from "@/components/sections/SpFamilySection";
 import { FaqsSection } from "@/components/sections/FaqsSection";
 import { TestimoniosSection } from "@/components/sections/TestimoniosSection";
-import { surftripsSpFamilyPhotos, surftripsTestimonials, testimonials, faqs } from "@/lib/content";
+import { surfcampsFaqs, surftripsSpFamilyPhotos, surftripsTestimonials, testimonials } from "@/lib/content";
 import { getSurftrips } from "@/lib/sanity";
 
 export default async function SurftripsPage() {
@@ -23,7 +23,7 @@ export default async function SurftripsPage() {
       <SurftripsForMeSection />
       <TestimoniosSection items={[...testimonials, ...surftripsTestimonials]} />
       <SpFamilySection photos={surftripsSpFamilyPhotos} />
-      <FaqsSection items={faqs} />
+      <FaqsSection items={surfcampsFaqs} />
     </>
   );
 }
