@@ -3,16 +3,6 @@ import Link from "next/link";
 import { Reveal } from "@/components/animations/Reveal";
 import { urlForImage, type SurftripListItem } from "@/lib/sanity";
 
-function PlayIcon() {
-  return (
-    <div className="flex size-[100px] items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-      <svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <circle cx="32" cy="32" r="32" fill="white" fillOpacity="0.9" />
-        <path d="M26 20L46 32L26 44V20Z" fill="#011a1f" />
-      </svg>
-    </div>
-  );
-}
 
 function UsersIcon({ dark }: { dark: boolean }) {
   return (
@@ -88,9 +78,6 @@ export function SurftripsDetailSection({ trips }: SurftripsDetailSectionProps) {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <PlayIcon />
-            </div>
           </div>
         );
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SurftripVideoPlayer } from "@/components/sections/SurftripDetailVideoSection";
 
 type SurftripDetailSummarySectionProps = {
   country: string;
@@ -12,6 +13,8 @@ type SurftripDetailSummarySectionProps = {
   description: string;
   ctaLabel: string;
   ctaHref: string;
+  videoUrl?: string;
+  videoPosterSrc?: string;
 };
 
 function UsersIcon() {
@@ -54,6 +57,8 @@ export function SurftripDetailSummarySection({
   description,
   ctaLabel,
   ctaHref,
+  videoUrl,
+  videoPosterSrc,
 }: SurftripDetailSummarySectionProps) {
   const introParagraphs = paragraphs(description);
 
@@ -96,12 +101,15 @@ export function SurftripDetailSummarySection({
           </Link>
         </div>
 
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {introParagraphs.map((paragraph, index) => (
             <p key={`${index}-${paragraph.slice(0, 20)}`} className="text-[16px] leading-9 text-black/88">
               {paragraph}
             </p>
           ))}
+          {videoUrl && videoPosterSrc && (
+            <SurftripVideoPlayer videoUrl={videoUrl} posterSrc={videoPosterSrc} />
+          )}
         </div>
       </div>
       </div>

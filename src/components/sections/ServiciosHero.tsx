@@ -18,7 +18,7 @@ export function ServiciosHero() {  return (
               <div className="ds-section-lead-gap mt-6 lg:mt-8">
                 <Link
                   href="/clases?tab=comprar"
-                  className="ds-btn ds-btn-lg inline-flex border border-white bg-white/10 text-white hover:bg-white/20"
+                  className="ds-btn ds-btn-lg inline-flex border border-black bg-black text-white hover:bg-black/85"
                 >
                   Comprar
                 </Link>

@@ -13,7 +13,6 @@ import { SurftripDetailFeatureBlock } from "@/components/sections/SurftripDetail
 import { SurftripDetailHero } from "@/components/sections/SurftripDetailHero";
 import { SurftripDetailPackageSection } from "@/components/sections/SurftripDetailPackageSection";
 import { SurftripDetailSummarySection } from "@/components/sections/SurftripDetailSummarySection";
-import { SurftripDetailVideoSection } from "@/components/sections/SurftripDetailVideoSection";
 import { toCurrencyUSD } from "@/lib/utils";
 
 type SurftripBlocksRendererProps = {
@@ -165,15 +164,9 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
         description={summaryDescription}
         ctaLabel={primaryCtaLabel}
         ctaHref={primaryCtaHref}
+        videoUrl={trip.videoSection?.videoUrl}
+        videoPosterSrc={videoPosterSrc}
       />
-
-      {trip.videoSection?.videoUrl ? (
-        <SurftripDetailVideoSection
-          title={trip.videoSection.title}
-          videoUrl={trip.videoSection.videoUrl}
-          posterSrc={videoPosterSrc}
-        />
-      ) : null}
 
       {(trip.itineraryTitle || trip.itineraryBody) ? (
         <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">

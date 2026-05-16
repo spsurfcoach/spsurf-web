@@ -3,11 +3,13 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 
-type SurftripDetailVideoSectionProps = {
+type VideoPlayerProps = {
   title?: string;
   videoUrl: string;
   posterSrc: string;
 };
+
+type SurftripDetailVideoSectionProps = VideoPlayerProps;
 
 function isDirectVideo(url: string) {
   return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url) || url.startsWith("/videos/");
@@ -32,55 +34,60 @@ function getEmbedUrl(url: string) {
   return url;
 }
 
-export function SurftripDetailVideoSection({
-  title,
-  videoUrl,
-  posterSrc,
-}: SurftripDetailVideoSectionProps) {
+export function SurftripVideoPlayer({ title, videoUrl, posterSrc }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const directVideo = useMemo(() => isDirectVideo(videoUrl), [videoUrl]);
   const embedUrl = useMemo(() => getEmbedUrl(videoUrl), [videoUrl]);
 
   return (
+    <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px]">
+      {isPlaying ? (
+        directVideo ? (
+          <video className="h-full w-full object-cover" controls autoPlay playsInline poster={posterSrc}>
+            <source src={videoUrl} />
+            Tu navegador no soporta video HTML5.
+          </video>
+        ) : (
+          <div className="aspect-video w-full">
+            <iframe
+              src={embedUrl}
+              title={title || "Surfcamp video"}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="h-full w-full"
+            />
+          </div>
+        )
+      ) : (
+        <button
+          type="button"
+          onClick={() => setIsPlaying(true)}
+          className="group relative block aspect-video w-full overflow-hidden"
+          aria-label="Reproducir video del surfcamp"
+        >
+          <Image src={posterSrc} alt={title || "Video del surfcamp"} fill className="object-cover" />
+          <div className="absolute inset-0 bg-black/20 transition-colors duration-200 group-hover:bg-black/26" />
+          <span className="absolute left-1/2 top-1/2 flex size-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 shadow-lg">
+            <svg className="ml-1 h-8 w-8 text-[var(--color-primary-900)]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function SurftripDetailVideoSection({
+  title,
+  videoUrl,
+  posterSrc,
+}: SurftripDetailVideoSectionProps) {
+  return (
     <section className="bg-[var(--color-background-default)] px-4 py-6 sm:px-6 md:px-10 lg:px-16">
       <div className="container-site">
-      {title ? <p className="ds-label mb-6 text-[var(--color-label-muted)]">{title}</p> : null}
-
-      <div className="relative overflow-hidden rounded-[24px] sm:rounded-[28px] lg:rounded-[40px]">
-        {isPlaying ? (
-          directVideo ? (
-            <video className="h-full w-full object-cover" controls autoPlay playsInline poster={posterSrc}>
-              <source src={videoUrl} />
-              Tu navegador no soporta video HTML5.
-            </video>
-          ) : (
-            <div className="aspect-video w-full">
-              <iframe
-                src={embedUrl}
-                title={title || "Surfcamp video"}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full"
-              />
-            </div>
-          )
-        ) : (
-          <button
-            type="button"
-            onClick={() => setIsPlaying(true)}
-            className="group relative block aspect-video w-full overflow-hidden"
-            aria-label="Reproducir video del surfcamp"
-          >
-            <Image src={posterSrc} alt={title || "Video del surfcamp"} fill className="object-cover" />
-            <div className="absolute inset-0 bg-black/20 transition-colors duration-200 group-hover:bg-black/26" />
-            <span className="absolute left-1/2 top-1/2 flex size-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 shadow-lg">
-              <svg className="ml-1 h-8 w-8 text-[var(--color-primary-900)]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </span>
-          </button>
-        )}
-      </div>
+        {title ? <p className="ds-label mb-6 text-[var(--color-label-muted)]">{title}</p> : null}
+        <SurftripVideoPlayer title={title} videoUrl={videoUrl} posterSrc={posterSrc} />
       </div>
     </section>
   );
