@@ -50,7 +50,7 @@ export function FaqsSection({ items = faqs }: FaqsSectionProps) {
                   </button>
 
                   {isOpen && (
-                    <p className="ds-body-s pb-5 text-zinc-600">{faq.answer}</p>
+                    <p className="ds-body-s whitespace-pre-line pb-5 text-zinc-600">{faq.answer}</p>
                   )}
 
                   {!isLast && <div className="h-px w-full bg-zinc-200" />}

@@ -263,16 +263,22 @@ export type TestimonialItem = {
 
 export const faqs: FaqItem[] = [
   {
-    question: "¿Como se en que nivel estoy?",
-    answer: "Antes de tu primera clase, nuestros coaches te hacen una evaluación inicial en el agua para conocer tu nivel real. Así diseñamos el plan que mejor se adapta a ti.",
+    question: "¿Cómo sé en qué nivel estoy?",
+    answer: `Antes de comenzar, todos los alumnos completan un perfil inicial donde recopilamos información sobre experiencia, objetivos, equipamiento, nivel de surf y relación con el mar. Esto nos permite tener una primera referencia para recomendarte el programa más adecuado para ti.
+
+Además, si cuentas con fotos o videos surfeando, puedes enviárnoslos para conocer mejor tu surfing. En caso no tengas material audiovisual, no hay problema. También podemos orientarnos a través de una conversación por audio o mensaje para entender tu nivel y objetivos antes de tu primera sesión.`,
   },
   {
     question: "¿Debo llevar mi propia tabla o me pueden prestar una?",
-    answer: "Puedes traer tu propia tabla o usar una de las nuestras. Contamos con material para todos los niveles. Solo avísanos con anticipación para tenerla lista.",
+    answer: `Lo ideal es que entrenes con tu propio equipo, ya que es el material que utilizas normalmente y el que mejor nos permite analizar tu surfing. Si consideramos que tu tabla o equipamiento no están siendo los más adecuados para tu nivel u objetivos, los coaches podrán asesorarte y recomendarte alternativas.
+
+En caso necesites equipo, también podemos ayudarte con tablas y accesorios para las sesiones.`,
   },
   {
     question: "¿Cuántas personas hay por clase grupal?",
-    answer: "Mantenemos un ratio reducido de máximo 4 alumnos por coach para garantizar atención real y progreso efectivo en cada sesión.",
+    answer: `La cantidad de alumnos puede variar según la sesión, el nivel del grupo y las condiciones del mar. Nuestro objetivo es mantener una atención real y personalizada durante el entrenamiento.
+
+Dependiendo de la sesión, trabajamos con coaches dentro y fuera del agua, además de apoyo audiovisual para grabar las olas y realizar el videoanálisis de cada alumno sin perder detalle del entrenamiento.`,
   },
 ];
 
