@@ -73,7 +73,7 @@ export function SurftripBlocksRenderer({ trip }: SurftripBlocksRendererProps) {
   const formattedDates = trip.startDate && trip.endDate 
     ? `${new Date(trip.startDate).toLocaleDateString("es-PE")} - ${new Date(trip.endDate).toLocaleDateString("es-PE")}`
     : "por definir";
-  const whatsappMessage = `Hola! Estoy interesado en el Surfcamp ${trip.title} con fechas ${formattedDates}`;
+  const whatsappMessage = `¡Hola! Estoy interesado en el Surfcamp ${trip.title} con fechas ${formattedDates}`;
   const whatsappUrl = `https://wa.me/51998153542?text=${encodeURIComponent(whatsappMessage)}`;
   
   // const defaultStoreHref = trip.storeHref || "#reserva";

@@ -27,7 +27,7 @@ export function ClassBalanceCard({ purchases, title = "Tu saldo", className = ""
       </div>
       {activePurchase?.packageType === "unlimited" && activePurchase.expiresAt ? (
         <p className="mt-3 text-xs text-white/40">
-          Valido hasta {new Date(activePurchase.expiresAt).toLocaleDateString("es-PE")}
+          Válido hasta {new Date(activePurchase.expiresAt).toLocaleDateString("es-PE")}
         </p>
       ) : null}
       {!activePurchase ? <p className="mt-3 text-sm text-white/70">Compra un paquete o membership para reservar.</p> : null}

@@ -26,7 +26,7 @@ export function NosotrosCertSection() {
               movimientos que se emplean en el surf y lo convierte en un sistema claro, entrenable y repetible.
             </p>
             <p className="ds-body-s mt-2 leading-[1.75] text-black/80">
-              Surfskate, sesiones en el mar y video análisis permiten identificar errores con precisión y corregirlos de
+              Surfskate, sesiones en el mar y videoanálisis permiten identificar errores con precisión y corregirlos de
               forma consciente, acelerando el proceso de aprendizaje.
             </p>
           </div>

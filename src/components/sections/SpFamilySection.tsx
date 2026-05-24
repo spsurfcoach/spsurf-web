@@ -22,12 +22,10 @@ const DEFAULT_PHOTOS: SpFamilyPhoto[] = [
 ];
 
 export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProps) {
-  const normalizedPhotos = photos.map((photo, index) => ({
+  const normalizedPhotos = photos.map((photo) => ({
     ...photo,
-    ratio: photo.ratio ?? (index % 3 === 2 ? "aspect-[5/4]" : "aspect-[4/3]"),
+    ratio: photo.ratio ?? "aspect-[4/3] lg:aspect-[574/372]",
   }));
-  const leftPhotos = normalizedPhotos.slice(0, 3);
-  const rightPhotos = normalizedPhotos.slice(3, 6);
 
   return (
     <section id="sp-family" className="scroll-mt-28 bg-[#03313b] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
@@ -39,30 +37,21 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
         <h2 className="ds-display-title mt-3 text-white">La SP Family</h2>
       </RevealGroup>
 
-      <Reveal className="mt-10 lg:hidden">
+      <Reveal className="mt-10">
         <CarouselShell
           ariaLabel="Carrusel SP Family"
-          slideClassName="basis-[82%] sm:basis-[56%]"
-          slides={[...leftPhotos, ...rightPhotos].map((photo) => (
-            <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
+          slideClassName="basis-[82%] sm:basis-[52%] lg:basis-[38%]"
+          slides={normalizedPhotos.map((photo) => (
+            <ResponsiveMediaFrame
+              key={photo.alt}
+              src={photo.src}
+              alt={photo.alt}
+              ratioClassName={photo.ratio}
+              imageClassName="object-top"
+            />
           ))}
         />
       </Reveal>
-
-      {/* Photo mosaic */}
-      <RevealGroup className="mt-10 hidden gap-4 lg:grid lg:grid-cols-2" stagger={0.14}>
-        <div className="flex flex-col gap-4">
-          {leftPhotos.map((photo) => (
-            <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {rightPhotos.map((photo) => (
-            <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
-          ))}
-        </div>
-      </RevealGroup>
     </section>
   );
 }

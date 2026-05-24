@@ -17,6 +17,10 @@ type Props = {
   onBook: (slotId: string) => Promise<void>;
 };
 
+type ViewMode = "week" | "month";
+
+const WEEKDAY_LABELS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"] as const;
+
 function toDateKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
@@ -36,6 +40,31 @@ function shiftMonthKey(monthKey: string, delta: number) {
   return toMonthKey(date);
 }
 
+function parseDateKey(dateKey: string) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function startOfWeek(date: Date) {
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  const weekday = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - weekday);
+  return start;
+}
+
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function isDateInWeek(dateKey: string, weekStart: Date) {
+  const date = parseDateKey(dateKey);
+  const weekEnd = addDays(weekStart, 6);
+  return date >= weekStart && date <= weekEnd;
+}
+
 function monthTitle(monthKey: string) {
   return toMonthDate(monthKey).toLocaleDateString("es-PE", {
     month: "long",
@@ -43,10 +72,40 @@ function monthTitle(monthKey: string) {
   });
 }
 
+function weekTitle(weekStart: Date) {
+  const weekEnd = addDays(weekStart, 6);
+  const sameMonth =
+    weekStart.getMonth() === weekEnd.getMonth() && weekStart.getFullYear() === weekEnd.getFullYear();
+
+  if (sameMonth) {
+    const monthYear = weekEnd.toLocaleDateString("es-PE", { month: "long", year: "numeric" });
+    return `${weekStart.getDate()} – ${weekEnd.getDate()} ${monthYear}`;
+  }
+
+  const startText = weekStart.toLocaleDateString("es-PE", { day: "numeric", month: "short" });
+  const endText = weekEnd.toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" });
+  return `${startText} – ${endText}`;
+}
+
+function slotsHeading(viewMode: ViewMode, selectedDayKey: string | null) {
+  if (selectedDayKey) {
+    return parseDateKey(selectedDayKey).toLocaleDateString("es-PE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
+  }
+
+  return viewMode === "week" ? "Clases de la semana" : "Clases del mes";
+}
+
 export function ClassSlotList({ items, onBook }: Props) {
+  const todayKey = toDateKey(new Date());
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("week");
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [selectedMonth, setSelectedMonth] = useState(() => toMonthKey(new Date()));
-  const [selectedDayKey, setSelectedDayKey] = useState<string | null>(() => toDateKey(new Date()));
+  const [selectedDayKey, setSelectedDayKey] = useState<string | null>(todayKey);
   const [locationFilter, setLocationFilter] = useState<"all" | "Lima" | "Sur Chico">("all");
 
   const slotsByDateKey = useMemo(() => {
@@ -60,9 +119,21 @@ export function ClassSlotList({ items, onBook }: Props) {
     return grouped;
   }, [items]);
 
+  const weekDays = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, index) => {
+        const date = addDays(weekStart, index);
+        return {
+          dateKey: toDateKey(date),
+          dayNumber: date.getDate(),
+        };
+      }),
+    [weekStart],
+  );
+
   const monthDays = useMemo(() => {
     const firstDay = toMonthDate(selectedMonth);
-    const firstWeekDay = (firstDay.getDay() + 6) % 7; // Monday = 0
+    const firstWeekDay = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0).getDate();
     const cells: Array<{ dateKey: string | null; dayNumber: number | null }> = [];
 
@@ -81,70 +152,179 @@ export function ClassSlotList({ items, onBook }: Props) {
     return cells;
   }, [selectedMonth]);
 
+  const calendarCells = viewMode === "week" ? weekDays : monthDays;
+  const periodTitle = viewMode === "week" ? weekTitle(weekStart) : monthTitle(selectedMonth);
+  const isCurrentPeriod =
+    viewMode === "week"
+      ? isDateInWeek(todayKey, weekStart)
+      : selectedMonth === toMonthKey(new Date());
+
   const filteredSlots = useMemo(() => {
-    const baseSlots = selectedDayKey
-      ? [...(slotsByDateKey.get(selectedDayKey) ?? [])]
-      : items
-      .filter((slot) => toMonthKey(new Date(slot.startsAt)) === selectedMonth)
-      .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+    let baseSlots: SlotItem[];
+
+    if (selectedDayKey) {
+      baseSlots = [...(slotsByDateKey.get(selectedDayKey) ?? [])];
+    } else if (viewMode === "week") {
+      baseSlots = items
+        .filter((slot) => isDateInWeek(toDateKey(new Date(slot.startsAt)), weekStart))
+        .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+    } else {
+      baseSlots = items
+        .filter((slot) => toMonthKey(new Date(slot.startsAt)) === selectedMonth)
+        .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+    }
 
     const locationFiltered =
       locationFilter === "all" ? baseSlots : baseSlots.filter((slot) => slot.location === locationFilter);
 
     return locationFiltered.sort((a, b) => a.startsAt.localeCompare(b.startsAt));
-  }, [items, locationFilter, selectedDayKey, selectedMonth, slotsByDateKey]);
+  }, [items, locationFilter, selectedDayKey, selectedMonth, slotsByDateKey, viewMode, weekStart]);
+
+  function goToToday() {
+    const today = new Date();
+    setWeekStart(startOfWeek(today));
+    setSelectedMonth(toMonthKey(today));
+    setSelectedDayKey(toDateKey(today));
+  }
+
+  function navigatePeriod(delta: number) {
+    if (viewMode === "week") {
+      setWeekStart((current) => addDays(current, delta * 7));
+      setSelectedDayKey((current) => {
+        if (!current) return current;
+        return toDateKey(addDays(parseDateKey(current), delta * 7));
+      });
+      return;
+    }
+
+    setSelectedMonth((current) => shiftMonthKey(current, delta));
+  }
+
+  function switchViewMode(mode: ViewMode) {
+    if (mode === viewMode) return;
+
+    if (mode === "week") {
+      const anchor = selectedDayKey ? parseDateKey(selectedDayKey) : new Date();
+      setWeekStart(startOfWeek(anchor));
+      if (!selectedDayKey) {
+        setSelectedDayKey(todayKey);
+      }
+    } else {
+      const anchor = selectedDayKey ? parseDateKey(selectedDayKey) : weekStart;
+      setSelectedMonth(toMonthKey(anchor));
+    }
+
+    setViewMode(mode);
+  }
+
+  function handleDaySelect(dateKey: string) {
+    setSelectedDayKey((current) => (current === dateKey ? null : dateKey));
+  }
 
   return (
     <div className="rounded-2xl border border-black/10 bg-white p-6 sm:p-8 shadow-sm">
       <div className="mb-8 space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h2 className="text-xl font-bold">Calendario</h2>
-          <div className="flex items-center gap-3">
-            <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, -1))}>
-              &lt;
-            </Button>
-            <p className="min-w-[140px] text-center text-sm font-semibold capitalize">{monthTitle(selectedMonth)}</p>
-            <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-full border-black/20" onClick={() => setSelectedMonth((current) => shiftMonthKey(current, 1))}>
-              &gt;
-            </Button>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+            <div className="flex rounded-xl bg-black/[0.04] p-1">
+              {([
+                { mode: "week" as const, label: "Semana" },
+                { mode: "month" as const, label: "Mes" },
+              ]).map((option) => (
+                <button
+                  key={option.mode}
+                  type="button"
+                  onClick={() => switchViewMode(option.mode)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                    viewMode === option.mode
+                      ? "bg-white text-black shadow-sm"
+                      : "text-black/50 hover:text-black"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-10 w-10 shrink-0 rounded-full border-black/20"
+                onClick={() => navigatePeriod(-1)}
+                aria-label={viewMode === "week" ? "Semana anterior" : "Mes anterior"}
+              >
+                &lt;
+              </Button>
+              <p className="min-w-0 flex-1 text-center text-sm font-semibold capitalize sm:min-w-[180px] sm:flex-none lg:min-w-[220px]">
+                {periodTitle}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-10 w-10 shrink-0 rounded-full border-black/20"
+                onClick={() => navigatePeriod(1)}
+                aria-label={viewMode === "week" ? "Semana siguiente" : "Mes siguiente"}
+              >
+                &gt;
+              </Button>
+              {!isCurrentPeriod ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 shrink-0 rounded-full border-black/20 px-4 text-sm font-medium"
+                  onClick={goToToday}
+                >
+                  Hoy
+                </Button>
+              ) : null}
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold uppercase tracking-wider text-black/40">
-          <p>Lun</p>
-          <p>Mar</p>
-          <p>Mié</p>
-          <p>Jue</p>
-          <p>Vie</p>
-          <p>Sáb</p>
-          <p>Dom</p>
+          {WEEKDAY_LABELS.map((label) => (
+            <p key={label}>{label}</p>
+          ))}
         </div>
 
         <div className="grid grid-cols-7 gap-2">
-          {monthDays.map((cell, index) => {
+          {calendarCells.map((cell, index) => {
             if (!cell.dateKey || !cell.dayNumber) {
               return <div key={`empty-${index}`} className="h-14 sm:h-16" />;
             }
 
             const dayCount = slotsByDateKey.get(cell.dateKey)?.length ?? 0;
             const isSelected = selectedDayKey === cell.dateKey;
-            const isToday = cell.dateKey === toDateKey(new Date());
+            const isToday = cell.dateKey === todayKey;
+            const isOutsideMonth =
+              viewMode === "month" && toMonthKey(parseDateKey(cell.dateKey)) !== selectedMonth;
 
             return (
               <button
                 key={cell.dateKey}
                 type="button"
-                onClick={() => setSelectedDayKey((current) => (current === cell.dateKey ? null : cell.dateKey))}
+                onClick={() => handleDaySelect(cell.dateKey!)}
                 className={`group relative flex h-14 sm:h-16 flex-col items-center justify-center rounded-xl border transition-all ${
                   isSelected
                     ? "border-[var(--color-primary-900)] bg-[var(--color-primary-900)] text-white"
                     : "border-transparent bg-black/[0.03] hover:bg-black/[0.06]"
-                } ${isToday && !isSelected ? "ring-1 ring-inset ring-[var(--color-primary-500)]" : ""}`}
+                } ${isToday && !isSelected ? "ring-1 ring-inset ring-[var(--color-primary-500)]" : ""} ${
+                  isOutsideMonth ? "opacity-40" : ""
+                }`}
               >
                 <span className="text-sm font-bold">{cell.dayNumber}</span>
-                {dayCount > 0 && (
-                  <span className={`mt-1 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-[var(--color-primary-500)] group-hover:opacity-80"}`} />
-                )}
+                {dayCount > 0 ? (
+                  <span
+                    className={`mt-1 h-1.5 w-1.5 rounded-full ${
+                      isSelected ? "bg-white" : "bg-[var(--color-primary-500)] group-hover:opacity-80"
+                    }`}
+                  />
+                ) : null}
               </button>
             );
           })}
@@ -153,11 +333,7 @@ export function ClassSlotList({ items, onBook }: Props) {
 
       <div className="mt-8 border-t border-black/10 pt-8">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-xl font-bold">
-            {selectedDayKey
-              ? `${new Date(`${selectedDayKey}T00:00:00`).toLocaleDateString("es-PE", { day: "numeric", month: "long" })}`
-              : "Clases del mes"}
-          </h2>
+          <h2 className="text-xl font-bold capitalize">{slotsHeading(viewMode, selectedDayKey)}</h2>
 
           <div className="flex flex-wrap gap-2">
             {([
@@ -180,11 +356,17 @@ export function ClassSlotList({ items, onBook }: Props) {
             ))}
           </div>
         </div>
-        
+
         <div className="space-y-4">
           {filteredSlots.length === 0 ? (
             <div className="rounded-xl border border-dashed border-black/20 p-8 text-center">
-              <p className="text-sm text-black/50">No hay clases programadas para esta fecha</p>
+              <p className="text-sm text-black/50">
+                {selectedDayKey
+                  ? "No hay clases programadas para esta fecha"
+                  : viewMode === "week"
+                    ? "No hay clases programadas para esta semana"
+                    : "No hay clases programadas para este mes"}
+              </p>
             </div>
           ) : (
             filteredSlots.map((slot) => {
@@ -192,25 +374,34 @@ export function ClassSlotList({ items, onBook }: Props) {
               const isFull = available <= 0;
               const dateObj = new Date(slot.startsAt);
               const timeString = dateObj.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
-              
+              const showDate = !selectedDayKey;
+
               return (
-                <div key={slot.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 rounded-xl bg-black/[0.02] p-4 sm:p-5 transition hover:bg-black/[0.04]">
-                  <div className="flex items-center gap-4 sm:gap-5 min-w-0">
-                    <div className="flex flex-col items-start justify-center border-r border-black/10 pr-4 sm:pr-5 shrink-0">
-                      <span className="text-lg sm:text-xl font-bold whitespace-nowrap">{timeString}</span>
+                <div
+                  key={slot.id}
+                  className="flex flex-col justify-between gap-4 rounded-xl bg-black/[0.02] p-4 transition hover:bg-black/[0.04] sm:flex-row sm:items-center sm:gap-6 sm:p-5"
+                >
+                  <div className="flex min-w-0 items-center gap-4 sm:gap-5">
+                    <div className="flex shrink-0 flex-col items-start justify-center border-r border-black/10 pr-4 sm:pr-5">
+                      {showDate ? (
+                        <span className="text-xs font-semibold uppercase tracking-wide text-black/45">
+                          {dateObj.toLocaleDateString("es-PE", { weekday: "short", day: "numeric", month: "short" })}
+                        </span>
+                      ) : null}
+                      <span className="whitespace-nowrap text-lg font-bold sm:text-xl">{timeString}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-bold text-base sm:text-lg">Clase de Surf</p>
-                        {slot.location && (
-                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-900)]/10 text-[var(--color-primary-900)] shrink-0">
+                        <p className="text-base font-bold sm:text-lg">Clase de Surf</p>
+                        {slot.location ? (
+                          <span className="shrink-0 rounded-full bg-[var(--color-primary-900)]/10 px-2 py-0.5 text-xs font-semibold text-[var(--color-primary-900)]">
                             {slot.location}
                           </span>
-                        )}
+                        ) : null}
                       </div>
-                      <p className="text-sm text-black/60 mt-0.5">
+                      <p className="mt-0.5 text-sm text-black/60">
                         {isFull ? (
-                          <span className="text-red-500 font-medium">Cupos agotados</span>
+                          <span className="font-medium text-red-500">Cupos agotados</span>
                         ) : (
                           <span>{available} cupos disponibles</span>
                         )}
@@ -219,7 +410,11 @@ export function ClassSlotList({ items, onBook }: Props) {
                   </div>
                   <Button
                     variant={isFull ? "outline" : "primary"}
-                    className={`w-full sm:w-auto shrink-0 ${isFull ? "opacity-50" : "bg-[var(--color-primary-900)] hover:bg-[var(--color-primary-700)] text-white font-bold px-6 h-11"}`}
+                    className={`h-11 w-full shrink-0 px-6 font-bold sm:w-auto ${
+                      isFull
+                        ? "opacity-50"
+                        : "bg-[var(--color-primary-900)] text-white hover:bg-[var(--color-primary-700)]"
+                    }`}
                     disabled={isFull || loadingId === slot.id}
                     onClick={async () => {
                       setLoadingId(slot.id);

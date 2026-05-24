@@ -27,7 +27,7 @@ type Props = {
 };
 
 export const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = [
-  { value: "cardiaco", label: "Problemas cardiacos" },
+  { value: "cardiaco", label: "Problemas cardíacos" },
   { value: "asma", label: "Asma / problemas respiratorios" },
   { value: "lesiones", label: "Lesiones recientes" },
   { value: "epilepsia", label: "Epilepsia" },
@@ -37,16 +37,16 @@ export const MEDICAL_CONDITIONS: { value: MedicalCondition; label: string }[] = 
 
 export const SURF_GOALS: { value: SurfGoal; label: string }[] = [
   { value: "pararse", label: "Pararte en la tabla" },
-  { value: "remada", label: "Tecnica de remada" },
+  { value: "remada", label: "Técnica de remada" },
   { value: "takeoff", label: "Take off (puesta de pie)" },
   { value: "lectura_olas", label: "Lectura de olas" },
   { value: "posicionamiento", label: "Posicionamiento en el pico" },
-  { value: "velocidad", label: "Generacion de velocidad" },
-  { value: "maniobras_basicas", label: "Maniobras basicas" },
+  { value: "velocidad", label: "Generación de velocidad" },
+  { value: "maniobras_basicas", label: "Maniobras básicas" },
   { value: "maniobras_avanzadas", label: "Maniobras avanzadas" },
   { value: "flow", label: "Flow y estilo" },
   { value: "confianza", label: "Confianza en el mar" },
-  { value: "condicion_fisica", label: "Condicion fisica para surf" },
+  { value: "condicion_fisica", label: "Condición física para surf" },
   { value: "competencia", label: "Competencia / alto rendimiento" },
   { value: "otro", label: "Otro" },
 ];
@@ -100,7 +100,7 @@ function ProfileSectionBlock({
     <section
       id={id}
       data-profile-section={id}
-      className="scroll-mt-28 rounded-2xl border border-black/10 bg-white px-6 py-6 shadow-sm"
+      className="scroll-mt-28 min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-white px-4 py-5 shadow-sm sm:px-6 sm:py-6"
     >
       <SectionHeader title={title} />
       {children}
@@ -110,8 +110,8 @@ function ProfileSectionBlock({
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-medium text-black/70">
+    <div className="min-w-0 space-y-1.5">
+      <label className="block text-sm font-medium leading-snug text-black/70">
         {label}
         {required ? <span className="ml-0.5 text-red-500">*</span> : null}
       </label>
@@ -131,19 +131,24 @@ function RadioGroup<T extends string>({
   onChange: (value: T) => void;
   options: { value: T; label: string }[];
 }) {
+  const layoutClass =
+    options.length <= 2
+      ? "flex flex-wrap gap-x-6 gap-y-2"
+      : "grid grid-cols-1 gap-2.5 sm:grid-cols-2";
+
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-2">
+    <div className={layoutClass}>
       {options.map((option) => (
-        <label key={option.value} className="flex cursor-pointer items-center gap-2 text-sm">
+        <label key={option.value} className="flex min-w-0 cursor-pointer items-start gap-2.5 text-sm leading-snug">
           <input
             type="radio"
             name={name}
             value={option.value}
             checked={String(value) === option.value}
             onChange={() => onChange(option.value)}
-            className="accent-[var(--color-primary-900)]"
+            className="mt-0.5 shrink-0 accent-[var(--color-primary-900)]"
           />
-          {option.label}
+          <span className="min-w-0 break-words">{option.label}</span>
         </label>
       ))}
     </div>
@@ -195,7 +200,7 @@ export function ProfileForm({
   onSave,
   contextMessage,
   title = "Mi perfil",
-  description = "Actualiza tu informacion de alumno.",
+  description = "Actualiza tu información de alumno.",
   submitLabel = "Guardar perfil",
   onCancel,
   cancelLabel = "Cancelar",
@@ -235,11 +240,11 @@ export function ProfileForm({
       ["fullName", "Nombre completo"],
       ["dni", "DNI / Pasaporte"],
       ["birthDate", "Fecha de nacimiento"],
-      ["phone", "Telefono"],
-      ["email", "Correo electronico"],
+      ["phone", "Teléfono"],
+      ["email", "Correo electrónico"],
       ["emergencyName", "Nombre del contacto de emergencia"],
-      ["emergencyRelation", "Relacion del contacto de emergencia"],
-      ["emergencyPhone", "Telefono del contacto de emergencia"],
+      ["emergencyRelation", "Relación del contacto de emergencia"],
+      ["emergencyPhone", "Teléfono del contacto de emergencia"],
     ];
 
     for (const [field, label] of required) {
@@ -250,7 +255,7 @@ export function ProfileForm({
     }
 
     if ((form.medicalConditions ?? []).length === 0) {
-      setError('Selecciona al menos una condicion medica o marca "Ninguna".');
+      setError('Selecciona al menos una condición médica o marca "Ninguna".');
       return;
     }
 
@@ -277,17 +282,17 @@ export function ProfileForm({
   const age = calcAge(form.birthDate ?? "");
   const hasMedicalIssue = (form.medicalConditions ?? []).some((item) => item !== "ninguna");
   const inputClassName =
-    "h-11 rounded-xl border-transparent bg-black/[0.03] transition-colors focus-visible:bg-white focus-visible:ring-black/20";
+    "h-11 w-full min-w-0 max-w-full rounded-xl border-transparent bg-black/[0.03] transition-colors focus-visible:bg-white focus-visible:ring-black/20";
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-2xl border border-black/10 bg-white px-6 py-5 shadow-sm">
+    <div className="min-w-0 space-y-6">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-white px-4 py-5 shadow-sm sm:px-6">
         <h2 className="text-xl font-bold">{title}</h2>
         <p className="mt-1 text-sm text-black/50">{description}</p>
       </div>
 
       {contextMessage ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 shadow-sm">
+        <div className="min-w-0 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800 shadow-sm">
           {contextMessage}
         </div>
       ) : null}
@@ -323,7 +328,7 @@ export function ProfileForm({
               {age !== null ? <p className="pl-1 text-xs text-black/50">Edad: {age} años</p> : null}
             </div>
           </Field>
-          <Field label="Telefono" required>
+          <Field label="Teléfono" required>
             <Input
               className={inputClassName}
               type="tel"
@@ -332,7 +337,7 @@ export function ProfileForm({
               placeholder="+51 999 999 999"
             />
           </Field>
-          <Field label="Correo electronico" required>
+          <Field label="Correo electrónico" required>
             <Input
               className={inputClassName}
               type="email"
@@ -342,7 +347,7 @@ export function ProfileForm({
             />
           </Field>
           <div className="sm:col-span-2">
-            <Field label="Direccion">
+            <Field label="Dirección">
               <Input
                 className={inputClassName}
                 value={form.address ?? ""}
@@ -366,15 +371,15 @@ export function ProfileForm({
               />
             </Field>
           </div>
-          <Field label="Relacion" required>
+          <Field label="Relación" required>
             <Input
               className={inputClassName}
               value={form.emergencyRelation ?? ""}
               onChange={(event) => set("emergencyRelation", event.target.value)}
-              placeholder="Ej: Mama, pareja..."
+              placeholder="Ej: Mamá, pareja..."
             />
           </Field>
-          <Field label="Telefono" required>
+          <Field label="Teléfono" required>
             <Input
               className={inputClassName}
               type="tel"
@@ -388,44 +393,44 @@ export function ProfileForm({
 
       <ProfileSectionBlock id={MEDICAL_SECTION.id} title={MEDICAL_SECTION.title}>
         <div className="space-y-5">
-          <Field label="Condiciones medicas" required>
+          <Field label="Condiciones médicas" required>
             <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {MEDICAL_CONDITIONS.map((condition) => (
-                <label key={condition.value} className="flex cursor-pointer items-center gap-2 text-sm">
+                <label key={condition.value} className="flex min-w-0 cursor-pointer items-start gap-2.5 text-sm leading-snug">
                   <input
                     type="checkbox"
                     checked={(form.medicalConditions ?? []).includes(condition.value)}
                     onChange={() => toggleMedical(condition.value)}
-                    className="h-4 w-4 accent-[var(--color-primary-900)]"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
                   />
-                  {condition.label}
+                  <span className="min-w-0 break-words">{condition.label}</span>
                 </label>
               ))}
             </div>
           </Field>
           {hasMedicalIssue ? (
-            <Field label="Detalle de condicion">
+            <Field label="Detalle de condición">
               <Input
                 className={inputClassName}
                 value={form.medicalConditionDetail ?? ""}
                 onChange={(event) => set("medicalConditionDetail", event.target.value)}
-                placeholder="Describe tu condicion..."
+                placeholder="Describe tu condición..."
               />
             </Field>
           ) : null}
-          <Field label="Tomas medicamento actualmente?" required>
+          <Field label="¿Tomas medicamento actualmente?" required>
             <RadioGroup
               name="takesMedication"
               value={form.takesMedication ? "si" : "no"}
               onChange={(value) => set("takesMedication", value === "si")}
               options={[
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
                 { value: "no", label: "No" },
               ]}
             />
           </Field>
           {form.takesMedication ? (
-            <Field label="Cual(es)?">
+            <Field label="¿Cuál(es)?">
               <Input
                 className={inputClassName}
                 value={form.medicationDetail ?? ""}
@@ -434,13 +439,13 @@ export function ProfileForm({
               />
             </Field>
           ) : null}
-          <Field label="Cuentas con seguro medico o de accidentes?" required>
+          <Field label="¿Cuentas con seguro médico o de accidentes?" required>
             <RadioGroup
               name="hasMedicalInsurance"
               value={form.hasMedicalInsurance ? "si" : "no"}
               onChange={(value) => set("hasMedicalInsurance", value === "si")}
               options={[
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
                 { value: "no", label: "No" },
               ]}
             />
@@ -452,25 +457,25 @@ export function ProfileForm({
                   className={inputClassName}
                   value={form.insuranceName ?? ""}
                   onChange={(event) => set("insuranceName", event.target.value)}
-                  placeholder="Ej: Rimac, Pacifico..."
+                  placeholder="Ej: Rímac, Pacífico..."
                 />
               </Field>
-              <Field label="Numero de poliza">
+              <Field label="Número de póliza">
                 <Input
                   className={inputClassName}
                   value={form.insurancePolicyNumber ?? ""}
                   onChange={(event) => set("insurancePolicyNumber", event.target.value)}
-                  placeholder="Nro. de poliza"
+                  placeholder="Nro. de póliza"
                 />
               </Field>
             </div>
           ) : null}
-          <Field label="Clinica o centro medico de preferencia">
+          <Field label="Clínica o centro médico de preferencia">
             <Input
               className={inputClassName}
               value={form.preferredClinic ?? ""}
               onChange={(event) => set("preferredClinic", event.target.value)}
-              placeholder="Ej: Clinica San Felipe..."
+              placeholder="Ej: Clínica San Felipe..."
             />
           </Field>
         </div>
@@ -478,7 +483,7 @@ export function ProfileForm({
 
       <ProfileSectionBlock id={LEVEL_SECTION.id} title={LEVEL_SECTION.title}>
         <div className="space-y-5">
-          <Field label="Cual es tu nivel de surf?" required>
+          <Field label="¿Cuál es tu nivel de surf?" required>
             <RadioGroup<SurfLevel>
               name="surfLevel"
               value={form.surfLevel}
@@ -490,18 +495,18 @@ export function ProfileForm({
               ]}
             />
           </Field>
-          <Field label="Sabes nadar?" required>
+          <Field label="¿Sabes nadar?" required>
             <RadioGroup
               name="canSwim"
               value={form.canSwim ? "si" : "no"}
               onChange={(value) => set("canSwim", value === "si")}
               options={[
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
                 { value: "no", label: "No" },
               ]}
             />
           </Field>
-          <Field label="Cuanto tiempo llevas surfeando?">
+          <Field label="¿Cuánto tiempo llevas surfeando?">
             <RadioGroup<SurfTime>
               name="surfingTime"
               value={form.surfingTime}
@@ -521,23 +526,23 @@ export function ProfileForm({
 
       <ProfileSectionBlock id={GOALS_SECTION.id} title={GOALS_SECTION.title}>
         <div className="space-y-5">
-          <Field label="Que te gustaria mejorar?" required>
+          <Field label="¿Qué te gustaría mejorar?" required>
             <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {SURF_GOALS.map((goal) => (
-                <label key={goal.value} className="flex cursor-pointer items-center gap-2 text-sm">
+                <label key={goal.value} className="flex min-w-0 cursor-pointer items-start gap-2.5 text-sm leading-snug">
                   <input
                     type="checkbox"
                     checked={(form.goals ?? []).includes(goal.value)}
                     onChange={() => toggleGoal(goal.value)}
-                    className="h-4 w-4 accent-[var(--color-primary-900)]"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
                   />
-                  {goal.label}
+                  <span className="min-w-0 break-words">{goal.label}</span>
                 </label>
               ))}
             </div>
           </Field>
           {(form.goals ?? []).includes("otro") ? (
-            <Field label="Cual otro objetivo?">
+            <Field label="¿Cuál otro objetivo?">
               <Input
                 className={inputClassName}
                 value={form.goalOther ?? ""}
@@ -546,19 +551,19 @@ export function ProfileForm({
               />
             </Field>
           ) : null}
-          <Field label="Tienes algun miedo en el mar?">
+          <Field label="¿Tienes algún miedo en el mar?">
             <RadioGroup
               name="hasFear"
               value={form.hasFear ? "si" : "no"}
               onChange={(value) => set("hasFear", value === "si")}
               options={[
                 { value: "no", label: "No" },
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
               ]}
             />
           </Field>
           {form.hasFear ? (
-            <Field label="Cual?">
+            <Field label="¿Cuál?">
               <Input
                 className={inputClassName}
                 value={form.fearDetail ?? ""}
@@ -579,13 +584,13 @@ export function ProfileForm({
               onChange={(value) => set("hadCoaching", value === "si")}
               options={[
                 { value: "no", label: "No" },
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
               ]}
             />
           </Field>
           {form.hadCoaching ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Con quien?">
+              <Field label="¿Con quién?">
                 <Input
                   className={inputClassName}
                   value={form.coachingWith ?? ""}
@@ -593,7 +598,7 @@ export function ProfileForm({
                   placeholder="Nombre del coach / escuela"
                 />
               </Field>
-              <Field label="Durante cuanto tiempo?">
+              <Field label="¿Durante cuánto tiempo?">
                 <Input
                   className={inputClassName}
                   value={form.coachingDuration ?? ""}
@@ -615,7 +620,7 @@ export function ProfileForm({
               onChange={(value) => set("hasBoard", value === "si")}
               options={[
                 { value: "no", label: "No" },
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
               ]}
             />
           </Field>
@@ -626,7 +631,7 @@ export function ProfileForm({
               onChange={(value) => set("hasWetsuit", value === "si")}
               options={[
                 { value: "no", label: "No" },
-                { value: "si", label: "Si" },
+                { value: "si", label: "Sí" },
               ]}
             />
           </Field>
@@ -635,16 +640,16 @@ export function ProfileForm({
 
       <ProfileSectionBlock id={OTHER_SECTION.id} title={OTHER_SECTION.title}>
         <div className="space-y-5">
-          <Field label="Como nos conociste?">
+          <Field label="¿Cómo nos conociste?">
             <RadioGroup<MarketingSource>
               name="marketingSource"
               value={form.marketingSource}
               onChange={(value) => set("marketingSource", value)}
               options={[
                 { value: "instagram", label: "Instagram" },
-                { value: "recomendacion", label: "Recomendacion" },
+                { value: "recomendacion", label: "Recomendación" },
                 { value: "tienda", label: "Tienda de surf" },
-                { value: "evento", label: "Evento / activacion" },
+                { value: "evento", label: "Evento / activación" },
                 { value: "otro", label: "Otro" },
               ]}
             />
@@ -655,7 +660,7 @@ export function ProfileForm({
                 className={inputClassName}
                 value={form.marketingSourceOther ?? ""}
                 onChange={(event) => set("marketingSourceOther", event.target.value)}
-                placeholder="Como nos conociste?"
+                placeholder="¿Cómo nos conociste?"
               />
             </Field>
           ) : null}
@@ -668,14 +673,14 @@ export function ProfileForm({
             Marca las opciones que correspondan. Los términos y condiciones son obligatorios para completar tu perfil.
           </p>
           <div className="space-y-3">
-            <label className="flex cursor-pointer items-start gap-3 text-sm">
+            <label className="flex min-w-0 cursor-pointer items-start gap-3 text-sm">
               <input
                 type="checkbox"
                 checked={!!form.acceptsTerms}
                 onChange={(event) => set("acceptsTerms", event.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
               />
-              <span className="leading-relaxed text-black/70">
+              <span className="min-w-0 break-words leading-relaxed text-black/70">
                 He leído y acepto los{" "}
                 <a
                   href={TERMS_PDF_HREF}
@@ -689,14 +694,14 @@ export function ProfileForm({
                 de SP Surf Coach.
               </span>
             </label>
-            <label className="flex cursor-pointer items-start gap-3 text-sm">
+            <label className="flex min-w-0 cursor-pointer items-start gap-3 text-sm">
               <input
                 type="checkbox"
                 checked={!!form.consentsMarketingCommunications}
                 onChange={(event) => set("consentsMarketingCommunications", event.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-primary-900)]"
               />
-              <span className="leading-relaxed text-black/70">
+              <span className="min-w-0 break-words leading-relaxed text-black/70">
                 Autorizo el tratamiento de mis datos personales para recibir información, promociones y comunicaciones
                 relacionadas con SP Surf Coach.
               </span>
@@ -705,19 +710,19 @@ export function ProfileForm({
         </div>
       </ProfileSectionBlock>
 
-      <div className="space-y-3 rounded-2xl border border-black/10 bg-white px-6 py-5 shadow-sm">
+      <div className="min-w-0 space-y-3 overflow-hidden rounded-2xl border border-black/10 bg-white px-4 py-5 shadow-sm sm:px-6">
         {error ? (
-          <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
+          <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-600">{error}</p>
         ) : null}
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           {onCancel ? (
-            <Button type="button" variant="outline" className="h-11 rounded-xl px-5" onClick={onCancel}>
+            <Button type="button" variant="outline" className="h-11 w-full rounded-xl px-5 sm:w-auto" onClick={onCancel}>
               {cancelLabel}
             </Button>
           ) : null}
           <Button
             type="button"
-            className="h-11 rounded-xl bg-[var(--color-primary-900)] px-6 font-semibold text-white hover:bg-[var(--color-primary-700)]"
+            className="h-11 w-full rounded-xl bg-[var(--color-primary-900)] px-6 font-semibold text-white hover:bg-[var(--color-primary-700)] sm:w-auto"
             onClick={() => void handleSave()}
             disabled={saving}
           >

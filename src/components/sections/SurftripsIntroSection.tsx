@@ -9,7 +9,7 @@ export function SurftripsIntroSection() {
         </p>
         <div className="mt-6 max-w-[1331px] space-y-6">
           <p className="ds-h2 tracking-[-0.04em] text-black leading-[1.53]">
-            Nuestros Surfcamps están diseñados para quienes buscan algo mas que solo buenas condiciones, que buscan experiencias únicas, conectar con el mar, destinos que dejan huella y grupos que se vuelven familia.
+            Nuestros Surfcamps están diseñados para quienes buscan algo más que solo buenas condiciones, que buscan experiencias únicas, conectar con el mar, destinos que dejan huella y grupos que se vuelven familia.
           </p>
           <p className="ds-h2 tracking-[-0.04em] text-black leading-[1.53]">
             Es una invitación a descubrir y vivir el SURF de una forma distinta.

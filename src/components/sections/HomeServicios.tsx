@@ -30,7 +30,7 @@ export function HomeServicios() {
           <p className="ds-label text-[var(--color-label-muted)]">SERVICIOS</p>
           <h2 className="ds-h1 ds-section-lead-gap max-w-[540px] leading-[1.5] tracking-[-0.04em] lg:leading-[60px]">
             Entrena dentro y fuera del agua en sesiones para cada nivel y objetivo. Uniendo sesiones en el agua,
-            video análisis, entrenamientos complementarios y preparación mental.
+            videoanálisis, entrenamientos complementarios y preparación mental.
           </h2>
           <button className="ds-btn ds-btn-primary ds-btn-lg mt-8">Conoce más de nuestros servicios</button>
         </RevealGroup>

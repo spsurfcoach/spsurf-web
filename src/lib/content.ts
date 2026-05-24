@@ -158,16 +158,16 @@ export const footerColumns: FooterColumn[] = [
     title: "Servicios",
     links: [
       { href: "/servicios#servicio-tab-clases", label: "Coaching de surf" },
-      { href: "/servicios#servicio-tab-video", label: "Videoanalisis" },
-      { href: "/servicios#servicio-tab-surfskate", label: "Preparacion fisica" },
+      { href: "/servicios#servicio-tab-video", label: "Videoanálisis" },
+      { href: "/servicios#servicio-tab-surfskate", label: "Preparación física" },
     ],
   },
   {
     title: "Surfcamps",
     links: [
-      { href: "/surfcamps#viajes", label: "Proximos viajes" },
+      { href: "/surfcamps#viajes", label: "Próximos viajes" },
       { href: "/surfcamps#calendario", label: "Calendario" },
-      { href: "/surfcamps#para-quien", label: "Para quien es" },
+      { href: "/surfcamps#para-quien", label: "Para quién es" },
     ],
   },
   {
@@ -232,18 +232,18 @@ export const products: ProductItem[] = [
 export const services: ServiceItem[] = [
   {
     title: "Coaching de surf",
-    body: "Entrena dentro del agua con sesiones individuales o grupales segun tu nivel y objetivos.",
+    body: "Entrena dentro del agua con sesiones individuales o grupales según tu nivel y objetivos.",
   },
   {
     title: "Videotutoriales",
-    body: "Analiza tu tecnica con sesiones de video y feedback para corregir detalles clave.",
+    body: "Analiza tu técnica con sesiones de video y feedback para corregir detalles clave.",
   },
   {
-    title: "Preparacion fisica",
-    body: "Fortalece movilidad, resistencia y control corporal para rendir mejor en cada sesion.",
+    title: "Preparación física",
+    body: "Fortalece movilidad, resistencia y control corporal para rendir mejor en cada sesión.",
   },
   {
-    title: "Preparacion mental",
+    title: "Preparación mental",
     body: "Mejora foco, confianza y toma de decisiones con herramientas mentales aplicadas al surf.",
   },
 ];
@@ -310,13 +310,13 @@ La idea es que el progreso no ocurra solamente durante las sesiones de surf, sin
 export const testimonials: TestimonialItem[] = [
   {
     quote:
-      "Ha sido increíble este surfcamp con Sebas, el grupo se ha vuelto super unido y poder conocer sobre todo a mas mujeres que corren es lo mejor, el coaching me ha servido inmensamente, creo que no podría estar corriendo hoy en día si no fuera por Sebas me ha ayudado tanto técnicamente como en lo mental y en tener la cabeza en el lugar correcto para poder entrar al agua",
+      "Ha sido increíble este surfcamp con Sebas, el grupo se ha vuelto súper unido y poder conocer sobre todo a más mujeres que corren es lo mejor, el coaching me ha servido inmensamente, creo que no podría estar corriendo hoy en día si no fuera por Sebas me ha ayudado tanto técnicamente como en lo mental y en tener la cabeza en el lugar correcto para poder entrar al agua",
     author: "Jimena",
     image: "/photos/testimony_jimena.jpg",
   },
   {
     quote:
-      "Este surfcamp me ha parecido increíble, he podido conocer otras playas y el coaching que da Sebas es super preciso, bien detallista en las cosas que puedes corregir y en verdad me sirvió mucho para surfing, todos nos volvimos bien unidos dentro y fuera del agua y lo recomiendo un montón",
+      "Este surfcamp me ha parecido increíble, he podido conocer otras playas y el coaching que da Sebas es súper preciso, bien detallista en las cosas que puedes corregir y en verdad me sirvió mucho para surfing, todos nos volvimos bien unidos dentro y fuera del agua y lo recomiendo un montón",
     author: "Gino",
     image: "/photos/testimony_2.jpg",
   },
@@ -325,13 +325,13 @@ export const testimonials: TestimonialItem[] = [
 export const surftripsTestimonials: TestimonialItem[] = [
   {
     quote:
-      "Fui al surfcamp de lobitos con un objetivo super claro que era aprender a correr izquierdas y al segundo día mi primera encarrilada en una y el ultimo día ya en una ola bastante larga y buena, me divertí un montón, todos los tips te ayudan a mejorar",
+      "Fui al surfcamp de lobitos con un objetivo súper claro que era aprender a correr izquierdas y al segundo día mi primera encarrilada en una y el último día ya en una ola bastante larga y buena, me divertí un montón, todos los tips te ayudan a mejorar",
     author: "Diego",
     image: "/photos/DSC_5848.jpg",
   },
   {
     quote:
-      "Este surfcamp en chicama ha significado mucha experiencia, el hecho de trabajar con Sebas me ha facilitado mucho las cosas. La verdad ha sido una gran experiencia y sobre todo por el grupo, se comparten experiencias y el aprendizaje va mas allá de meterse al mar",
+      "Este surfcamp en chicama ha significado mucha experiencia, el hecho de trabajar con Sebas me ha facilitado mucho las cosas. La verdad ha sido una gran experiencia y sobre todo por el grupo, se comparten experiencias y el aprendizaje va más allá de meterse al mar",
     author: "Jose",
     image: "/photos/DSC_8125.jpg",
   },
@@ -423,7 +423,7 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
     title: "Membresías Premium",
     paragraphs: [
       "Esta membresía premium está pensada para surfistas que quieren entrenar de manera constante, progresar más rápido y formar parte activa de la comunidad de SP Surf Coach.",
-      "Las membresías premium están disponibles en planes de 3, 6 y 12 meses, permitiéndote acceder a clases ilimitadas de surf durante todo el periodo de tu plan. Todas las sesiones se agendan directamente desde la web, de manera flexible y organizada.",
+      "Las membresías premium están disponibles en planes de 3, 6 y 12 meses, permitiéndote acceder a clases ilimitadas de surf durante todo el período de tu plan. Todas las sesiones se agendan directamente desde la web, de manera flexible y organizada.",
       "El programa incluye los mismos beneficios del coaching de surf: sesiones grabadas, videoanálisis, coaching dentro y fuera del agua y entrenamientos adaptados según las condiciones del mar y los objetivos del alumno.",
     ],
     benefitsBullets: {
@@ -446,29 +446,29 @@ export const serviciosDetailTabs: ServicioDetailTab[] = [
   },
 ];
 
-export const surfClassSubServices = ["Videoanalisis", "Clases de Surfskate"];
+export const surfClassSubServices = ["Videoanálisis", "Clases de Surfskate"];
 
 export const methodologyPillars = [
-  "Tecnica y lectura de ola",
-  "Analisis en video de cada sesion",
-  "Trabajo fisico especifico para surf",
+  "Técnica y lectura de ola",
+  "Análisis en video de cada sesión",
+  "Trabajo físico específico para surf",
   "Mentalidad y constancia para sostener progreso",
 ];
 
 export const blogPosts: BlogPostItem[] = [
   {
-    title: "Como mejorar tu take off en 4 semanas",
-    excerpt: "Una rutina simple para tener mas estabilidad y timing en la entrada a la ola.",
-    category: "Tecnica",
+    title: "Cómo mejorar tu take off en 4 semanas",
+    excerpt: "Una rutina simple para tener más estabilidad y timing en la entrada a la ola.",
+    category: "Técnica",
   },
   {
-    title: "Preparacion fisica fuera del agua",
+    title: "Preparación física fuera del agua",
     excerpt: "Ejercicios clave para mantener rendimiento entre sesiones.",
     category: "Entrenamiento",
   },
   {
-    title: "Surfcamp checklist: que llevar",
-    excerpt: "Checklist practico para viajar con todo listo y surfear con tranquilidad.",
+    title: "Surfcamp checklist: qué llevar",
+    excerpt: "Checklist práctico para viajar con todo listo y surfear con tranquilidad.",
     category: "Lifestyle",
   },
 ];
