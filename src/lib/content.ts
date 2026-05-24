@@ -59,6 +59,16 @@ export type SpFamilyPhotoItem = {
   alt: string;
 };
 
+export type ClassSlot = {
+  dayOfWeek: number; // 1=Mon … 6=Sat, 0=Sun
+  time: string;
+  type: "Grupal" | "Individual";
+  level: string;
+  available: number;
+  capacity: number;
+  durationMin: number;
+};
+
 export const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/surftrips", label: "Surftrips" },
@@ -260,6 +270,17 @@ export const blogPosts: BlogPostItem[] = [
     excerpt: "Checklist práctico para viajar con todo listo y surfear con tranquilidad.",
     category: "Lifestyle",
   },
+];
+
+export const weeklyClassSlots: ClassSlot[] = [
+  { dayOfWeek: 1, time: "09:00", type: "Grupal",     level: "Principiante / Intermedio", available: 4, capacity: 6,  durationMin: 90 },
+  { dayOfWeek: 1, time: "11:00", type: "Individual", level: "Todos los niveles",         available: 1, capacity: 2,  durationMin: 60 },
+  { dayOfWeek: 3, time: "09:00", type: "Grupal",     level: "Principiante / Intermedio", available: 3, capacity: 6,  durationMin: 90 },
+  { dayOfWeek: 3, time: "17:00", type: "Individual", level: "Todos los niveles",         available: 2, capacity: 2,  durationMin: 60 },
+  { dayOfWeek: 5, time: "09:00", type: "Grupal",     level: "Intermedio / Avanzado",     available: 5, capacity: 6,  durationMin: 90 },
+  { dayOfWeek: 6, time: "08:00", type: "Grupal",     level: "Todos los niveles",         available: 6, capacity: 8,  durationMin: 90 },
+  { dayOfWeek: 6, time: "11:00", type: "Individual", level: "Todos los niveles",         available: 2, capacity: 2,  durationMin: 60 },
+  { dayOfWeek: 0, time: "08:00", type: "Grupal",     level: "Todos los niveles",         available: 5, capacity: 8,  durationMin: 90 },
 ];
 
 export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
