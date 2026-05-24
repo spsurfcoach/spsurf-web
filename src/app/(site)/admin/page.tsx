@@ -152,7 +152,7 @@ export default function AdminPage() {
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
               <div className="mb-2 px-3 py-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menu Admin</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menú Admin</p>
               </div>
               <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full">
                 {TABS.map((tab) => (

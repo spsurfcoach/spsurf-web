@@ -21,7 +21,7 @@ type Props = {
 export function UpcomingBookingsList({
   bookings,
   onCancel,
-  title = "Proximas reservas",
+  title = "Próximas reservas",
   className = "",
 }: Props) {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export function UpcomingBookingsList({
               {cancellingId === booking.id ? "..." : "Cancelar"}
             </Button>
           ) : (
-            <span className="shrink-0 text-xs text-black/30">Sin cancelacion</span>
+            <span className="shrink-0 text-xs text-black/30">Sin cancelación</span>
           )
         ) : null}
       </div>
@@ -104,7 +104,7 @@ export function UpcomingBookingsList({
       <div className="space-y-3">
         {upcomingBookings.length === 0 ? (
           <div className="rounded-xl border border-dashed border-black/15 p-5 text-center">
-            <p className="text-sm text-black/40">No tienes reservas proximas</p>
+            <p className="text-sm text-black/40">No tienes reservas próximas</p>
           </div>
         ) : (
           upcomingBookings.map((booking) => renderBookingRow(booking))

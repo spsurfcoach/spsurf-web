@@ -15,7 +15,7 @@ export function SurfTalksSection() {
           <div className="relative h-[240px] overflow-hidden rounded-[30px] bg-[#ffda00] transition-transform duration-200 group-hover:scale-[1.01] lg:h-[318px]">
             <Image
               src="/photos/LOGO POSTCAST SEBASTIAN 3.png"
-              alt="Surf Talks podcast by Sebastian Portocarrero"
+              alt="Surf Talks podcast by Sebastián Portocarrero"
               fill
               sizes="(max-width: 1024px) 100vw, 1024px"
               className="object-contain object-center p-0 scale-[1.22] sm:scale-[1.28] lg:scale-[1.32]"

@@ -53,17 +53,17 @@ function getPaymentBanner(status: string | null): FlashBanner | null {
     case "success":
       return {
         variant: "success",
-        text: "Pago confirmado. Tu compra aparecera en tu cuenta en cuanto se procese el webhook.",
+        text: "Pago confirmado. Tu compra aparecerá en tu cuenta en cuanto se procese el webhook.",
       };
     case "failure":
       return {
         variant: "error",
-        text: "No se pudo completar el pago. Intentalo nuevamente.",
+        text: "No se pudo completar el pago. Inténtalo nuevamente.",
       };
     case "pending":
       return {
         variant: "neutral",
-        text: "Tu pago esta pendiente de confirmacion.",
+        text: "Tu pago está pendiente de confirmación.",
       };
     default:
       return null;
@@ -379,14 +379,14 @@ function ClasesPageContent() {
       <div className="container-site space-y-6">
         {displayBanner ? <FlashBanner variant={displayBanner.variant} text={displayBanner.text} /> : null}
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex gap-1 rounded-xl bg-black/[0.04] p-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="grid w-full max-w-md grid-cols-2 gap-1 rounded-xl bg-black/[0.04] p-1 sm:flex sm:w-auto">
             {(["comprar", "reservar"] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => goToTab(tab)}
-                className={`rounded-lg px-6 py-2.5 text-sm font-medium capitalize transition-all ${
+                className={`rounded-lg px-4 py-2.5 text-sm font-medium capitalize transition-all sm:px-6 ${
                   activeTab === tab ? "bg-white text-black shadow-sm" : "text-black/50 hover:text-black"
                 }`}
               >
@@ -435,16 +435,16 @@ function ClasesPageContent() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-2xl font-bold">Reserva tu clase</h2>
-                <p className="mt-1 text-sm text-black/50">Revisa tus proximas reservas y asegura tu siguiente lugar.</p>
+                <p className="mt-1 text-sm text-black/50">Revisa tus próximas reservas y asegura tu siguiente lugar.</p>
               </div>
               <div className="rounded-2xl border border-black/10 bg-white px-5 py-4 shadow-sm sm:min-w-[220px]">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Creditos disponibles</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Créditos disponibles</p>
                 <div className="mt-2 flex items-end gap-2">
                   <p className="text-3xl font-bold leading-none text-black">
                     {activePurchase ? (activePurchase.packageType === "credits" ? activePurchase.remainingCredits ?? 0 : "∞") : "0"}
                   </p>
                   <p className="pb-0.5 text-sm text-black/45">
-                    {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : "creditos"}
+                    {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : "créditos"}
                   </p>
                 </div>
               </div>

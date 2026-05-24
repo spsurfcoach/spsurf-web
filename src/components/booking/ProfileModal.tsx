@@ -17,9 +17,9 @@ export function ProfileModal({ open, initialData, userEmail, onSave, onClose, co
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-x-hidden overflow-y-auto px-4 py-6 sm:px-6">
       <div className="fixed inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-2xl my-6 mx-4">
+      <div className="relative z-10 my-auto w-full max-w-2xl min-w-0">
         <button
           onClick={onClose}
           aria-label="Cerrar"
@@ -38,7 +38,7 @@ export function ProfileModal({ open, initialData, userEmail, onSave, onClose, co
           cancelLabel="Cerrar"
           contextMessage={contextMessage}
           title="Completa tu perfil"
-          description="Tu informacion como alumno de SP Surf Coach."
+          description="Tu información como alumno de SP Surf Coach."
           submitLabel="Completar registro"
         />
       </div>

@@ -126,7 +126,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
             ? `${packageData.classCount ?? 0} clases para reservar cuando quieras.`
             : isSubscription
               ? subscriptionDesc
-              : `Acceso ilimitado por ${packageData.durationDays ?? 30} dias.`,
+              : `Acceso ilimitado por ${packageData.durationDays ?? 30} días.`,
         description:
           packageData.type === "credits"
             ? "Compra tus clases y reserva tus sesiones desde el calendario."
@@ -139,7 +139,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         currency: packageData.currency,
         isActive: packageData.isActive,
         image: DEFAULT_PRODUCT_IMAGES[category],
-        badge: isSubscription ? "Membresía Premium mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por creditos",
+        badge: isSubscription ? "Membresía Premium mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por créditos",
         features:
           packageData.type === "credits"
             ? [`${packageData.classCount ?? 0} clases`, "Reserva flexible", "Acceso al calendario"]
@@ -150,7 +150,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
                   "Clases ilimitadas",
                   "Cancela cuando quieras",
                 ]
-              : [`${packageData.durationDays ?? 30} dias`, "Reservas ilimitadas", "Acceso al calendario"],
+              : [`${packageData.durationDays ?? 30} días`, "Reservas ilimitadas", "Acceso al calendario"],
         sortOrder: category === "membership" ? 0 : 10,
         sourceCollection: "packages",
         sourceId,
@@ -192,7 +192,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         slug: surftrip.sanitySlug,
         name: surftrip.title,
         shortDescription:
-          surftrip.shortDescription ?? "Reserva tu cupo para el siguiente surfcamp desde tu area de clases.",
+          surftrip.shortDescription ?? "Reserva tu cupo para el siguiente surfcamp desde tu área de clases.",
         description: surftrip.country
           ? `${surftrip.country} · ${availableSpots} cupos disponibles actualmente.`
           : `${availableSpots} cupos disponibles actualmente.`,

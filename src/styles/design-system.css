@@ -247,6 +247,8 @@
 
 .ds-input {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: var(--control-height);
   border-radius: var(--radius-input);
   border: 1px solid #c6cfd2;

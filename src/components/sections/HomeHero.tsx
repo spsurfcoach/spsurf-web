@@ -73,14 +73,14 @@ export function HomeHero() {
           <div className="px-4 pb-8 text-white sm:px-6 sm:pb-12 md:px-10 lg:px-16 lg:pb-16">
             <RevealGroup className="max-w-[58rem]" start="top 92%" stagger={0.1} y={24}>
               <h1 className="ds-h1 leading-[1.15]">
-                Mejora tu surfing, entiende el mar y disfruta cada sesion.
+                Surf coaching premium: entrena con videoanálisis y técnica.
               </h1>
               <div className="ds-section-lead-gap">
                 <Link
                   href="/clases?tab=comprar"
                   className="ds-btn ds-btn-lg ds-btn-secondary inline-flex shadow-[0_10px_40px_-8px_rgba(0,0,0,0.45)] transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-[0_14px_44px_-6px_rgba(0,0,0,0.5)] motion-reduce:hover:translate-y-0"
                 >
-                  Comprar Clases
+                  Comenzar entrenamiento
                 </Link>
               </div>
               {HERO_SLIDES.length > 1 ? (

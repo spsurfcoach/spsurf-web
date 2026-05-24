@@ -15,24 +15,24 @@ type SeedProduct = Omit<ProductDoc, "createdAt" | "updatedAt" | "sourceCollectio
 export const DEFAULT_STANDALONE_PRODUCTS: Record<string, SeedProduct> = {
   videoanalysis: {
     slug: "videoanalisis",
-    name: "Videoanalisis",
-    shortDescription: "Compra una sesion individual de videoanalisis.",
-    description: "Revision tecnica personalizada para acelerar tu progreso dentro y fuera del agua.",
+    name: "Videoanálisis",
+    shortDescription: "Compra una sesión individual de videoanálisis.",
+    description: "Revisión técnica personalizada para acelerar tu progreso dentro y fuera del agua.",
     category: "videoanalysis",
     fulfillmentType: "direct_purchase",
     price: 100,
     currency: "PEN",
     isActive: true,
     image: DEFAULT_PRODUCT_IMAGES.videoanalysis,
-    badge: "Analisis tecnico",
-    features: ["Revision individual", "Feedback tecnico", "Entrega coordinada"],
+    badge: "Análisis técnico",
+    features: ["Revisión individual", "Feedback técnico", "Entrega coordinada"],
     sortOrder: 30,
   },
   surfskate: {
     slug: "surfskate",
     name: "Clases de Surfskate",
     shortDescription: "Compra tus clases de surfskate sin pasar por reservas.",
-    description: "Trabajo de tecnica, postura y fluidez para complementar tus sesiones en el agua.",
+    description: "Trabajo de técnica, postura y fluidez para complementar tus sesiones en el agua.",
     category: "surfskate",
     fulfillmentType: "direct_purchase",
     price: 100,
@@ -40,7 +40,7 @@ export const DEFAULT_STANDALONE_PRODUCTS: Record<string, SeedProduct> = {
     isActive: true,
     image: DEFAULT_PRODUCT_IMAGES.surfskate,
     badge: "Entrenamiento complementario",
-    features: ["Sin calendario de reservas", "Coordinacion posterior"],
+    features: ["Sin calendario de reservas", "Coordinación posterior"],
     sortOrder: 40,
   },
 };
@@ -72,7 +72,7 @@ export function productCategoryLabel(category: ProductCategory) {
     case "membership":
       return "Membership";
     case "videoanalysis":
-      return "Videoanalisis";
+      return "Videoanálisis";
     case "surfskate":
       return "Surfskate";
     case "surftrip":

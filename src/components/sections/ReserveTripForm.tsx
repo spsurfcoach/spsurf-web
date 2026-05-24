@@ -25,9 +25,9 @@ export function ReserveTripForm() {
             reservas.
           </p>
           <ul className="space-y-2 ds-body-s text-zinc-400">
-            <li>- Confirmacion de pre-reserva al instante.</li>
+            <li>- Confirmación de pre-reserva al instante.</li>
             <li>- Checkout con MercadoPago para paquetes de clases.</li>
-            <li>- Gestion de creditos y reservas desde tu cuenta.</li>
+            <li>- Gestión de créditos y reservas desde tu cuenta.</li>
           </ul>
         </div>
 

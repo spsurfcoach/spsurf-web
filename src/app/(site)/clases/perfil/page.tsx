@@ -28,6 +28,13 @@ const TABS: { id: ActiveTab; label: string }[] = [
   { id: "mis-compras", label: "Mis Compras" },
 ];
 
+function getInitialTab(context: string | null): ActiveTab {
+  if (context === "reservar" || context === "post-payment") {
+    return "datos";
+  }
+  return "reservas";
+}
+
 function ClasesProfilePageContent() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
@@ -37,15 +44,14 @@ function ClasesProfilePageContent() {
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [purchases, setPurchases] = useState<(PurchaseDoc & { id: string })[]>([]);
   const [message, setMessage] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("reservas");
+  const context = searchParams.get("context");
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => getInitialTab(context));
   const [activeSection, setActiveSection] = useState<ProfileSectionId>("datos-personales");
 
   const returnTo = useMemo(() => {
     const candidate = searchParams.get("returnTo");
     return candidate && candidate.startsWith("/") ? candidate : "/clases";
   }, [searchParams]);
-
-  const context = searchParams.get("context");
 
   const loadData = useCallback(async () => {
     if (!user) return;
@@ -61,7 +67,7 @@ function ClasesProfilePageContent() {
       setPurchases(purchasesRes.items ?? []);
     } catch {
       setProfile(null);
-      setMessage("No se pudo cargar tu perfil. Puedes volver a guardarlo desde aqui.");
+      setMessage("No se pudo cargar tu perfil. Puedes volver a guardarlo desde aquí.");
     }
   }, [user]);
 
@@ -128,28 +134,28 @@ function ClasesProfilePageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-background-default)] px-4 py-10 sm:px-6 md:px-10 lg:px-16">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <div className="min-h-screen overflow-x-clip bg-[var(--color-background-default)] px-4 py-8 sm:px-6 sm:py-10 md:px-10 lg:px-16">
+      <div className="mx-auto max-w-7xl min-w-0 space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.18em] text-black/40">Area de clases</p>
-            <h1 className="mt-2 text-3xl font-bold text-black">
+          <div className="min-w-0">
+            <p className="text-sm uppercase tracking-[0.18em] text-black/40">Área de clases</p>
+            <h1 className="mt-2 text-2xl font-bold text-black sm:text-3xl">
               {user.displayName ? `Hola, ${user.displayName.split(" ")[0]}` : "Mi perfil"}
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-black/55">
-              Organiza tu ficha en secciones para actualizar tus datos rapidamente.
+              Organiza tu ficha en secciones para actualizar tus datos rápidamente.
             </p>
-            <p className="mt-3 text-sm text-black/45">{user.email ?? user.uid}</p>
+            <p className="mt-3 truncate text-sm text-black/45">{user.email ?? user.uid}</p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="outline" className="rounded-full px-5">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3">
+            <Button asChild variant="outline" className="w-full rounded-full px-5 sm:w-auto">
               <Link href={returnTo}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 {context === "reservar" ? "Volver a reservar" : "Volver a clases"}
               </Link>
             </Button>
-            <Button variant="outline" className="rounded-full px-5" onClick={() => void logout()}>
+            <Button variant="outline" className="w-full rounded-full px-5 sm:w-auto" onClick={() => void logout()}>
               <LogOut className="mr-2 h-4 w-4" />
               Salir
             </Button>
@@ -160,21 +166,21 @@ function ClasesProfilePageContent() {
           <div className="rounded-xl bg-black px-4 py-3 text-sm text-white">{message}</div>
         ) : null}
 
-        <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
           {/* Sidebar */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm">
               {/* Main tabs */}
               <div className="mb-2 px-3 py-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menu</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Menú</p>
               </div>
-              <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+              <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
                 {TABS.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors lg:w-full ${
+                    className={`rounded-xl px-3 py-3 text-center text-sm font-medium transition-colors sm:px-4 lg:text-left ${
                       activeTab === tab.id
                         ? "bg-[var(--color-primary-900)] text-white"
                         : "text-black/55 hover:bg-black/[0.04] hover:text-black"
@@ -185,13 +191,13 @@ function ClasesProfilePageContent() {
                 ))}
               </div>
 
-              {/* Datos sub-nav: only shown when on the Datos tab */}
+              {/* Datos sub-nav: desktop only — form sections are scrollable on mobile */}
               {activeTab === "datos" ? (
-                <div className="mt-3 border-t border-black/8 pt-3">
+                <div className="mt-3 hidden border-t border-black/8 pt-3 lg:block">
                   <div className="mb-1 px-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.15em] text-black/25">Secciones</p>
                   </div>
-                  <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+                  <div className="flex flex-col gap-1">
                     {PROFILE_SECTIONS.map((section) => (
                       <button
                         key={section.id}
@@ -202,7 +208,7 @@ function ClasesProfilePageContent() {
                             .getElementById(section.id)
                             ?.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
-                        className={`whitespace-nowrap rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors lg:w-full ${
+                        className={`rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors ${
                           activeSection === section.id
                             ? "bg-black/[0.07] text-black"
                             : "text-black/45 hover:bg-black/[0.04] hover:text-black/70"
@@ -218,13 +224,13 @@ function ClasesProfilePageContent() {
           </aside>
 
           {/* Tab content */}
-          <main>
+          <main className="min-w-0">
             {activeTab === "reservas" ? (
               <div className="space-y-5">
                 {/* Credits card */}
                 <div className="rounded-2xl border border-black/10 bg-white px-6 py-5 shadow-sm">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">
-                    Creditos disponibles
+                    Créditos disponibles
                   </p>
                   <div className="mt-2 flex items-end gap-2">
                     <p className="text-4xl font-bold leading-none text-black">
@@ -235,7 +241,7 @@ function ClasesProfilePageContent() {
                         : "0"}
                     </p>
                     <p className="pb-1 text-sm text-black/45">
-                      {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : activePurchase?.packageType === "subscription" ? "membresía activa" : "creditos"}
+                      {activePurchase?.packageType === "unlimited" ? "plan ilimitado" : activePurchase?.packageType === "subscription" ? "membresía activa" : "créditos"}
                     </p>
                   </div>
                 </div>
@@ -245,7 +251,7 @@ function ClasesProfilePageContent() {
                   bookings={bookings}
                   onCancel={async (bookingId) => {
                     await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
-                    setMessage("Reserva cancelada. Tu credito ha sido devuelto.");
+                    setMessage("Reserva cancelada. Tu crédito ha sido devuelto.");
                     void loadData();
                   }}
                 />
@@ -268,7 +274,7 @@ function ClasesProfilePageContent() {
                 }}
                 contextMessage={contextMessage}
                 title="Completa tu perfil"
-                description="Tu informacion de alumno se usa para reservas, seguimiento y seguridad."
+                description="Tu información de alumno se usa para reservas, seguimiento y seguridad."
                 submitLabel={context ? "Guardar y continuar" : "Guardar perfil"}
               />
             ) : (

@@ -42,7 +42,7 @@ const FILTER_LABELS: Record<FilterType, string> = {
   all: "Todos",
   membership: "Memberships",
   package: "Paquetes",
-  videoanalysis: "Videoanalisis",
+  videoanalysis: "Videoanálisis",
   surfskate: "Surfskate",
   surftrip: "Surfcamps",
 };
@@ -115,7 +115,7 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
     }
 
     if (product.category === "membership") {
-      return `Ilimitado por ${product.durationDays ?? 30} dias`;
+      return `Ilimitado por ${product.durationDays ?? 30} días`;
     }
 
     if (product.category === "surftrip" && product.startDate && product.endDate) {
@@ -258,7 +258,7 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
                           const formattedDates = product.startDate && product.endDate
                             ? `${new Date(product.startDate).toLocaleDateString("es-PE")} - ${new Date(product.endDate).toLocaleDateString("es-PE")}`
                             : "por definir";
-                          const message = `Hola! Estoy interesado en el Surfcamp ${product.name} con fechas ${formattedDates}`;
+                          const message = `¡Hola! Estoy interesado en el Surfcamp ${product.name} con fechas ${formattedDates}`;
                           return `https://wa.me/51998153542?text=${encodeURIComponent(message)}`;
                         })()}
                         target="_blank"

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FooterSocialLinks } from "@/components/site/FooterSocialLinks";
 import { footerColumns, navItems } from "@/lib/content";
 import { TERMS_PDF_HREF } from "@/lib/terms-pdf";
 
@@ -38,6 +39,8 @@ export function Footer() {
                 </ul>
               </nav>
             ))}
+
+            <FooterSocialLinks />
           </div>
 
           <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
