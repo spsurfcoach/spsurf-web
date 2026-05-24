@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { homePackages } from "@/lib/content";
 
-const PACKAGE_TABS = ["Clases de surf", "Surf skate", "Video analisis"];
+const PACKAGE_TABS = ["Clases de surf", "Surf skate", "Videoanálisis"];
 
 export function ServiciosPackagesSection() {
   const [activeTab, setActiveTab] = useState(0);
@@ -72,6 +72,13 @@ export function ServiciosPackagesSection() {
                 <div className="flex flex-col items-center px-4 pb-8 pt-10 text-center">
                   <p className="ds-h3 font-semibold text-black">{pkg.price}</p>
                   <p className="ds-body-s mt-1 text-zinc-500">{pkg.classes}</p>
+                  <p className="ds-body-s text-zinc-400">{pkg.validity}</p>
+                  <a
+                    href="/servicios#reserva"
+                    className="ds-btn ds-btn-primary mt-6 w-full text-center"
+                  >
+                    Comenzar entrenamiento
+                  </a>
                 </div>
               </article>
             ))}

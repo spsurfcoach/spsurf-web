@@ -1,12 +1,18 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { products } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "Shop",
+  description: "Ropa, accesorios y herramientas de entrenamiento de surf. Productos seleccionados por SP Surf Coach.",
+};
 
 export default function ShopPage() {
   return (
     <>
       <Hero
         title="Shop"
-        subtitle="Productos seleccionados para acompanar tu practica: ropa, accesorios y herramientas de entrenamiento."
+        subtitle="Productos seleccionados para acompañar tu práctica: ropa, accesorios y herramientas de entrenamiento."
       />
 
       <section className="section-space bg-zinc-100 text-zinc-900">
@@ -19,12 +25,12 @@ export default function ShopPage() {
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
-              <article key={product.name} className="ds-card p-4">
-                <div className="mb-4 aspect-square rounded-lg bg-zinc-100" />
+              <article key={product.name} className="ds-card ds-card-interactive p-4">
+                <div className="ds-skeleton mb-4 aspect-square rounded-lg" />
                 <h2 className="ds-h3">{product.name}</h2>
                 <p className="ds-body-s text-zinc-500">{product.category}</p>
                 <p className="ds-body-s mt-2">{product.price}</p>
-                <button className="ds-btn ds-btn-primary mt-4">Anadir al carrito</button>
+                <button className="ds-btn ds-btn-primary mt-4">Añadir al carrito</button>
               </article>
             ))}
           </div>
@@ -33,5 +39,3 @@ export default function ShopPage() {
     </>
   );
 }
-
-

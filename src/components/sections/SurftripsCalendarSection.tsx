@@ -1,5 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { surftripsCalendar } from "@/lib/content";
 import type { CalendarItem } from "@/lib/content";
+
+type CalendarView = "semanal" | "mensual";
 
 function fillColor(available: number, capacity: number): string {
   const ratio = available / capacity;
@@ -48,8 +53,39 @@ function CalendarRow({ item }: { item: CalendarItem }) {
   );
 }
 
+function getMonthLabel(startDate: string): string {
+  const date = new Date(startDate + "T12:00:00Z");
+  return date.toLocaleString("es-ES", { month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function SurftripsCalendarSection() {
-  const [leftCol, rightCol] = surftripsCalendar;
+  const [view, setView] = useState<CalendarView>("semanal");
+
+  const allTrips = surftripsCalendar.flat();
+
+  const now = new Date();
+  const eightWeeksFromNow = new Date(now.getTime() + 8 * 7 * 24 * 60 * 60 * 1000);
+
+  const semanalTrips = allTrips.filter((item) => {
+    const start = new Date(item.startDate + "T12:00:00Z");
+    return start >= now && start <= eightWeeksFromNow;
+  });
+
+  // Group by month for mensual view
+  const mensualGroups: { month: string; items: CalendarItem[] }[] = [];
+  for (const item of allTrips) {
+    const month = capitalize(getMonthLabel(item.startDate));
+    const existing = mensualGroups.find((g) => g.month === month);
+    if (existing) {
+      existing.items.push(item);
+    } else {
+      mensualGroups.push({ month, items: [item] });
+    }
+  }
 
   return (
     <section className="bg-[var(--color-background-default)] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
@@ -57,20 +93,47 @@ export function SurftripsCalendarSection() {
         CALENDARIO
       </p>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Left column */}
-        <div className="flex flex-col gap-4">
-          {leftCol.map((item) => (
-            <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
-          ))}
-        </div>
-        {/* Right column */}
-        <div className="flex flex-col gap-4">
-          {rightCol.map((item) => (
-            <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
-          ))}
-        </div>
+      {/* Toggle */}
+      <div className="mt-6 flex items-center gap-2">
+        {(["semanal", "mensual"] as CalendarView[]).map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className={`ds-btn ${view === v ? "ds-btn-primary" : "ds-btn-secondary"}`}
+          >
+            {v.charAt(0).toUpperCase() + v.slice(1)}
+          </button>
+        ))}
       </div>
+
+      {view === "semanal" ? (
+        semanalTrips.length > 0 ? (
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {semanalTrips.map((item) => (
+              <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-8 ds-body-s text-[var(--color-label-muted)]">
+            No hay próximos viajes en las próximas 8 semanas. Cambia a vista mensual para ver todos los viajes.
+          </p>
+        )
+      ) : (
+        <div className="mt-8 space-y-8">
+          {mensualGroups.map((group) => (
+            <div key={group.month}>
+              <h3 className="ds-body-s mb-3 font-semibold uppercase tracking-widest text-[var(--color-label-muted)]">
+                {group.month}
+              </h3>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {group.items.map((item) => (
+                  <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

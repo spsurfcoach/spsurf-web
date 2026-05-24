@@ -329,6 +329,64 @@
   }
 }
 
+/* ── Micro-interactions ── */
+
+.ds-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ds-btn:active {
+  transform: translateY(0);
+}
+
+.ds-card-interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.ds-card-interactive:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ds-img-zoom {
+  overflow: hidden;
+}
+
+.ds-img-zoom img {
+  transition: transform 0.4s ease;
+}
+
+.ds-img-zoom:hover img {
+  transform: scale(1.05);
+}
+
+.ds-fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.ds-fade-in-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ds-skeleton {
+  background: linear-gradient(
+    90deg,
+    #e8ecee 25%,
+    #d4dadc 50%,
+    #e8ecee 75%
+  );
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.5s infinite;
+  border-radius: var(--radius-card);
+}
+
+/* ── Responsive typography ── */
+
 @media (max-width: 768px) {
   .ds-h1 {
     font-size: 32px;

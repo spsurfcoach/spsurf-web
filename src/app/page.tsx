@@ -1,4 +1,5 @@
 import { HomeHero } from "@/components/sections/HomeHero";
+import { TrustBar } from "@/components/sections/TrustBar";
 import { BrandStatement } from "@/components/sections/BrandStatement";
 import { HomeSurftrips } from "@/components/sections/HomeSurftrips";
 import { DestinosSection } from "@/components/sections/DestinosSection";
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <div className="bg-[var(--color-background-default)] text-[var(--color-text-default)]">
       <HomeHero />
+      <TrustBar />
       <BrandStatement />
       <HomeSurftrips />
       <DestinosSection />

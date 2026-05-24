@@ -25,8 +25,6 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
     ...photo,
     ratio: photo.ratio ?? (index % 3 === 2 ? "aspect-[5/4]" : "aspect-[4/3]"),
   }));
-  const leftPhotos = normalizedPhotos.slice(0, 3);
-  const rightPhotos = normalizedPhotos.slice(3, 6);
 
   return (
     <section className="bg-[#03313b] px-4 py-14 sm:px-6 md:px-10 lg:px-16 lg:py-20">
@@ -36,29 +34,14 @@ export function SpFamilySection({ photos = DEFAULT_PHOTOS }: SpFamilySectionProp
       </p>
       <h2 className="ds-display-title mt-3 text-white">La SP Family</h2>
 
-      <div className="mt-10 lg:hidden">
+      <div className="mt-10">
         <CarouselShell
           ariaLabel="Carrusel SP Family"
-          slideClassName="basis-[82%] sm:basis-[56%]"
-          slides={[...leftPhotos, ...rightPhotos].map((photo) => (
+          slideClassName="basis-[82%] sm:basis-[56%] lg:basis-[38%] xl:basis-[30%]"
+          slides={normalizedPhotos.map((photo) => (
             <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
           ))}
         />
-      </div>
-
-      {/* Photo mosaic */}
-      <div className="mt-10 hidden gap-4 lg:grid lg:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          {leftPhotos.map((photo) => (
-            <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {rightPhotos.map((photo) => (
-            <ResponsiveMediaFrame key={photo.alt} src={photo.src} alt={photo.alt} ratioClassName={photo.ratio} />
-          ))}
-        </div>
       </div>
     </section>
   );

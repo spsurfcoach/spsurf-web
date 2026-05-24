@@ -26,6 +26,7 @@ export type SurfTripItem = {
 export type CalendarItem = {
   destination: string;
   dates: string;
+  startDate: string;
   level: string;
   available: number;
   capacity: number;
@@ -72,16 +73,16 @@ export const footerColumns: FooterColumn[] = [
     title: "Servicios",
     links: [
       { href: "/servicios", label: "Clases de Surf" },
-      { href: "/servicios", label: "Videoanalisis" },
-      { href: "/servicios", label: "Preparacion fisica" },
+      { href: "/servicios", label: "Videoanálisis" },
+      { href: "/servicios", label: "Preparación física" },
     ],
   },
   {
     title: "Surftrips",
     links: [
-      { href: "/surftrips", label: "Proximos viajes" },
+      { href: "/surftrips", label: "Próximos viajes" },
       { href: "/surftrips", label: "Calendario" },
-      { href: "/surftrips", label: "Para quien es" },
+      { href: "/surftrips", label: "Para quién es" },
     ],
   },
   {
@@ -152,15 +153,15 @@ export const surfTrips: SurfTripItem[] = [
 export const surftripsCalendar: CalendarItem[][] = [
   // Left column
   [
-    { destination: "Lobitos",       dates: "15 - 20 de Enero 2026",    level: "Intermedio", available: 2,  capacity: 14 },
-    { destination: "El Salvador",   dates: "11 - 18 de Mayo 2026",     level: "Intermedio", available: 8,  capacity: 15 },
-    { destination: "Chicama",       dates: "1 - 7 de Junio 2026",      level: "Intermedio", available: 8,  capacity: 16 },
+    { destination: "Lobitos",       dates: "15 - 20 de Enero 2026",    startDate: "2026-01-15", level: "Intermedio", available: 2,  capacity: 14 },
+    { destination: "El Salvador",   dates: "11 - 18 de Mayo 2026",     startDate: "2026-05-11", level: "Intermedio", available: 8,  capacity: 15 },
+    { destination: "Chicama",       dates: "1 - 7 de Junio 2026",      startDate: "2026-06-01", level: "Intermedio", available: 8,  capacity: 16 },
   ],
   // Right column
   [
-    { destination: "Chicama",       dates: "1 - 9 de Agosto 2026",     level: "Intermedio", available: 10, capacity: 14 },
-    { destination: "Florianópolis", dates: "11 - 18 de Octubre 2026",  level: "Intermedio", available: 7,  capacity: 12 },
-    { destination: "Pacasmayo",     dates: "1 - 7 de Noviembre 2026",  level: "Intermedio", available: 12, capacity: 15 },
+    { destination: "Chicama",       dates: "1 - 9 de Agosto 2026",     startDate: "2026-08-01", level: "Intermedio", available: 10, capacity: 14 },
+    { destination: "Florianópolis", dates: "11 - 18 de Octubre 2026",  startDate: "2026-10-11", level: "Intermedio", available: 7,  capacity: 12 },
+    { destination: "Pacasmayo",     dates: "1 - 7 de Noviembre 2026",  startDate: "2026-11-01", level: "Intermedio", available: 12, capacity: 15 },
   ],
 ];
 
@@ -174,18 +175,18 @@ export const products: ProductItem[] = [
 export const services: ServiceItem[] = [
   {
     title: "Clases de surf",
-    body: "Entrena dentro del agua con sesiones individuales o grupales segun tu nivel y objetivos.",
+    body: "Entrena dentro del agua con sesiones individuales o grupales según tu nivel y objetivos.",
   },
   {
     title: "Videotutoriales",
-    body: "Analiza tu tecnica con sesiones de video y feedback para corregir detalles clave.",
+    body: "Analiza tu técnica con sesiones de video y feedback para corregir detalles clave.",
   },
   {
-    title: "Preparacion fisica",
-    body: "Fortalece movilidad, resistencia y control corporal para rendir mejor en cada sesion.",
+    title: "Preparación física",
+    body: "Fortalece movilidad, resistencia y control corporal para rendir mejor en cada sesión.",
   },
   {
-    title: "Preparacion mental",
+    title: "Preparación mental",
     body: "Mejora foco, confianza y toma de decisiones con herramientas mentales aplicadas al surf.",
   },
 ];
@@ -203,8 +204,8 @@ export type TestimonialItem = {
 
 export const faqs: FaqItem[] = [
   {
-    question: "¿Como se en que nivel estoy?",
-    answer: "Antes de tu primera clase, nuestros coaches te hacen una evaluación inicial en el agua para conocer tu nivel real. Así diseñamos el plan que mejor se adapta a ti.",
+    question: "¿Cómo sé en qué nivel estoy?",
+    answer: "Antes de tu primera clase, nuestros coaches te hacen una evaluación inicial en el agua para conocer tu nivel real. Así diseñamos el plan que mejor se adapte a ti.",
   },
   {
     question: "¿Debo llevar mi propia tabla o me pueden prestar una?",
@@ -218,45 +219,45 @@ export const faqs: FaqItem[] = [
 
 export const testimonials: TestimonialItem[] = [
   {
-    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
+    quote: "Mi surfing subió a otro nivel. Cada día aprendí algo nuevo dentro y fuera del agua: clases con instructores locales, análisis de video uno a uno y teoría grupal.",
     author: "Jane Doe",
     tripName: "Surftrip Chicama 2024",
   },
   {
-    quote: "My surfing was pushed to another level and I gained every single day on and off the water in lessons with local surf instructors, through video one-on-one analysis and group theory.",
+    quote: "Mi surfing subió a otro nivel. Cada día aprendí algo nuevo dentro y fuera del agua: clases con instructores locales, análisis de video uno a uno y teoría grupal.",
     author: "Jane Doe",
     tripName: "Surftrip Chicama 2024",
   },
 ];
 
 export const surfClassSubServices = [
-  "Videoanalisis",
+  "Videoanálisis",
   "Clases de Surfskate",
   "Talleres de Yoga Restaurativo",
   "Talleres de respiración & meditación",
 ];
 
 export const methodologyPillars = [
-  "Tecnica y lectura de ola",
-  "Analisis en video de cada sesion",
-  "Trabajo fisico especifico para surf",
+  "Técnica y lectura de ola",
+  "Análisis en video de cada sesión",
+  "Trabajo físico específico para surf",
   "Mentalidad y constancia para sostener progreso",
 ];
 
 export const blogPosts: BlogPostItem[] = [
   {
-    title: "Como mejorar tu take off en 4 semanas",
-    excerpt: "Una rutina simple para tener mas estabilidad y timing en la entrada a la ola.",
-    category: "Tecnica",
+    title: "Cómo mejorar tu take off en 4 semanas",
+    excerpt: "Una rutina simple para tener más estabilidad y timing en la entrada a la ola.",
+    category: "Técnica",
   },
   {
-    title: "Preparacion fisica fuera del agua",
+    title: "Preparación física fuera del agua",
     excerpt: "Ejercicios clave para mantener rendimiento entre sesiones.",
     category: "Entrenamiento",
   },
   {
-    title: "Surftrip checklist: que llevar",
-    excerpt: "Checklist practico para viajar con todo listo y surfear con tranquilidad.",
+    title: "Surftrip checklist: qué llevar",
+    excerpt: "Checklist práctico para viajar con todo listo y surfear con tranquilidad.",
     category: "Lifestyle",
   },
 ];
@@ -269,5 +270,3 @@ export const surftripsSpFamilyPhotos: SpFamilyPhotoItem[] = [
   { src: "/photos/surftrips/gallery_spfamily_5.jpg", alt: "SP Family Surftrips 5" },
   { src: "/photos/surftrips/gallery_spfamily_6.jpg", alt: "SP Family Surftrips 6" },
 ];
-
-

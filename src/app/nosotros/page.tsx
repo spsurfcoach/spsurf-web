@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { NosotrosHero } from "@/components/sections/NosotrosHero";
+
+export const metadata: Metadata = {
+  title: "Nosotros",
+  description:
+    "Conoce al equipo detrás de SP Surf Coach: coaches certificados con más de 15 años de experiencia en el agua.",
+};
 import { NosotrosIntroSection } from "@/components/sections/NosotrosIntroSection";
 import { NosotrosCertSection } from "@/components/sections/NosotrosCertSection";
 import { NosotrosVideoSection } from "@/components/sections/NosotrosVideoSection";

@@ -7,7 +7,7 @@ export function ShopPreviewSection() {
         <div className="text-center">
           <h2 className="ds-h2">Shop</h2>
           <p className="ds-body-s mx-auto mt-3 max-w-2xl text-zinc-700">
-            Ropa y accesorios inspirados en el mar para acompanarte dentro y fuera del agua.
+            Ropa y accesorios inspirados en el mar para acompañarte dentro y fuera del agua.
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
