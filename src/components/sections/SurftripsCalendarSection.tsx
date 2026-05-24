@@ -20,30 +20,24 @@ function CalendarRow({ item }: { item: CalendarItem }) {
 
   return (
     <div className="relative h-[67px] overflow-hidden rounded-[40px] border-2 border-black">
-      {/* Fill bar */}
       <div
         className="absolute inset-y-0 left-0 rounded-r-[40px]"
         style={{ width: `${fillPct}%`, backgroundColor: color }}
         aria-hidden="true"
       />
-      {/* Row content */}
       <div className="relative flex h-full items-center justify-between gap-2 px-5">
         <div className="flex items-center gap-3 min-w-0">
-          {/* Level badge */}
           <span className="shrink-0 rounded-full bg-black px-3 py-0.5 text-[12px] font-medium text-white">
             {item.level}
           </span>
-          {/* Destination */}
           <span className="truncate text-[22px] font-bold text-black leading-none">
             {item.destination}
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-4">
-          {/* Available count */}
           <span className="text-[14px] font-bold text-black whitespace-nowrap">
             {item.available} DISPONIBLES
           </span>
-          {/* Dates */}
           <span className="hidden text-[16px] text-black/50 sm:block whitespace-nowrap">
             {item.dates}
           </span>
@@ -53,9 +47,35 @@ function CalendarRow({ item }: { item: CalendarItem }) {
   );
 }
 
-function getMonthLabel(startDate: string): string {
-  const date = new Date(startDate + "T12:00:00Z");
-  return date.toLocaleString("es-ES", { month: "long", year: "numeric", timeZone: "UTC" });
+function getMonday(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
+function addDays(date: Date, n: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function addMonths(date: Date, n: number): Date {
+  return new Date(date.getFullYear(), date.getMonth() + n, 1);
+}
+
+function formatWeekRange(monday: Date): string {
+  const sunday = addDays(monday, 6);
+  const start = monday.toLocaleDateString("es-ES", { day: "numeric", month: "long" });
+  const end = sunday.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+  return `${start} – ${end}`;
+}
+
+function formatMonthLabel(date: Date): string {
+  const label = date.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
+  return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
 function capitalize(str: string) {
@@ -64,27 +84,41 @@ function capitalize(str: string) {
 
 export function SurftripsCalendarSection() {
   const [view, setView] = useState<CalendarView>("semanal");
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [monthOffset, setMonthOffset] = useState(0);
 
   const allTrips = surftripsCalendar.flat();
 
-  const now = new Date();
-  const eightWeeksFromNow = new Date(now.getTime() + 8 * 7 * 24 * 60 * 60 * 1000);
+  // Semanal: current week + offset
+  const baseMonday = getMonday(new Date());
+  const monday = addDays(baseMonday, weekOffset * 7);
+  const sunday = addDays(monday, 6);
+  sunday.setHours(23, 59, 59, 999);
 
   const semanalTrips = allTrips.filter((item) => {
     const start = new Date(item.startDate + "T12:00:00Z");
-    return start >= now && start <= eightWeeksFromNow;
+    return start >= monday && start <= sunday;
   });
 
-  // Group by month for mensual view
-  const mensualGroups: { month: string; items: CalendarItem[] }[] = [];
+  // Mensual: current month + offset
+  const today = new Date();
+  const currentMonthBase = new Date(today.getFullYear(), today.getMonth(), 1);
+  const activeMonth = addMonths(currentMonthBase, monthOffset);
+  const activeMonthEnd = addMonths(activeMonth, 1);
+
+  const mensualTrips = allTrips.filter((item) => {
+    const start = new Date(item.startDate + "T12:00:00Z");
+    return start >= activeMonth && start < activeMonthEnd;
+  });
+
+  // All trips grouped by month for reference
+  const allMonthGroups: { month: string; items: CalendarItem[] }[] = [];
   for (const item of allTrips) {
-    const month = capitalize(getMonthLabel(item.startDate));
-    const existing = mensualGroups.find((g) => g.month === month);
-    if (existing) {
-      existing.items.push(item);
-    } else {
-      mensualGroups.push({ month, items: [item] });
-    }
+    const d = new Date(item.startDate + "T12:00:00Z");
+    const month = capitalize(d.toLocaleString("es-ES", { month: "long", year: "numeric", timeZone: "UTC" }));
+    const existing = allMonthGroups.find((g) => g.month === month);
+    if (existing) existing.items.push(item);
+    else allMonthGroups.push({ month, items: [item] });
   }
 
   return (
@@ -93,19 +127,69 @@ export function SurftripsCalendarSection() {
         CALENDARIO
       </p>
 
-      {/* Toggle */}
-      <div className="mt-6 flex items-center gap-2">
-        {(["semanal", "mensual"] as CalendarView[]).map((v) => (
-          <button
-            key={v}
-            onClick={() => setView(v)}
-            className={`ds-btn ${view === v ? "ds-btn-primary" : "ds-btn-secondary"}`}
-          >
-            {v.charAt(0).toUpperCase() + v.slice(1)}
-          </button>
-        ))}
+      {/* View toggle + navigation */}
+      <div className="mt-6 flex flex-wrap items-center gap-4">
+        {/* Semanal / Mensual buttons */}
+        <div className="flex items-center gap-2">
+          {(["semanal", "mensual"] as CalendarView[]).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className={`ds-btn ${view === v ? "ds-btn-primary" : "ds-btn-secondary"}`}
+            >
+              {v.charAt(0).toUpperCase() + v.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Week navigation */}
+        {view === "semanal" && (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setWeekOffset((o) => o - 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/20 text-black/60 transition hover:border-black hover:text-black"
+              aria-label="Semana anterior"
+            >
+              ‹
+            </button>
+            <span className="ds-body-s min-w-[200px] text-center font-medium text-[var(--color-text-default)]">
+              {formatWeekRange(monday)}
+            </span>
+            <button
+              onClick={() => setWeekOffset((o) => o + 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/20 text-black/60 transition hover:border-black hover:text-black"
+              aria-label="Semana siguiente"
+            >
+              ›
+            </button>
+          </div>
+        )}
+
+        {/* Month navigation */}
+        {view === "mensual" && (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMonthOffset((o) => o - 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/20 text-black/60 transition hover:border-black hover:text-black"
+              aria-label="Mes anterior"
+            >
+              ‹
+            </button>
+            <span className="ds-body-s min-w-[160px] text-center font-medium text-[var(--color-text-default)]">
+              {formatMonthLabel(activeMonth)}
+            </span>
+            <button
+              onClick={() => setMonthOffset((o) => o + 1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/20 text-black/60 transition hover:border-black hover:text-black"
+              aria-label="Mes siguiente"
+            >
+              ›
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Content */}
       {view === "semanal" ? (
         semanalTrips.length > 0 ? (
           <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -114,25 +198,32 @@ export function SurftripsCalendarSection() {
             ))}
           </div>
         ) : (
-          <p className="mt-8 ds-body-s text-[var(--color-label-muted)]">
-            No hay próximos viajes en las próximas 8 semanas. Cambia a vista mensual para ver todos los viajes.
-          </p>
+          <div className="mt-8 flex flex-col items-start gap-3">
+            <p className="ds-body-s text-[var(--color-label-muted)]">
+              No hay viajes esta semana.
+            </p>
+            <button
+              onClick={() => setView("mensual")}
+              className="ds-btn ds-btn-secondary"
+            >
+              Ver todos los viajes
+            </button>
+          </div>
         )
       ) : (
-        <div className="mt-8 space-y-8">
-          {mensualGroups.map((group) => (
-            <div key={group.month}>
-              <h3 className="ds-body-s mb-3 font-semibold uppercase tracking-widest text-[var(--color-label-muted)]">
-                {group.month}
-              </h3>
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {group.items.map((item) => (
-                  <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        mensualTrips.length > 0 ? (
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {mensualTrips.map((item) => (
+              <CalendarRow key={`${item.destination}-${item.dates}`} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 flex flex-col items-start gap-3">
+            <p className="ds-body-s text-[var(--color-label-muted)]">
+              No hay viajes este mes.
+            </p>
+          </div>
+        )
       )}
     </section>
   );
