@@ -40,7 +40,7 @@ type SortOrder = "asc" | "desc";
 
 const FILTER_LABELS: Record<FilterType, string> = {
   all: "Todos",
-  membership: "Memberships",
+  membership: "Membresías All You Can Surf",
   package: "Paquetes",
   videoanalysis: "Videoanálisis",
   surfskate: "Surfskate",
@@ -99,7 +99,12 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
   const sorted = sort
     ? [...filtered].sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price))
     : [...filtered].sort((a, b) => {
-        if (a.category === b.category) return a.name.localeCompare(b.name);
+        if (a.category === b.category) {
+          if (a.category === "membership") {
+            return (b.durationDays ?? 0) - (a.durationDays ?? 0);
+          }
+          return a.name.localeCompare(b.name);
+        }
         const order = ["membership", "package", "videoanalysis", "surfskate", "surftrip"];
         return order.indexOf(a.category) - order.indexOf(b.category);
       });
@@ -127,7 +132,6 @@ export function PackageList({ items, highlightProductId, onCheckout }: Props) {
 
   function ctaLabel(product: PackageItem, soldOut: boolean) {
     if (soldOut) return "Sin cupos";
-    if (product.fulfillmentType === "surftrip_booking") return "Comprar";
     return "Comprar";
   }
 

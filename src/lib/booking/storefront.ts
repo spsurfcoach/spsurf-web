@@ -70,7 +70,7 @@ export function productCategoryLabel(category: ProductCategory) {
     case "package":
       return "Paquete";
     case "membership":
-      return "Membership";
+      return "Membresías All You Can Surf";
     case "videoanalysis":
       return "Videoanálisis";
     case "surfskate":

@@ -25,7 +25,7 @@ export function HomePrimeSection() {
 
         <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10 lg:p-12">
           <RevealGroup className="max-w-xl">
-            <h2 className="ds-h2 text-white">Membresías Premium</h2>
+            <h2 className="ds-h2 text-white">Membresías All You Can Surf</h2>
             <p className="ds-body-m ds-section-lead-gap text-white/90">
               Accede a beneficios como descuentos en paquetes de clases, reserva antes que nadie y mucho más…
             </p>

@@ -11,19 +11,28 @@ export function HomeSubscriptionsSection() {
         <div className="overflow-hidden rounded-[30px] bg-[var(--color-primary-900)] px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
           <RevealGroup>
             <p className="ds-label text-center text-[var(--color-primary-400)]">PAQUETES</p>
-            <h2 className="ds-h2 mt-4 text-center text-white">Elige tu paquete</h2>
+            <h2 className="ds-h2 mt-4 text-center text-white">Elige tu paquete de clases</h2>
             <p className="ds-body-s mt-3 text-center text-white/60">
               Compra bloques de sesiones y úsalos con la vigencia que mejor encaje con tu ritmo.
             </p>
 
             <div className="mt-12 grid gap-5 md:grid-cols-3 md:items-stretch">
               {packageOfferCards.map((p) => (
+                <div key={p.id} className="relative flex flex-col">
+                  {p.featured ? (
+                    <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2">
+                      <span className="rounded-full bg-[var(--color-primary-500)] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
+                        Favorito
+                      </span>
+                    </div>
+                  ) : null}
                 <Link
-                  key={p.id}
                   href="/clases?tab=comprar"
                   className={cn(
                     "flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] bg-white transition-transform duration-200 hover:-translate-y-1",
-                    p.featured && "shadow-2xl ring-2 ring-white/40",
+                    p.featured
+                      ? "shadow-2xl ring-2 ring-[var(--color-primary-500)]"
+                      : "",
                   )}
                 >
                   <div className="relative h-[200px] w-full shrink-0">
@@ -41,9 +50,6 @@ export function HomeSubscriptionsSection() {
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
                       <span className="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary-700)] px-5 py-2 text-xs font-bold uppercase tracking-[0.9px] text-white shadow-lg">
                         Paquete
-                        {p.featured ? (
-                          <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px]">Popular</span>
-                        ) : null}
                       </span>
                     </div>
                   </div>
@@ -69,6 +75,7 @@ export function HomeSubscriptionsSection() {
                     </div>
                   </div>
                 </Link>
+                </div>
               ))}
             </div>
           </RevealGroup>
@@ -93,7 +100,7 @@ export function HomeSubscriptionsSection() {
           />
           <div className="absolute inset-0 z-10 flex w-full max-w-[42rem] flex-col items-start justify-center px-8 py-16 text-left sm:px-12 sm:py-20 lg:px-16 lg:py-24">
             <h2 className="ds-display-title max-w-[52rem] text-balance text-white">
-              Conoce nuestras Membresías Premium
+              Membresías All You Can Surf
             </h2>
             <p className="ds-body-s mt-5 max-w-md text-pretty text-white/85">
               3, 6 o 12 meses

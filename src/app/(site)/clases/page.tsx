@@ -449,21 +449,6 @@ function ClasesPageContent() {
                 </div>
               </div>
             </div>
-            <UpcomingBookingsList
-              bookings={bookings}
-              onCancel={async (bookingId) => {
-                try {
-                  await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
-                  setBanner({ variant: "success", text: "Reserva cancelada. Tu clase ha sido devuelta." });
-                  await loadPrivateData();
-                } catch (error) {
-                  setBanner({
-                    variant: "error",
-                    text: error instanceof Error ? error.message : "No se pudo cancelar la reserva.",
-                  });
-                }
-              }}
-            />
             <ClassSlotList
               items={slots}
               onBook={async (slotId) => {
@@ -487,6 +472,35 @@ function ClasesPageContent() {
                 }
               }}
             />
+            <UpcomingBookingsList
+              bookings={bookings}
+              onCancel={async (bookingId) => {
+                try {
+                  await apiFetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
+                  setBanner({ variant: "success", text: "Reserva cancelada. Tu clase ha sido devuelta." });
+                  await loadPrivateData();
+                } catch (error) {
+                  setBanner({
+                    variant: "error",
+                    text: error instanceof Error ? error.message : "No se pudo cancelar la reserva.",
+                  });
+                }
+              }}
+            />
+            <div className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+              <div className="border-b border-black/10 px-5 py-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/35">Condiciones del mar</p>
+                <p className="mt-0.5 text-sm font-semibold text-black">Punta Roquitas</p>
+              </div>
+              <iframe
+                src="https://www.surfline.com/surf-report/punta-roquitas/640a3c7c606c45859bafd27e?embed=true"
+                title="Condiciones Punta Roquitas — Surfline"
+                className="w-full"
+                height="500"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
           </section>
         )}
       </div>

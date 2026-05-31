@@ -29,10 +29,10 @@ export default async function Home() {
   return (
     <div className="bg-[var(--color-background-default)] text-[var(--color-text-default)]">
       <HomeHero />
-      <HomeTrustBar />
       <BrandStatement />
       <HomeVideoSection />
       <HomeSubscriptionsSection />
+      <HomeTrustBar />
       <HomeSurftrips trips={trips} />
       <ComunidadSection />
       <SurfTalksSection />

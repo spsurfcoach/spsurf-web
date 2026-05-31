@@ -139,7 +139,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         currency: packageData.currency,
         isActive: packageData.isActive,
         image: DEFAULT_PRODUCT_IMAGES[category],
-        badge: isSubscription ? "Membresía Premium mensual" : category === "membership" ? "Clases ilimitadas" : "Reserva por créditos",
+        badge: isSubscription ? "Membresía Premium mensual" : category === "membership" ? "All You Can Surf" : "Reserva por créditos",
         features:
           packageData.type === "credits"
             ? [`${packageData.classCount ?? 0} clases`, "Reserva flexible", "Acceso al calendario"]
