@@ -20,12 +20,21 @@ export function ServiciosMembresiasSection() {
 
           <div className="mt-12 grid gap-5 md:grid-cols-3 md:items-stretch">
             {membershipPlans.map((m) => (
+              <div key={m.id} className="relative flex flex-col">
+                {m.featured ? (
+                  <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2">
+                    <span className="rounded-full bg-[var(--color-primary-500)] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
+                      Favorito
+                    </span>
+                  </div>
+                ) : null}
               <Link
-                key={m.id}
                 href="/clases"
                 className={cn(
                   "flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] bg-white transition-transform duration-200 hover:-translate-y-1",
-                  m.featured && "shadow-2xl ring-2 ring-white/40",
+                  m.featured
+                    ? "shadow-2xl ring-2 ring-[var(--color-primary-500)]"
+                    : "",
                 )}
               >
                 <div className="relative h-[200px] w-full shrink-0">
@@ -43,9 +52,6 @@ export function ServiciosMembresiasSection() {
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
                     <span className="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary-700)] px-5 py-2 text-xs font-bold uppercase tracking-[0.9px] text-white shadow-lg">
                       Membresía
-                      {m.badge ? (
-                        <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px]">{m.badge}</span>
-                      ) : null}
                     </span>
                   </div>
                 </div>
@@ -69,6 +75,7 @@ export function ServiciosMembresiasSection() {
                   </div>
                 </div>
               </Link>
+              </div>
             ))}
           </div>
         </RevealGroup>
