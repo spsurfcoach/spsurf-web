@@ -1,9 +1,10 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
 import { getPaymentClient, getPreApprovalClient } from "@/lib/mercadopago/client";
-import { purchaseIsActive, sortPurchasesForConsumption } from "./guards";
+import { purchaseCanBookClasses, purchaseIsActive, sortPurchasesForConsumption } from "./guards";
 import { buildPackageProductId, buildSurftripProductId } from "./storefront";
 import {
+  BookingDoc,
   ClassSlotDoc,
   PackageDoc,
   ProductDoc,
@@ -189,6 +190,70 @@ export async function createBookingTransaction(input: BookClassInput): Promise<B
       bookingId: bookingRef.id,
       purchaseId: selectedPurchase.id,
     };
+  });
+}
+
+export async function cancelBookingTransaction(input: { userId: string; bookingId: string }) {
+  const bookingRef = adminDb.collection(BOOKINGS_COLLECTION).doc(input.bookingId);
+
+  await adminDb.runTransaction(async (transaction) => {
+    const bookingSnap = await transaction.get(bookingRef);
+
+    if (!bookingSnap.exists) {
+      throw new Error("BOOKING_NOT_FOUND");
+    }
+
+    const booking = bookingSnap.data() as BookingDoc;
+
+    if (booking.userId !== input.userId) {
+      throw new Error("BOOKING_NOT_OWNED");
+    }
+
+    if (booking.status === "cancelled") {
+      throw new Error("BOOKING_ALREADY_CANCELLED");
+    }
+
+    const now = new Date();
+
+    // Enforce 12-hour cancellation window
+    const slotRef = adminDb.collection(CLASS_SLOTS_COLLECTION).doc(booking.classSlotId);
+    const slotSnap = await transaction.get(slotRef);
+    if (slotSnap.exists) {
+      const slotData = slotSnap.data() as { startsAt?: string };
+      if (slotData.startsAt) {
+        const startsAt = new Date(slotData.startsAt);
+        const hoursUntilClass = (startsAt.getTime() - now.getTime()) / (1000 * 60 * 60);
+        if (hoursUntilClass < 12) {
+          throw new Error("CANCELLATION_WINDOW_PASSED");
+        }
+      }
+    }
+
+    // All reads must finish before any writes (Firestore transaction rule).
+    const purchaseRef = adminDb.collection(PURCHASES_COLLECTION).doc(booking.purchaseId);
+    const purchaseSnap = await transaction.get(purchaseRef);
+
+    const nowIso = now.toISOString();
+
+    // Cancel the booking
+    transaction.update(bookingRef, { status: "cancelled", updatedAt: nowIso });
+
+    // Release the slot spot
+    transaction.update(slotRef, {
+      enrolledCount: FieldValue.increment(-1),
+      updatedAt: nowIso,
+    });
+
+    // Refund credit if it was a credits package
+    if (purchaseSnap.exists) {
+      const purchase = purchaseSnap.data() as PurchaseDoc;
+      if (purchaseCanBookClasses(purchase) && purchase.packageType === "credits") {
+        transaction.update(purchaseRef, {
+          remainingCredits: FieldValue.increment(1),
+          updatedAt: nowIso,
+        });
+      }
+    }
   });
 }
 
