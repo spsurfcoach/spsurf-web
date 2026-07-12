@@ -18,13 +18,14 @@ export async function GET(request: NextRequest) {
 
     const items = snapshot.docs
       .map((doc) => {
-        const slot = doc.data() as ClassSlotDoc;
+        const slot = doc.data() as ClassSlotDoc & { location?: string };
         return {
           id: doc.id,
           startsAt: slot.startsAt,
           capacity: slot.capacity,
           enrolledCount: slot.enrolledCount,
           spotsLeft: Math.max(0, slot.capacity - slot.enrolledCount),
+          location: slot.location ?? null,
           isActive: slot.isActive,
         };
       })
