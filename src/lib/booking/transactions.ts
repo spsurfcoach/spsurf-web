@@ -2,6 +2,7 @@ import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase/admin";
 import { getPaymentClient, getPreApprovalClient } from "@/lib/mercadopago/client";
 import { purchaseCanBookClasses, purchaseIsActive, sortPurchasesForConsumption } from "./guards";
+import { parseSlotStartsAt } from "./time";
 import { buildPackageProductId, buildSurftripProductId } from "./storefront";
 import {
   BookingDoc,
@@ -221,7 +222,7 @@ export async function cancelBookingTransaction(input: { userId: string; bookingI
     if (slotSnap.exists) {
       const slotData = slotSnap.data() as { startsAt?: string };
       if (slotData.startsAt) {
-        const startsAt = new Date(slotData.startsAt);
+        const startsAt = parseSlotStartsAt(slotData.startsAt);
         const hoursUntilClass = (startsAt.getTime() - now.getTime()) / (1000 * 60 * 60);
         if (hoursUntilClass < 12) {
           throw new Error("CANCELLATION_WINDOW_PASSED");

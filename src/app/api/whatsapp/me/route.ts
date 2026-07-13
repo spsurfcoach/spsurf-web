@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase/admin";
 import { getActiveClassPurchase } from "@/lib/booking/guards";
+import { parseSlotStartsAt } from "@/lib/booking/time";
 import type { BookingDoc, ClassSlotDoc, PurchaseDoc } from "@/lib/booking/types";
 import { requireWhatsappApiKey, resolveUserByPhone, whatsappErrorResponse } from "@/lib/whatsapp/api";
 
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
           bookedAt: booking.bookedAt,
         };
       })
-      .filter((booking) => !booking.startsAt || booking.startsAt >= nowIso)
+      .filter((booking) => !booking.startsAt || parseSlotStartsAt(booking.startsAt).getTime() >= Date.now())
       .sort((a, b) => String(a.startsAt ?? "").localeCompare(String(b.startsAt ?? "")));
 
     return NextResponse.json({
