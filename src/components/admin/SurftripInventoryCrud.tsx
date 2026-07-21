@@ -12,6 +12,7 @@ export type SurftripInventoryItem = {
   currency: string;
   capacity: number;
   enrolledCount: number;
+  bookedCount?: number;
   startDate: string;
   endDate: string;
   isActive: boolean;
@@ -86,7 +87,10 @@ export function SurftripInventoryCrud({ items, isLoading, onSync, onSyncAll, onT
           </div>
 
           {items.map((item) => {
-            const spotsLeft = Math.max(0, item.capacity - item.enrolledCount);
+            const spotsLeft = Math.max(
+              0,
+              item.capacity - item.enrolledCount - (item.bookedCount ?? 0),
+            );
             return (
               <div
                 key={item.id}

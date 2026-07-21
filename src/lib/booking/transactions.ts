@@ -73,7 +73,8 @@ export async function createSurftripBookingFromPayment(input: {
 
     const data = surftripSnap.data() as SurftripInventoryDoc;
     if (!data.isActive) throw new Error("SURFTRIP_INACTIVE");
-    if (data.enrolledCount >= data.capacity) throw new Error("SURFTRIP_FULL");
+    const takenSpots = Number(data.enrolledCount ?? 0) + Number(data.bookedCount ?? 0);
+    if (takenSpots >= data.capacity) throw new Error("SURFTRIP_FULL");
 
     const now = new Date().toISOString();
 

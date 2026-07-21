@@ -23,6 +23,7 @@ const SURFTRIP_SYNC_QUERY = `
     shortDescription,
     price,
     capacity,
+    bookedCount,
     isActive,
     country,
     level,
@@ -52,6 +53,7 @@ export type SanitySurftripSyncDoc = {
   shortDescription?: string;
   price?: number;
   capacity?: number;
+  bookedCount?: number;
   isActive?: boolean;
   country?: string;
   level?: string;
@@ -176,6 +178,7 @@ function buildSurftripInventoryPayload(
     currency: "PEN",
     capacity: toNumber(document.capacity) ?? existing?.capacity ?? 0,
     enrolledCount: existing?.enrolledCount ?? 0,
+    bookedCount: Math.max(0, toNumber(document.bookedCount) ?? 0),
     startDate: document.startDate,
     endDate: document.endDate,
     isActive: document.isActive !== false,
@@ -187,8 +190,12 @@ function buildSurftripInventoryPayload(
   };
 }
 
-export function getSurftripAvailableSpots(capacity?: number, enrolledCount?: number) {
-  return Math.max(0, Number(capacity ?? 0) - Number(enrolledCount ?? 0));
+export function getSurftripTakenSpots(enrolledCount?: number, bookedCount?: number) {
+  return Math.max(0, Number(enrolledCount ?? 0)) + Math.max(0, Number(bookedCount ?? 0));
+}
+
+export function getSurftripAvailableSpots(capacity?: number, enrolledCount?: number, bookedCount?: number) {
+  return Math.max(0, Number(capacity ?? 0) - getSurftripTakenSpots(enrolledCount, bookedCount));
 }
 
 export async function fetchPublishedSurftripByDocumentId(documentId: string) {
@@ -301,6 +308,7 @@ const SURFTRIP_ALL_SYNC_QUERY = `
     shortDescription,
     price,
     capacity,
+    bookedCount,
     isActive,
     country,
     level,

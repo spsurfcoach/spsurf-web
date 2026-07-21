@@ -93,7 +93,10 @@ export type SurftripInventoryDoc = {
   price: number;
   currency: "PEN";
   capacity: number;
+  /** Online checkout purchases (incremented by booking transactions). */
   enrolledCount: number;
+  /** Manual sales from Sanity (`bookedCount`). Synced on import/re-sync. */
+  bookedCount: number;
   startDate: string;
   endDate: string;
   isActive: boolean;

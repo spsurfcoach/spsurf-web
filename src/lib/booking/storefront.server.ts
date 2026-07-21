@@ -8,7 +8,7 @@ import {
   PRODUCT_COLLECTION,
   productCategoryOrder,
 } from "./storefront";
-import { getSurftripAvailableSpots } from "./surftrip-sync";
+import { getSurftripAvailableSpots, getSurftripTakenSpots } from "./surftrip-sync";
 
 export type StorefrontProduct = ProductDoc & { id: string };
 
@@ -186,7 +186,12 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         return null;
       }
 
-      const availableSpots = getSurftripAvailableSpots(surftrip.capacity, surftrip.enrolledCount);
+      const takenSpots = getSurftripTakenSpots(surftrip.enrolledCount, surftrip.bookedCount);
+      const availableSpots = getSurftripAvailableSpots(
+        surftrip.capacity,
+        surftrip.enrolledCount,
+        surftrip.bookedCount,
+      );
 
       const base: ProductDoc = {
         slug: surftrip.sanitySlug,
@@ -212,7 +217,7 @@ export async function listStorefrontProducts(): Promise<StorefrontProduct[]> {
         sourceCollection: "surftripInventory",
         sourceId,
         capacity: surftrip.capacity,
-        enrolledCount: surftrip.enrolledCount,
+        enrolledCount: takenSpots,
         startDate: surftrip.startDate,
         endDate: surftrip.endDate,
         createdAt: surftrip.createdAt,

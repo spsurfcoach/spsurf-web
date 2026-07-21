@@ -96,9 +96,11 @@ function mergeSurftripOperationalState<T extends { _id: string; slug: string; pr
 
   const capacity = Number.isFinite(inventory?.capacity) ? Number(inventory?.capacity) : trip.capacity;
   const firebaseEnrolledCount = inventory?.enrolledCount ?? 0;
-  const manualBookedCount = trip.bookedCount ?? 0;
+  // Prefer synced inventory bookedCount; fall back to Sanity until the next sync.
+  const manualBookedCount =
+    typeof inventory?.bookedCount === "number" ? inventory.bookedCount : (trip.bookedCount ?? 0);
   const enrolledCount = firebaseEnrolledCount + manualBookedCount;
-  const availableSpots = getSurftripAvailableSpots(capacity, enrolledCount);
+  const availableSpots = getSurftripAvailableSpots(capacity, firebaseEnrolledCount, manualBookedCount);
   const price = Number.isFinite(inventory?.price) ? Number(inventory?.price) : trip.price;
   const isActive = inventory?.isActive ?? trip.isActive;
   const storeProductId = inventory ? buildSurftripProductId(inventory.id) : undefined;
